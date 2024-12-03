@@ -41,7 +41,7 @@ int helic_antenna(  gridConfiguration *gridCfg,
 int half_circular_antenna(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg,
                             helicalAntenna *helicAnt, 
-                            int t_int, int z0,
+                            int t_int, int z0, int I_dir,
                             double EB_WAVE[NX][NY][NZ] );
 
 int to_Int(double u);
