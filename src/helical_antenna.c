@@ -78,7 +78,7 @@ int linear_antenna( gridConfiguration *gridCfg,
     for( kk = Z_0 ; kk <= Z_1; kk+=2 ){
         
         //Z position
-        EB_WAVE[x_pos  ][y_pos  ][kk+1] += - J_dir * J_0 * sinusoidal_current( beamCfg, t_int ) * DT;
+        EB_WAVE[x_pos  ][y_pos  ][kk+1] += - 2*J_dir * J_0 * sinusoidal_current( beamCfg, t_int ) * DT;
 
     }
 
@@ -102,8 +102,8 @@ int circular_antenna(   gridConfiguration *gridCfg,
         if ((ii % 2) != 0)  ++ii;
         if ((jj % 2) != 0)  ++jj;
 
-        EB_WAVE[ii+1][jj  ][z0  ]  += - 0.5 * J_dir * sinusoidal_current( beamCfg, t_int )*DT;
-        EB_WAVE[ii  ][jj+1][z0  ]  += - 0.5 * J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii+1][jj  ][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii  ][jj+1][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
 
     }
 
@@ -122,24 +122,27 @@ int helic_antenna(  gridConfiguration *gridCfg,
 
     pitch = ant_lenght/num_turns;
 
-//#pragma omp parallel for 
-    for( theta = 0 ; theta <= num_turns * 360 ; theta++){
+//#pragma omp parallel for
+    for( theta = 0 ; theta < num_turns*360 ; theta++){
 
-        if( chirality == 1){
+        if( chirality == 1 ){
             ii = to_Int( ant_x + ( ant_radius*cos( theta * M_PI/180 ) ) );
             jj = to_Int( ant_y + ( ant_radius*sin( theta * M_PI/180 ) ) );
-        }else if( chirality == -1){
+
+            if ((ii % 2) != 0)  ++ii;
+            if ((jj % 2) != 0)  ++jj;
+        }else if( chirality == -1 ){
             ii = to_Int( ant_x + ( ant_radius*cos( theta * M_PI/180 + M_PI ) ) );
             jj = to_Int( ant_y + ( ant_radius*sin( theta * M_PI/180 + M_PI ) ) );
-        }
 
-        if ((ii % 2) != 0)  ++ii;
-        if ((jj % 2) != 0)  ++jj;
+            if ((ii % 2) != 0)  ++ii;
+            if ((jj % 2) != 0)  ++jj;
+        }
         
         kk = to_Int( Z_0 + ( pitch * ( num_turns * theta/( num_turns * 360 ) ) ) );
         if ((kk % 2) != 0)  ++kk;
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2*J_dir * J_0 * sinusoidal_current( beamCfg, t_int )*DT;
     }
 
     return EXIT_SUCCESS;
