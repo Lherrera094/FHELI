@@ -171,10 +171,12 @@
 #define ant_lenghtBG(helicAnt)          helicAnt->ant_lenght
 #define ant_radiusBG(helicAnt)          helicAnt->ant_radius
 #define num_turnsBG(helicAnt)           helicAnt->num_turns
+#define J_ampBG(helicAnt)               helicAnt->J_amp
 
 #define ant_type                        ant_typeBG(helicAnt)
 #define ant_lenght                      ant_lenghtBG(helicAnt)
 #define ant_radius                      ant_radiusBG(helicAnt)
 #define num_turns                       num_turnsBG(helicAnt)
+#define J_amp                           J_ampBG(helicAnt)
 
 #endif

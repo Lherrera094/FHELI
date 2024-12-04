@@ -2,7 +2,6 @@
 
 static int Z_0;             //initial Z coordinate for the antenna
 static int Z_1;             //end Z coordinate for the antenna  
-static int J_0;
 
 void init_helicalAntenna(   gridConfiguration *gridCfg, 
                             helicalAntenna *helicAnt ){
@@ -14,8 +13,6 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
 
     if ((Z_0 % 2) != 0)  ++Z_0;
     if ((Z_1 % 2) != 0)  ++Z_1;
-
-    J_0 = 1/DT; //current amplitud
 }
 
 void control_HelicalAntenna(    gridConfiguration *gridCfg, 
@@ -32,13 +29,13 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
         if ((x_pos % 2) != 0)  ++x_pos;
         y_pos = to_Int( ant_y + ant_radius * sin(0) );
         if ((y_pos % 2) != 0)  ++y_pos;
-        linear_antenna( gridCfg, beamCfg, t_int, 1, x_pos, y_pos, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, x_pos, y_pos, EB_WAVE );
 
         x_pos = to_Int( ant_x + ant_radius * cos(M_PI) );
         if ((x_pos % 2) != 0)  ++x_pos;
         y_pos = to_Int( ant_y + ant_radius * sin(M_PI) );
         if ((y_pos % 2) != 0)  ++y_pos;
-        linear_antenna( gridCfg, beamCfg, t_int, -1, x_pos, y_pos, EB_WAVE );   
+        linear_antenna( gridCfg, beamCfg, helicAnt, t_int, -1, x_pos, y_pos, EB_WAVE );   
 
         half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_0, 1, EB_WAVE );
         half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_1,-1, EB_WAVE );
@@ -51,11 +48,6 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
         half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_0, 1, EB_WAVE );
         half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_1, 1, EB_WAVE );
 
-    } else if( ant_type == 3){
-
-        half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_0, 1, EB_WAVE );
-        half_circular_antenna(   gridCfg, beamCfg, helicAnt, t_int, Z_1,-1, EB_WAVE );
-
     }
 
 }
@@ -67,7 +59,8 @@ double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
 }
 
 int linear_antenna( gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamCfg,  
+                    beamAntennaConfiguration *beamCfg, 
+                    helicalAntenna *helicAnt, 
                     int t_int, int J_dir,
                     int x_pos, int y_pos,
                     double EB_WAVE[NX][NY][NZ] ){
@@ -75,41 +68,13 @@ int linear_antenna( gridConfiguration *gridCfg,
     size_t kk;
 
 #pragma omp parallel for
-    for( kk = Z_0 ; kk <= Z_1; kk+=2 ){
-        
+    for( kk = Z_0 ; kk <= Z_1; kk+=2 ){ 
         //Z position
-        EB_WAVE[x_pos  ][y_pos  ][kk+1] += - 2*J_dir * J_0 * sinusoidal_current( beamCfg, t_int ) * DT;
-
+        EB_WAVE[x_pos  ][y_pos  ][kk+1] += - 2 * J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
     }
 
     return EXIT_SUCCESS;
 }
-
-int circular_antenna(   gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg, 
-                        helicalAntenna *helicAnt, 
-                        int t_int, int z0, int J_dir,
-                        double EB_WAVE[NX][NY][NZ] ){
-
-    int ii, jj, theta;
-
-#pragma omp parallel for           
-    for( theta = 0; theta < 360; theta++ ){
-
-        ii = ant_x + (int)( ant_radius * cos( theta * M_PI/180) );
-        jj = ant_y + (int)( ant_radius * sin( theta * M_PI/180) );
-
-        if ((ii % 2) != 0)  ++ii;
-        if ((jj % 2) != 0)  ++jj;
-
-        EB_WAVE[ii+1][jj  ][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
-        EB_WAVE[ii  ][jj+1][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
-
-    }
-
-    return EXIT_SUCCESS;
-}
-
 
 int helic_antenna(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
@@ -142,7 +107,7 @@ int helic_antenna(  gridConfiguration *gridCfg,
         kk = to_Int( Z_0 + ( pitch * ( num_turns * theta/( num_turns * 360 ) ) ) );
         if ((kk % 2) != 0)  ++kk;
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - 2*J_dir * J_0 * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - J_dir * J_amp * sinusoidal_current( beamCfg, t_int )*DT;
     }
 
     return EXIT_SUCCESS;
@@ -167,17 +132,17 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
         if ((jj % 2) != 0)  ++jj;
 
         if(theta < 90){
-            J_x = I_dir*J_0;
-            J_y = -I_dir*J_0;
+            J_x = I_dir*J_amp;
+            J_y = -I_dir*J_amp;
         } else if( theta >= 90 && theta < 180){
-            J_x = I_dir*J_0;
-            J_y = I_dir*J_0;
+            J_x = I_dir*J_amp;
+            J_y = I_dir*J_amp;
         } else if( theta >= 180 && theta < 270){
-            J_x = I_dir*J_0;
-            J_y = -I_dir*J_0;
+            J_x = I_dir*J_amp;
+            J_y = -I_dir*J_amp;
         } else if( theta >= 270 && theta < 360){
-            J_x = I_dir*J_0;
-            J_y = I_dir*J_0;
+            J_x = I_dir*J_amp;
+            J_y = I_dir*J_amp;
         }
 
         EB_WAVE[ii+1][jj  ][z0  ]  += - 0.5 * J_x * sinusoidal_current( beamCfg, t_int )*DT;
@@ -200,5 +165,30 @@ int to_Int(double u){
     }
 
     return new_u;
+}
+
+int circular_antenna(   gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg, 
+                        helicalAntenna *helicAnt, 
+                        int t_int, int z0, int J_dir,
+                        double EB_WAVE[NX][NY][NZ] ){
+
+    int ii, jj, theta;
+
+#pragma omp parallel for           
+    for( theta = 0; theta < 360; theta++ ){
+
+        ii = ant_x + (int)( ant_radius * cos( theta * M_PI/180) );
+        jj = ant_y + (int)( ant_radius * sin( theta * M_PI/180) );
+
+        if ((ii % 2) != 0)  ++ii;
+        if ((jj % 2) != 0)  ++jj;
+
+        EB_WAVE[ii+1][jj  ][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii  ][jj+1][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+
+    }
+
+    return EXIT_SUCCESS;
 }
 

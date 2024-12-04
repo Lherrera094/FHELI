@@ -261,6 +261,11 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         num_turns = item_Num_turns->valuedouble;
     }
 
+    cJSON *item_J_amp = cJSON_GetObjectItemCaseSensitive(json, "Currrent_Amp");   //
+    if( cJSON_IsNumber(item_J_amp) ){
+        J_amp = item_J_amp->valuedouble;
+    }
+
     //clean up
     cJSON_Delete(json);
     free(json_file);

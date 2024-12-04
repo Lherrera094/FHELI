@@ -11,7 +11,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
     make_density_profile( gridCfg,  
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
-            1,
+            ne_0,
             n_e );
     printf( " ...setting density in absorber to 0...\n ");
     //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
@@ -26,7 +26,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
     make_B0_profile(
             gridCfg,
             // cntrl_para: B0_profile=1 --> value of Y
-            Y_at_X1, 
+            B0_value, 
             J_B0 );
     printf( "...done defining background magnetic field\n" );
 
@@ -114,7 +114,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                     n_e[ii][jj][kk]    = exp( -1.* (
                                                  pow((double)jj-(double)NY/4., 2)/(2*pow(period/2.,2)) 
                                                 +pow((double)kk-(double)NZ/4., 2)/(2*pow(period/2.,2))
-                                             )) * 0.; //5.;
+                                             )) * ne_0; //5.;
                 }
             }
         }
@@ -126,7 +126,7 @@ int make_density_profile( gridConfiguration *gridCfg,
                     n_e[ii][jj][kk]    = exp( -1.* (
                                                  pow((double)ii-(double)NX/4., 2)/(2*pow(period/2.,2)) 
                                                 +pow((double)kk-(double)NZ/4., 2)/(2*pow(period/2.,2))
-                                             )) * 2;//5.;
+                                             )) * ne_0;
                 }
             }
         }
@@ -135,7 +135,20 @@ int make_density_profile( gridConfiguration *gridCfg,
         //   ==> change this
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
-        //readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+        readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+    
+    } else if ( ne_profile == 6 ) {
+        // same as ne_profile = 3, but plasma cylinder is now along z
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
+            for (jj=0 ; jj<(NY/2) ; ++jj) {
+                for (kk=0 ; kk<(NZ/2) ; ++kk) {
+                    n_e[ii][jj][kk]    = exp( -1.* (
+                                                 pow((double)ii-(double)NX/4., 2)/(2*pow(period/2.,2)) 
+                                                +pow((double)jj-(double)NY/4., 2)/(2*pow(period/2.,2))
+                                             )) * ne_0;
+                }
+            }
+        }
     }
     return EXIT_SUCCESS;
 }//}}}

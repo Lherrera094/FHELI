@@ -22,6 +22,7 @@ double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
 
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamAnt,  
+                    helicalAntenna *helicAnt,
                     int t_int, int J_dir,
                     int x_pos, int y_pos,
                     double EB_WAVE[NX][NY][NZ] );

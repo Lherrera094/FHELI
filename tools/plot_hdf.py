@@ -240,7 +240,7 @@ def plot_simple( fname_in, dSet_name='',
         contLevels  = np.linspace( 0, np.amax(data2plot), contLevels )[1:].tolist()
         #contLevels  = np.linspace( np.amin(data2plot), np.amax(data2plot), contLevels )[1:].tolist()
     elif colScale == 'log':
-        contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(E_abs)), 8)[3:].tolist()
+        contLevels  = np.logspace( np.log10(1e-2), np.log10(np.amax(data2plot)), 8)[3:].tolist()
 
     if not silent:
         print( funcName )
@@ -453,6 +453,7 @@ def plot_fullwave( fname_in, fname_plot='',
     cont_Eabs   = mlab.contour3d( #X, Y, Z,
                                   E_abs, contours=contLevels,
                                   transparent=True, opacity=.4,
+                                  colormap='jet',
                                   figure=fig1
                                 )
 
@@ -483,8 +484,8 @@ def plot_fullwave( fname_in, fname_plot='',
                                       density, 
                                       contours=cont_levels, 
                                       opacity=.3, 
-                                      color=(1,0,0),
-                                      #colormap='gist_yarg',
+                                      #color=(1,0,0),
+                                      colormap='hot',
                                       figure=fig1
                                     )
         # optionally, overplot projection of density profile onto y=const plane
@@ -493,45 +494,35 @@ def plot_fullwave( fname_in, fname_plot='',
             #dens_line   = mlab.plot3d( density[0,0,:]*30+1, 
             #                           density[0,0,:]*0+(Ny-2*d_absorb),
             # plotting onto x=const plane, y-coordinate=density, z-coordinate=z
-            dens_line   = mlab.plot3d( density[0,0,:]*0+1,  
-                                       #density[0,0,:]*30+1,
-                                       density[int(Nx/2),int(Ny/2),:]*30+1,
-                                       np.linspace(1, Nz-2*d_absorb-3, Nz-2*d_absorb-2+2),
-#                                   color=(0,0,0),
+#            dens_line   = mlab.plot3d( density[0,0,:]*0+1,  
+#                                       #density[0,0,:]*30+1,
+#                                       density[int(Nx/2),int(Ny/2),:]*30+1,
+#                                       np.linspace(1, Nz-2*d_absorb-3, Nz-2*d_absorb-2+2),
+##                                   color=(0,0,0),
+#                                       line_width=10,
+#                                       tube_radius=1,
+#                                       figure=fig1
+#                                     )
+	    # plot cut of density profile onto y=1 plane
+            dens_line   = mlab.plot3d( np.linspace(1, Nx-2*d_absorb-3, Nx-2*d_absorb-2+2),
+                                       density[:,int(Ny/2),int(Nz/2)]*30+1,
+                                       density[:,0,0]*0+1,   
+#                                       np.linspace(1, Nx-2*d_absorb-3, Nx-2*d_absorb-2+2),
+                                       color=(0,0,0),
                                        line_width=10,
                                        tube_radius=1,
+                                       #colormap='summer',
                                        figure=fig1
                                      )
 
+
             # oplot a slice of the density onto the x-axis
             slice_ne    = mlab.volume_slice( density,
-                                             plane_orientation='x_axes',
+                                             #plane_orientation='x_axes',
+                                             plane_orientation='z_axes',
                                              opacity=.4,
                                              figure=fig1
                                            )
-
-    if isinstance(B0_abs, np.ndarray) and (np.amax(B0_abs) > .0):
-    #if isinstance(density, np.ndarray) and (np.amin(B0_abs) != np.amax(B0_abs)):
-        B0_res  = f_0*2*np.pi / consts.e * consts.m_e
-        n_Ocut  = (f_0*2*np.pi)**2 / consts.e**2 * consts.m_e * consts.epsilon_0
-        # right-hand cut-off
-        RH_norm = calc_wR( B0=B0_abs*B0_res, density=(density*n_Ocut) )/(f_0*2*np.pi)
-        print( 'min|max(RH_norm)   = {0}|{1}'.format(np.amin(RH_norm), np.amax(RH_norm)) )
-        cont_dens   = mlab.contour3d( RH_norm, 
-                                      contours=[1], 
-                                      opacity=.3, 
-                                      color=(1,0,0),
-                                      figure=fig1
-                                    )
-        # upper-hybrid resonance
-        UH_norm = np.sqrt( density + B0_abs**2 )
-        print( 'min|max(UH_norm)   = {0}|{1}'.format(np.amin(UH_norm), np.amax(UH_norm)) )
-        cont_dens   = mlab.contour3d( UH_norm, 
-                                      contours=[1], 
-                                      opacity=.3, 
-                                      color=(0,.5,0),
-                                      figure=fig1
-                                    )
 
 
     if plot_abs == 'plane':
@@ -545,7 +536,7 @@ def plot_fullwave( fname_in, fname_plot='',
         absorber_plane[:,:,d_absorb]        = 1
         absorber_plane[:,:,(Nz-d_absorb)]   = 1
         cont_abs_x1   = mlab.contour3d( absorber_plane, contours=[1], 
-                                        opacity=.1, colormap='gist_yarg',
+                                        opacity=.1, colormap='plasma',
                                         figure=fig1
                                       )
 
@@ -623,7 +614,7 @@ def main():
         plot_fullwave( fname, t_int=t_int, 
                        include_absorbers=False, 
                        cutExtended_fact=1.,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
-                       oplot_dens_projection=False,
+                       oplot_dens_projection=True,
                        N_contLevels=contLevels, colScale=colScale, 
                        #oplot_Efieldcut='x1z1',
                      )

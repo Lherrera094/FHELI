@@ -1,0 +1,24 @@
+"""
+    if isinstance(B0_abs, np.ndarray) and (np.amax(B0_abs) > .0):
+    #if isinstance(density, np.ndarray) and (np.amin(B0_abs) != np.amax(B0_abs)):
+        B0_res  = f_0*2*np.pi / consts.e * consts.m_e
+        n_Ocut  = (f_0*2*np.pi)**2 / consts.e**2 * consts.m_e * consts.epsilon_0
+        # right-hand cut-off
+        RH_norm = calc_wR( B0=B0_abs*B0_res, density=(density*n_Ocut) )/(f_0*2*np.pi)
+        print( 'min|max(RH_norm)   = {0}|{1}'.format(np.amin(RH_norm), np.amax(RH_norm)) )
+        cont_dens   = mlab.contour3d( RH_norm, 
+                                      contours=[1], 
+                                      opacity=.3, 
+                                      color=(1,0,0),
+                                      figure=fig1
+                                    )
+        # upper-hybrid resonance
+        UH_norm = np.sqrt( density + B0_abs**2 )
+        print( 'min|max(UH_norm)   = {0}|{1}'.format(np.amin(UH_norm), np.amax(UH_norm)) )
+        cont_dens   = mlab.contour3d( UH_norm, 
+                                      contours=[1], 
+                                      opacity=.3, 
+                                      color=(0,.5,0),
+                                      figure=fig1
+                                    )
+"""

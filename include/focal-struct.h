@@ -81,7 +81,8 @@ typedef struct helicalAntenna{
         ant_type, ant_lenght;
     
     double
-        ant_radius, num_turns;
+        ant_radius, num_turns,
+        J_amp;
 } helicalAntenna;
 
 #endif

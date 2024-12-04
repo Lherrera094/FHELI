@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"Helicon_wave",
-    "Case_foldername": 		"Nagoya_Ant",
+    "Main_Project": 		"Helicon_waves",
+    "Case_foldername": 		"helical_report1",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
@@ -11,10 +11,10 @@
     "Grid_size_Nz": 	400,
     "t_end": 		20,
     
-    "B0_profile":	0,
-    "B0_magnitude":	0.5,
-    "ne_profile":	3,
-    "ne_0":		0.0,
+    "B0_profile":	1,
+    "B0_magnitude":	3.0,
+    "ne_profile":	6,
+    "ne_0":		2.0,
     
     "Boundary_Method": 	3,
     "UPML_size":	20,
@@ -33,11 +33,12 @@
     "Helical Antenna": "1: Nagoya. 2:Half-helical",
     "Antenna_type": 2,
     "Antenna_lenght": 200,
+    "Currrent_Amp": 10,
     "Radius": 50,
     "Num_turns": 0.5,
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 2
+    "data_save_frequency": 20
     
 }
