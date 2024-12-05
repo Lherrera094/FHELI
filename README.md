@@ -11,11 +11,7 @@ Developers: [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraqu
 
 <p align="center">
   
-![Couplings](/Simulations/Density.png "Plasma density from FOCAL profile.")
-
-<p align="center">
-  
-![Couplings](/Simulations/E_wave.png "Electric field wave with eliptical polarization.")
+![Helical](/tools/fullwave_helicon.png "3D FDTD simulation of half-helical antenna.")
   
 </p>
 

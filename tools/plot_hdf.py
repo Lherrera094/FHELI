@@ -453,7 +453,7 @@ def plot_fullwave( fname_in, fname_plot='',
     cont_Eabs   = mlab.contour3d( #X, Y, Z,
                                   E_abs, contours=contLevels,
                                   transparent=True, opacity=.4,
-                                  colormap='jet',
+                                  colormap='blue-red',
                                   figure=fig1
                                 )
 
@@ -521,6 +521,7 @@ def plot_fullwave( fname_in, fname_plot='',
                                              #plane_orientation='x_axes',
                                              plane_orientation='z_axes',
                                              opacity=.4,
+                                             colormap='plasma',
                                              figure=fig1
                                            )
 
