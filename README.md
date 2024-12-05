@@ -1,4 +1,4 @@
-<h3 align="center"> FOCAL </h3>
+<h3 align="center"> FOCAL HELICON Waves </h3>
 
 Developers: [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraquesada/)\
 &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;[Alf Köhn-Seemann](https://www.igvp.uni-stuttgart.de/team/Koehn-Seemann/)
@@ -11,7 +11,7 @@ Developers: [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraqu
 
 <p align="center">
   
-![Helical](/tools/fullwave_helicon.png "3D FDTD simulation of half-helical antenna.")
+![Helical](/tools/fullwave_simulation.png "3D FDTD simulation of half-helical antenna.")
   
 </p>
 
