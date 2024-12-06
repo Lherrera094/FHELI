@@ -8,7 +8,7 @@
 import sys
 sys.path.append("Antenna_geometryTK/")
 from antenna_coordinates import *
-from plot_geometry2D import *
+from plot_antenna import *
 
 def main():
     #{{{
@@ -28,6 +28,7 @@ def main():
     antenna_lenght = 200
 
     x_coordinate, y_coordinate = construct_circular(ant_radius, ant_x, ant_y)
+    z_coordinate = construct_linear()
     plot_circular(x_coordinate, y_coordinate, NX, NY)
 
     # initialize parser for command line options
