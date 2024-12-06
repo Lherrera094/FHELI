@@ -9,9 +9,34 @@ import sys
 sys.path.append("Antenna_geometryTK/")
 from antenna_coordinates import *
 from plot_antenna import *
+import numpy as np
+
+def control_antenna(select_ant, ant_radius, ant_x, ant_y, Z_0, Z_1):
+
+    #Nagoya antenna
+    if select_ant == 1:
+        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0)
+        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1)
+        linear_L0 = construct_linear( int(ant_x + ant_radius*np.cos(0)), 
+                                      int(ant_y + ant_radius*np.sin(0)), 
+                                      Z_0, Z_1 )
+        linear_L1 = construct_linear( int(ant_x + ant_radius*np.cos(np.pi)), 
+                                      int(ant_y + ant_radius*np.sin(np.pi)), 
+                                      Z_0, Z_1 )
+
+    if select_ant == 2:
+        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0)
+        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1)
+    
+    return coordinate_C0, coordinate_C1, linear_L0, linear_L1
+
+
 
 def main():
     #{{{
+
+    #Antenna selection
+    select_ant = 1
 
     #Grid size values
     NX = 200
@@ -27,9 +52,11 @@ def main():
     ant_radius = 50
     antenna_lenght = 200
 
-    x_coordinate, y_coordinate = construct_circular(ant_radius, ant_x, ant_y)
-    z_coordinate = construct_linear()
-    plot_circular(x_coordinate, y_coordinate, NX, NY)
+    Z_0 = round( 0.5*( NZ - antenna_lenght ) )
+    Z_1 = round( 0.5*( NZ + antenna_lenght ) )
+
+    circ_A0, circ_A1, linear_L0, linear_L1 = control_antenna( select_ant, ant_radius, ant_x, ant_y, Z_0, Z_1 )
+    plot_3DAntenna( circ_A0, circ_A1, linear_L0, linear_L1 )
 
     # initialize parser for command line options
     #parser  = argparse.ArgumentParser()

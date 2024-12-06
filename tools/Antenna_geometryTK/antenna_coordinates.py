@@ -1,26 +1,26 @@
 import numpy as np
 
-def control_antenna(select, ):
-
-
-def construct_circular(R, ant_x, ant_y):
+def construct_circular( R, ant_x, ant_y, Z ):
     
-    x_pos = []
-    y_pos = []
+    theta = 360
+    circular = np.zeros( (theta, 3) )
 
-    for theta in range(0,360):
+    for i in range(0, theta):
         #computes the radial position of the antenna, 
         #given the radius and the antenna center position
-        x_pos.append( round( (ant_x/2) + (R/2) * np.cos(theta), 0) )
-        y_pos.append( round( (ant_y/2) + (R/2) * np.sin(theta), 0) )
+        circular[i,0] = round( (ant_x/2) + (R/2) * np.cos(i*np.pi/180) )
+        circular[i,1] = round( (ant_y/2) + (R/2) * np.sin(i*np.pi/180) )
+        circular[i,2] = round( Z/2 ) 
     
-    return x_pos, y_pos
+    return circular
 
-def construct_linear(Z_0, Z_1):
+def construct_linear( x_pos, y_pos, Z_0, Z_1 ):
 
-    Z = []
+    linear = np.zeros( ( int( (Z_1-Z_0)/2 ) + 1,3) )
 
-    for k in range(Z_0, Z_1):
-        Z.append(k)
+    for i in range(0, int((Z_1-Z_0)/2) + 1 ):
+        linear[i,0] = round( x_pos/2 )
+        linear[i,1] = round( y_pos/2 )
+        linear[i,2] = round( (Z_0/2) + i ) 
 
-    return Z
+    return linear

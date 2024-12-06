@@ -11,24 +11,72 @@ def plot_circular( x_coord, y_coord, NX, NY ):
     plt.grid(True)
     plt.show()
 
-def plot_3DAntenna( x_coord, y_coord, z_coord ):
-    
+def plot_3DAntenna( coordinate_C0, coordinate_C1, linear_0, linear_1 ):
+   
     #call the function figure
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    fig = go.Figure()
+    
+    fig.add_trace( go.Scatter3d
+                  (
+                      x = coordinate_C0[:,0],
+                      y = coordinate_C0[:,1],
+                      z = coordinate_C0[:,2],
+                      mode = 'markers',
+                      marker = dict(
+                          size=2,
+                          color="navy",
+                          opacity=0.8
+                      )
+                  ))
+    
+    fig.add_trace( go.Scatter3d
+                  (
+                      x = coordinate_C1[:,0],
+                      y = coordinate_C1[:,1],
+                      z = coordinate_C1[:,2],
+                      mode = 'markers',
+                      marker = dict(
+                          size=2,
+                          color="red",
+                          opacity=0.8
+                      )
+                  ))
+    
+    fig.add_trace( go.Scatter3d
+                  (
+                      x = linear_0[:,0],
+                      y = linear_0[:,1],
+                      z = linear_0[:,2],
+                      mode = 'markers',
+                      marker = dict(
+                          size=2,
+                          color=linear_0[:,2],
+                          colorscale = "viridis",
+                          opacity=0.8
+                      )
+                  ))
+    
+    fig.add_trace( go.Scatter3d
+                  (
+                      x = linear_1[:,0],
+                      y = linear_1[:,1],
+                      z = linear_1[:,2],
+                      mode = 'markers',
+                      marker = dict(
+                          size=2,
+                          color=linear_0[:,2],
+                          colorscale = "viridis_r",
+                          opacity=0.8
+                      )
+                  ))
+    
+    fig.update_layout(
+        title = "Antenna Geometry",
+        scene = dict(
+            xaxis_title = "X",
+            yaxis_title = "Y",
+            zaxis_title = "Z"
+        )
+    )
 
-    ax.plot(positions_i[:, 0], positions_i[:, 1], positions_i[:, 2],color="darkred"
-            ,alpha=0.3,linestyle="--")
-
-    ax.scatter(last_point[0], last_point[1], last_point[2],label=r"+$q$", color='darkred', s=50)
-
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-
-    ax.xaxis.set_tick_params(labelsize=10,pad=0.5)
-    ax.yaxis.set_tick_params(labelsize=10,pad=1)
-    ax.zaxis.set_tick_params(labelsize=10,pad=1)
-
-    ax.set_title(f"Charged Particle in Homogeneous "+ r"$\textbf{B}$")
-    plt.show()
+    fig.show()
