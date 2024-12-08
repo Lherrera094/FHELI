@@ -11,11 +11,14 @@ def plot_circular( x_coord, y_coord, NX, NY ):
     plt.grid(True)
     plt.show()
 
-def plot_3DAntenna( coordinate_C0, coordinate_C1, linear_0, linear_1 ):
+#C0 and C1 are the circular antennas at the end points of the full antenna
+#helic_0 and helic_1 gives the linear/helical antenna for the different configurations 
+def plot_3DAntenna( coordinate_C0, coordinate_C1, helic_0, helic_1, NX, NY, NZ ):
    
     #call the function figure
     fig = go.Figure()
     
+    #add circular antenna at Z_0
     fig.add_trace( go.Scatter3d
                   (
                       x = coordinate_C0[:,0],
@@ -29,6 +32,7 @@ def plot_3DAntenna( coordinate_C0, coordinate_C1, linear_0, linear_1 ):
                       )
                   ))
     
+    #add circular antenna at Z_0
     fig.add_trace( go.Scatter3d
                   (
                       x = coordinate_C1[:,0],
@@ -37,35 +41,35 @@ def plot_3DAntenna( coordinate_C0, coordinate_C1, linear_0, linear_1 ):
                       mode = 'markers',
                       marker = dict(
                           size=2,
-                          color="red",
+                          color="navy",
                           opacity=0.8
                       )
                   ))
     
+    #add linear/helical antenna at x=ant_x + R
     fig.add_trace( go.Scatter3d
                   (
-                      x = linear_0[:,0],
-                      y = linear_0[:,1],
-                      z = linear_0[:,2],
+                      x = helic_0[:,0],
+                      y = helic_0[:,1],
+                      z = helic_0[:,2],
                       mode = 'markers',
                       marker = dict(
                           size=2,
-                          color=linear_0[:,2],
-                          colorscale = "viridis",
+                          color = "navy",
                           opacity=0.8
                       )
                   ))
     
+    #add linear/helical antenna at x=ant_x - R
     fig.add_trace( go.Scatter3d
                   (
-                      x = linear_1[:,0],
-                      y = linear_1[:,1],
-                      z = linear_1[:,2],
+                      x = helic_1[:,0],
+                      y = helic_1[:,1],
+                      z = helic_1[:,2],
                       mode = 'markers',
                       marker = dict(
                           size=2,
-                          color=linear_0[:,2],
-                          colorscale = "viridis_r",
+                          color = "navy",
                           opacity=0.8
                       )
                   ))
@@ -73,9 +77,9 @@ def plot_3DAntenna( coordinate_C0, coordinate_C1, linear_0, linear_1 ):
     fig.update_layout(
         title = "Antenna Geometry",
         scene = dict(
-            xaxis_title = "X",
-            yaxis_title = "Y",
-            zaxis_title = "Z"
+            xaxis = dict(title = "X", range = [0,NX/2]),
+            yaxis = dict(title = "Y", range = [0,NY/2]),
+            zaxis = dict(title = "Z", range = [0,NZ/2])
         )
     )
 
