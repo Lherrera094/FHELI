@@ -1,12 +1,19 @@
 #ifndef HELICAL_ANTENNA_H
 #define HELICAL_ANTENNA_H
 
-#include <math.h>
+#include <string.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <math.h>
 
 #include "focal-struct.h"
 #include "macros-grid.h"
+#include "auxiliar_module.h"
 
 void init_helicalAntenna(   gridConfiguration *gridCfg, 
                             helicalAntenna *helicAnt );
@@ -16,6 +23,9 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
                                 helicalAntenna *helicAnt, 
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ] );
+
+void read_file(char *filename, double **S_coord);
+int get_lenght(char *filename); 
 
 double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
                             int t_int );

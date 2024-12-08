@@ -3,9 +3,17 @@
 static int Z_0;             //initial Z coordinate for the antenna
 static int Z_1;             //end Z coordinate for the antenna  
 
+static double **S1 = NULL;
+static double **S2 = NULL;
+static double **S3 = NULL;
+static double **S4 = NULL;
+
 void init_helicalAntenna(   gridConfiguration *gridCfg, 
                             helicalAntenna *helicAnt ){
 
+    char fullDir[PATH_MAX], directory[1024];
+    char dir[] = "tools";
+    
     /*Compute antenna initial and end point*/
     //The wavelenght is defined by the antenna leght
     Z_0 = (int)( 0.5 * (NZ - ant_lenght) );
@@ -13,6 +21,91 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
 
     if ((Z_0 % 2) != 0)  ++Z_0;
     if ((Z_1 % 2) != 0)  ++Z_1;
+
+    if( ant_type == 1){
+        sprintf(directory, "%s/%s", dir, "Nagoya_antenna");
+    } else if(ant_type == 2){
+        sprintf(directory, "%s/%s", dir, "Helical_antenna");
+    }
+
+    sprintf(fullDir,"%s/Section_%s.txt", directory, "0" );
+
+    read_file(fullDir, S1);
+
+    exit(-1);
+}
+
+void read_file(char *filename, double **S_coord ){
+
+    FILE *file;
+    int row = 0; 
+    char line[500];
+
+    //int lenght = get_lenght(filename);
+
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+    }
+
+    S_coord = allocate2DArray( lenght, 3 );
+    while( fgets(line, sizeof(line), file ) ){
+        char *token = strtok(line,",");
+        int col=0; 
+
+        while( token != NULL && col < 3){
+            S_coord[row][col] = atoi(token);
+            token = strtok(NULL, ",");
+            col++;
+            printf(" %.1f \n", S_coord[row][col] );
+        }
+        row++;
+    }
+
+    fclose(file);
+}
+
+int count_lines(FILE* file){
+
+    char buf[BUF_SIZE];
+    int counter = 0;
+    for(;;){
+        size_t res = fread(buf, 1, BUF_SIZE, file);
+        if (ferror(file))
+            return -1;
+
+        int i;
+        for(i = 0; i < res; i++)
+            if (buf[i] == '\n')
+                counter++;
+
+        if (feof(file))
+            break;
+    }
+
+    return counter;
+}
+
+int get_lenght(char *filename){
+
+    FILE *file;
+    int lenght = 0;
+    char ch;
+
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+    }
+
+    // Read the file character by character
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch == '\n') {
+            lenght++;  // Increment row count when newline character is found
+        }
+    }
+
+    fclose(file);
+    return lenght;
 }
 
 void control_HelicalAntenna(    gridConfiguration *gridCfg, 

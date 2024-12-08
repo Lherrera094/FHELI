@@ -1,7 +1,7 @@
 import numpy as np
 from save_coordinates import *
 
-def construct_circular( R, ant_x, ant_y, Z, folder_name ):
+def construct_circular( R, ant_x, ant_y, Z, folder_name, sec ):
     
     coordinates = set()
     num_points = 2000
@@ -19,11 +19,11 @@ def construct_circular( R, ant_x, ant_y, Z, folder_name ):
         coordinates.add( (x,y,z) ) 
 
     coordinates = np.array( list(coordinates) )
-    save_data( coordinates, f"{folder_name}/circular_antenna", round(Z/2) )
+    save_data( coordinates, f"{folder_name}/Section_{sec}" )
     
     return coordinates
 
-def construct_linear( x_pos, y_pos, Z_0, Z_1, folder_name ):
+def construct_linear( x_pos, y_pos, Z_0, Z_1, folder_name, sec ):
 
     #linear = np.zeros( ( int( (Z_1-Z_0)/2 ) + 1,3) )
     coordinates = set()
@@ -35,11 +35,11 @@ def construct_linear( x_pos, y_pos, Z_0, Z_1, folder_name ):
         coordinates.add( (x,y,z) )
 
     coordinates = np.array( list(coordinates) )
-    save_data( coordinates, f"{folder_name}/linear_antenna", x_pos )
+    save_data( coordinates, f"{folder_name}/Section_{sec}" )
 
     return coordinates
 
-def right_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name ):
+def right_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name, sec ):
 
     pitch = (Z_1 - Z_0)/(2*num_turns)
     coordinates = set()
@@ -56,11 +56,11 @@ def right_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name 
         coordinates.add( (x,y,z) ) 
 
     coordinates = np.array( list(coordinates) )
-    save_data( coordinates, f"{folder_name}/rhelical_antenna", num_turns )
+    save_data( coordinates, f"{folder_name}/Section_{sec}" )
 
     return coordinates
 
-def left_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name ):
+def left_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name, sec ):
 
     pitch = (Z_1 - Z_0)/(2*num_turns)
     coordinates = set()
@@ -77,7 +77,7 @@ def left_helical( ant_x, ant_y, Z_0, Z_1, num_turns, R, chirality, folder_name )
         coordinates.add( (x,y,z) ) 
 
     coordinates = np.array( list(coordinates) )
-    save_data( coordinates, f"{folder_name}/lhelical_antenna", num_turns )
+    save_data( coordinates, f"{folder_name}/Section_{sec}" )
 
     return coordinates
 

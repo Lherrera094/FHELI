@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import os
 
-def save_data( coordinates, name, ref_position ):
+def save_data( coordinates, name ):
 
     df = pd.DataFrame( coordinates )
-    df.to_csv(f"{name}_{ref_position}.txt", index=False, header=False)
+    df.to_csv(f"{name}.txt", index=False, header=False)
 
 def create_folder(folder_name):
     
