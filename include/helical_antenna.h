@@ -57,4 +57,9 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] );
 
+//Delete anetnna values to keep fields
+void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] );
+void delete_field( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2], 
+                    int lenght, double **S_coord );
+
 #endif

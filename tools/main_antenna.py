@@ -42,7 +42,7 @@ def main():
     #{{{
 
     #Antenna selection
-    select_ant = 1
+    select_ant = 2
     
     #folder name
     if select_ant == 1:

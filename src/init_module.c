@@ -38,7 +38,12 @@ void grid_init( gridConfiguration *gridCfg,
         d_absorb = 8;
     }
 
-    NZ_REF  = 2*d_absorb + (int)period;
+    //Define Z size for reference grid
+    if(exc_signal != 6) {
+        NZ_REF = 2*d_absorb + (int)period;
+    } else if( exc_signal == 6 ){
+        NZ_REF = 2*d_absorb + (int)ant_lenght + 2;
+    }
 
     // dt/dx = 0.5 is commenly used in 2D FDTD codes
     // Note that period refers to the wavelength in the numerical grid and not
@@ -72,8 +77,8 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     /*Read JSON and extract data*/
     char *json_file = read_json();
-    int scale;
-
+    int scale = 1;
+    
     if(json_file == NULL){
         printf("JSON file doesn't exists.");
         return;

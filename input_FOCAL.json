@@ -9,7 +9,7 @@
     "Grid_size_Nx": 	200,
     "Grid_size_Ny": 	200,
     "Grid_size_Nz": 	400,
-    "t_end": 		20,
+    "t_end": 		10,
     
     "B0_profile":	1,
     "B0_magnitude":	3.0,
@@ -39,6 +39,6 @@
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 20
+    "data_save_frequency": 2
     
 }

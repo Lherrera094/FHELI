@@ -273,8 +273,34 @@ int circular_antenna(   gridConfiguration *gridCfg,
     return EXIT_SUCCESS;
 }
 
-void delete_ant2save(){
+void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] ){
 
+    if( NZ_REF > ( 2*d_absorb + (int)period ) ){
 
+        delete_field( gridCfg, array_3D, lenght1, S1 ); //Delete Section 1
+        delete_field( gridCfg, array_3D, lenght2, S2 ); //Delete Section 2
+        delete_field( gridCfg, array_3D, lenght3, S3 ); //Delete Section 3
+        delete_field( gridCfg, array_3D, lenght4, S4 ); //Delete Section 4
+
+    }
     
+}
+
+void delete_field( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2], 
+                    int lenght, double **S_coord ){
+
+    int ii, jj, kk, ll;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){
+
+        ii = (int)S_coord[ll][0];
+        jj = (int)S_coord[ll][1];
+        kk = (int)S_coord[ll][2];
+
+        array_3D[ii+1][jj  ][kk  ] = 0.0;
+        array_3D[ii  ][jj+1][kk  ] = 0.0;
+        array_3D[ii  ][jj  ][kk+1] = 0.0;
+    }
+
 }
