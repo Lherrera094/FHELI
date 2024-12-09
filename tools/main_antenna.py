@@ -18,22 +18,22 @@ def control_antenna(select_ant, ant_radius, num_turns, ant_x, ant_y,
 
     #Nagoya antenna
     if select_ant == 1:
-        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0, folder_name, 0)
-        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1, folder_name, 1)
+        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0, folder_name, 1)
+        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1, folder_name, 2)
         linear_L0 = construct_linear( round(ant_x + ant_radius*np.cos(0)), 
                                       round(ant_y + ant_radius*np.sin(0)), 
-                                      Z_0, Z_1, folder_name, 2 )
+                                      Z_0, Z_1, folder_name, 3 )
         linear_L1 = construct_linear( round(ant_x + ant_radius*np.cos(np.pi)), 
                                       round(ant_y + ant_radius*np.sin(np.pi)), 
-                                      Z_0, Z_1, folder_name, 3 )
+                                      Z_0, Z_1, folder_name, 4 )
 
     if select_ant == 2:
-        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0, folder_name, 0)
-        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1, folder_name, 1)
+        coordinate_C0 = construct_circular(ant_radius, ant_x, ant_y, Z_0, folder_name, 1)
+        coordinate_C1 = construct_circular(ant_radius, ant_x, ant_y, Z_1, folder_name, 2)
         linear_L0 = right_helical( ant_x, ant_y, Z_0, Z_1, num_turns, 
-                                   ant_radius, chirality, folder_name, 2 )
+                                   ant_radius, chirality, folder_name, 3 )
         linear_L1 = left_helical( ant_x, ant_y, Z_0, Z_1, num_turns, 
-                                  ant_radius, chirality, folder_name, 3 )
+                                  ant_radius, chirality, folder_name, 4 )
     
     return coordinate_C0, coordinate_C1, linear_L0, linear_L1
 

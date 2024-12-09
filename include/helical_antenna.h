@@ -24,17 +24,17 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ] );
 
-void read_file(char *filename, double **S_coord);
+void read_file(char *filename, double **Section_coord);
 int get_lenght(char *filename); 
 
 double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
                             int t_int );
 
 int linear_antenna( gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamAnt,  
-                    helicalAntenna *helicAnt,
-                    int t_int, int J_dir,
-                    int x_pos, int y_pos,
+                    beamAntennaConfiguration *beamCfg, 
+                    helicalAntenna *helicAnt, 
+                    int t_int, int J_dir, 
+                    int lenght, double **S_coord,
                     double EB_WAVE[NX][NY][NZ] );
 
 int circular_antenna(   gridConfiguration *gridCfg, 
