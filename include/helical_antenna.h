@@ -43,18 +43,18 @@ int circular_antenna(   gridConfiguration *gridCfg,
                         int t_int, int z0, int dir,
                         double EB_WAVE[NX][NY][NZ] );
 
-int helic_antenna(  gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamCfg,
-                    helicalAntenna *helicAnt, 
-                    int chirality, int t_int, int J_dir,
-                    double EB_WAVE[NX][NY][NZ] );
+int helical_antenna(    gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg,
+                        helicalAntenna *helicAnt, 
+                        int t_int, int J_dir,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ] );
 
 int half_circular_antenna(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg,
                             helicalAntenna *helicAnt, 
-                            int t_int, int z0, int I_dir,
+                            int t_int, int I_dir,
+                            int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] );
-
-int to_Int(double u);
 
 #endif

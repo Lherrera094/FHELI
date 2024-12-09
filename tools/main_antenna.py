@@ -41,14 +41,17 @@ def control_antenna(select_ant, ant_radius, num_turns, ant_x, ant_y,
 def main():
     #{{{
 
-    #folder name
-    #folder_name = "Helical_antenna"
-    folder_name = "Nagoya_antenna"
-    create_folder(folder_name)
-
     #Antenna selection
     select_ant = 1
-
+    
+    #folder name
+    if select_ant == 1:
+    	folder_name = "Nagoya_antenna"
+    elif select_ant == 2:
+    	folder_name = "Helical_antenna"
+	
+    create_folder(folder_name)
+    
     #Grid size values
     NX = 200
     NY = 200
@@ -63,7 +66,7 @@ def main():
     ant_radius = 50
     antenna_lenght = 200
     num_turns = 0.5
-    chirality = 1
+    chirality = 1	#Chir = 1: left-handed helical antenna. Chir = -1: right-handed helical antenna.
 
     Z_0 = round( 0.5*( NZ - antenna_lenght ) )
     Z_1 = round( 0.5*( NZ + antenna_lenght ) )
