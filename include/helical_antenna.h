@@ -24,6 +24,12 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ] );
 
+void control_HelicalAntenna_REF(    gridConfiguration *gridCfg, 
+                                    beamAntennaConfiguration *beamCfg,
+                                    helicalAntenna *helicAnt, 
+                                    int t_int,
+                                    double EB_WAVE[NX][NY][NZ_REF] );
+
 void read_file(char *filename, double **Section_coord);
 int get_lenght(char *filename); 
 
@@ -56,6 +62,28 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
                             int t_int, int I_dir,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] );
+
+//Antenna reference functions
+int linear_antenna_ref( gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg, 
+                        helicalAntenna *helicAnt, 
+                        int t_int, int J_dir, 
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ_REF] );
+
+int helical_antenna_ref(gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg,
+                        helicalAntenna *helicAnt, 
+                        int t_int, int J_dir,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ_REF] );
+
+int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
+                                beamAntennaConfiguration *beamCfg,
+                                helicalAntenna *helicAnt, 
+                                int t_int, int I_dir,
+                                int lenght, double **S_coord,
+                                double EB_WAVE[NX][NY][NZ_REF] );
 
 //Delete anetnna values to keep fields
 void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] );

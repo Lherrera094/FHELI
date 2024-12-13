@@ -2,6 +2,8 @@
 
 static int Z_0;             //initial Z coordinate for the antenna
 static int Z_1;             //end Z coordinate for the antenna  
+static int J_Amp;
+static int u;               //Displacement for reference antenna
 
 //Integers that save the lenght of the antenna arrays for implementation
 static int lenght1;
@@ -29,6 +31,9 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
 
     if ((Z_0 % 2) != 0)  ++Z_0;
     if ((Z_1 % 2) != 0)  ++Z_1;
+    
+    //save antenna curret amplitud
+    J_Amp = J_amp;
 
     //Construct directory path to the .txt coordinate files
     if( ant_type == 1){
@@ -62,6 +67,9 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
     read_file(fullDir2, S2);
     read_file(fullDir3, S3);
     read_file(fullDir4, S4);
+
+    //Compute z displacement for reference antenna
+    u = Z_0 - D_ABSORB - 2;
 
 }
 
@@ -145,12 +153,40 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
 
 }
 
+void control_HelicalAntenna_REF(    gridConfiguration *gridCfg, 
+                                    beamAntennaConfiguration *beamCfg,
+                                    helicalAntenna *helicAnt, 
+                                    int t_int,
+                                    double EB_WAVE[NX][NY][NZ_REF] ){
+    
+    /*Apply helical antenna to grid*/
+    if(ant_type == 1){ //Nagoya typeIII helical antenna  
+
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght2, S2, EB_WAVE );
+
+        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+
+    }else if(ant_type == 2){ //Half helical type antenna
+
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght2, S2, EB_WAVE );
+
+        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+
+    }
+
+}
+
 double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
                             int t_int ){
 
-    return sin( omega_t ); //argument * dt
+    return sin( OMEGA_T ); //argument * dt
 }
 
+//Antenna field function
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg, 
                     helicalAntenna *helicAnt, 
@@ -214,26 +250,123 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        if( ii <= (ant_x + ant_radius) && ii > ant_x &&
-            jj <= (ant_y + ant_radius) && jj > ant_y ){
+        if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
+            jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
 
             J_x = I_dir*J_amp;
             J_y = -I_dir*J_amp;
         
-        } else if( ii  > (ant_x - ant_radius) && ii <= ant_x &&
-                   jj < (ant_y + ant_radius) && jj >=  ant_y ){
+        } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
+                   jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
 
             J_x = I_dir*J_amp;
             J_y = I_dir*J_amp;
 
-        } else if( ii > (ant_x - ant_radius) && ii <= ant_x &&
-                   jj >= (ant_y - ant_radius) && jj <  ant_y ){
+        } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
+                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
             J_x = I_dir*J_amp;
             J_y = -I_dir*J_amp;
 
-        } else if( ii < (ant_x + ant_radius) && ii >= ant_x &&
-                   jj >= (ant_y - ant_radius) && jj <  ant_y ){
+        } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
+                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+
+            J_x = I_dir*J_amp;
+            J_y = I_dir*J_amp;
+
+        }
+
+        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sinusoidal_current( beamCfg, t_int )*DT;
+    }
+
+    return EXIT_SUCCESS;
+
+}
+
+//Reference field functions
+int linear_antenna_ref( gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg, 
+                        helicalAntenna *helicAnt, 
+                        int t_int, int J_dir, 
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ_REF] ){
+
+    size_t ii, jj ,kk, ll;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){ 
+        
+        ii = 2 * (int)S_coord[ll][0];
+        jj = 2 * (int)S_coord[ll][1];
+        kk = (2 * (int)S_coord[ll][2]) - u;
+
+        //Current goes in the Z-direction
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int helical_antenna_ref(gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg,
+                        helicalAntenna *helicAnt, 
+                        int t_int, int J_dir,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ_REF] ){
+
+    size_t ii, jj, kk, ll;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){
+
+        ii = 2 * (int)S_coord[ll][0];
+        jj = 2 * (int)S_coord[ll][1];
+        kk = (2 * (int)S_coord[ll][2]) - u;
+
+        EB_WAVE[ii  ][jj  ][kk+1] += - J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
+                                beamAntennaConfiguration *beamCfg,
+                                helicalAntenna *helicAnt, 
+                                int t_int, int I_dir,
+                                int lenght, double **S_coord,
+                                double EB_WAVE[NX][NY][NZ_REF] ){
+
+    int ii, jj, kk, ll;
+    double J_x, J_y;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){
+        
+        ii = 2 * (int)S_coord[ll][0];
+        jj = 2 * (int)S_coord[ll][1];
+        kk = (2 * (int)S_coord[ll][2]) - u;
+
+        if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
+            jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
+
+            J_x = I_dir*J_amp;
+            J_y = -I_dir*J_amp;
+        
+        } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
+                   jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
+
+            J_x = I_dir*J_amp;
+            J_y = I_dir*J_amp;
+
+        } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
+                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+
+            J_x = I_dir*J_amp;
+            J_y = -I_dir*J_amp;
+
+        } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
+                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
             J_x = I_dir*J_amp;
             J_y = I_dir*J_amp;
@@ -259,8 +392,8 @@ int circular_antenna(   gridConfiguration *gridCfg,
 #pragma omp parallel for           
     for( theta = 0; theta < 360; theta++ ){
 
-        ii = ant_x + (int)( ant_radius * cos( theta * M_PI/180) );
-        jj = ant_y + (int)( ant_radius * sin( theta * M_PI/180) );
+        ii = ANT_X + (int)( ant_radius * cos( theta * M_PI/180) );
+        jj = ANT_Y + (int)( ant_radius * sin( theta * M_PI/180) );
 
         if ((ii % 2) != 0)  ++ii;
         if ((jj % 2) != 0)  ++jj;
@@ -275,7 +408,7 @@ int circular_antenna(   gridConfiguration *gridCfg,
 
 void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] ){
 
-    if( NZ_REF > ( 2*d_absorb + (int)period ) ){
+    if( NZ_REF > ( 2*D_ABSORB + (int)PERIOD ) ){
 
         delete_field( gridCfg, array_3D, lenght1, S1 ); //Delete Section 1
         delete_field( gridCfg, array_3D, lenght2, S2 ); //Delete Section 2
@@ -298,9 +431,21 @@ void delete_field( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2]
         jj = (int)S_coord[ll][1];
         kk = (int)S_coord[ll][2];
 
-        array_3D[ii+1][jj  ][kk  ] = 0.0;
-        array_3D[ii  ][jj+1][kk  ] = 0.0;
-        array_3D[ii  ][jj  ][kk+1] = 0.0;
+        array_3D[ii  ][jj  ][kk  ] = 0.0;
+        
     }
+
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+    for (ii=0 ; ii<NX ; ii+=2) {
+        for (jj=0 ; jj<NY ; jj+=2) {
+            for (kk=0 ; kk<NZ ; kk+=2) {
+
+                if( array_3D[(ii/2)][(jj/2)][(kk/2)] >= (J_Amp*J_Amp*DT*DT) ){
+                    array_3D[(ii/2)][(jj/2)][(kk/2)] = 0.0;
+                }
+                    
+            }
+        }
+    } 
 
 }

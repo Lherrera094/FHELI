@@ -11,6 +11,7 @@ sys.path.append("Antenna_geometryTK/")
 from antenna_coordinates import *
 from plot_antenna import *
 import numpy as np
+import argparse
 from save_coordinates import *
 
 def control_antenna(select_ant, ant_radius, num_turns, ant_x, ant_y, 
@@ -40,9 +41,34 @@ def control_antenna(select_ant, ant_radius, num_turns, ant_x, ant_y,
 
 def main():
     #{{{
+	
+    # initialize parser for command line options
+    parser  = argparse.ArgumentParser()
+    # add optional arguments
+    #parser.add_argument( "-f", "--filename", type=str, default="antennaOut.csv",
+    #                    help="Filename of hdf5 output file from FOCAL." )
+    #parser.add_argument( "-d", "--dSet_name", type=str, default="",
+    #                     help="Dataset name to be plotted." )
+    #parser.add_argument( "-c", "--contLevels", type=int, default=20,
+    #                     help="Number of contour levels used." )
+    #parser.add_argument( "-r", "--plotReductionLevel", type=int, default=4,
+    #                     help="Reduce resolution for 3D plot by this amount." )
+    #parser.add_argument( "-p", "--plot_type", type=int, default=1,
+    #                     help="Plot type." )
+    parser.add_argument( "-t", "--type", type=int, default=0,
+                         help="Type antenna" )
+    #parser.add_argument( "-s", "--colScale", type=str, default="lin",
+    #                     help="Lin or log color scale for contour plot." )
 
-    #Antenna selection
-    select_ant = 2
+    # read all argments from command line
+    args                = parser.parse_args()
+    #fname               = args.filename
+    #dSet_name           = args.dSet_name
+    #contLevels          = args.contLevels
+    #plotReductionLevel  = args.plotReductionLevel
+    #plot_type           = args.plot_type
+    select_ant          = args.type
+    #colScale            = args.colScale	
     
     #folder name
     if select_ant == 1:
@@ -79,33 +105,6 @@ def main():
     #Plot 3D antenna
     plot_3DAntenna( circ_A0, circ_A1, linear_L0, linear_L1, NX, NY, NZ )
 
-    # initialize parser for command line options
-    #parser  = argparse.ArgumentParser()
-    # add optional arguments
-    #parser.add_argument( "-f", "--filename", type=str, default="antennaOut.csv",
-    #                    help="Filename of hdf5 output file from FOCAL." )
-    #parser.add_argument( "-d", "--dSet_name", type=str, default="",
-    #                     help="Dataset name to be plotted." )
-    #parser.add_argument( "-c", "--contLevels", type=int, default=20,
-    #                     help="Number of contour levels used." )
-    #parser.add_argument( "-r", "--plotReductionLevel", type=int, default=4,
-    #                     help="Reduce resolution for 3D plot by this amount." )
-    #parser.add_argument( "-p", "--plot_type", type=int, default=1,
-    #                     help="Plot type." )
-    #parser.add_argument( "-t", "--time", type=int, default=0,
-    #                     help="Timestep." )
-    #parser.add_argument( "-s", "--colScale", type=str, default="lin",
-    #                     help="Lin or log color scale for contour plot." )
-
-    # read all argments from command line
-    #args                = parser.parse_args()
-    #fname               = args.filename
-    #dSet_name           = args.dSet_name
-    #contLevels          = args.contLevels
-    #plotReductionLevel  = args.plotReductionLevel
-    #plot_type           = args.plot_type
-    #t_int               = args.time
-    #colScale            = args.colScale
 
     #print( "  Following arguments are set via command line options (if not set explicitely, their default values are used): " )
     #print( "    fname = {0}".format(fname) )
@@ -114,19 +113,6 @@ def main():
     #print( "    plotReductionLevel = {0}".format(plotReductionLevel) )
     #print( "    t_int = {0}".format(t_int) )
     #print( "    colScale = {0}".format(colScale) )
-
-    #if plot_type == 1:
-    #    plot_simple(fname, dSet_name=dSet_name, 
-    #                contLevels=contLevels, plotReductionLevel=plotReductionLevel, 
-    #                silent=False)
-    #elif plot_type == 2:
-    #    plot_fullwave( fname, t_int=t_int, 
-    #                   include_absorbers=False, 
-    #                   cutExtended_fact=1.,    # 1.5 might be useful value to crop density profile going to 0 from plot to not mislead user
-    #                   oplot_dens_projection=True,
-    #                   N_contLevels=contLevels, colScale=colScale, 
-    #                   #oplot_Efieldcut='x1z1',
-    #                 )
 
     #}}}
 
