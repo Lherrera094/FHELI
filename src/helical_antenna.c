@@ -70,6 +70,7 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
 
     //Compute z displacement for reference antenna
     u = Z_0 - D_ABSORB - 2;
+    //u = 0;
 
 }
 
@@ -129,25 +130,25 @@ int get_lenght(char *filename){
 void control_HelicalAntenna(    gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
                                 helicalAntenna *helicAnt, 
-                                int t_int,
+                                double t_rise,
                                 double EB_WAVE[NX][NY][NZ] ){
-    
+
     /*Apply helical antenna to grid*/
     if(ant_type == 1){ //Nagoya typeIII helical antenna  
 
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_int, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght2, S2, EB_WAVE );
 
-        linear_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
-        linear_antenna( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }else if(ant_type == 2){ //Half helical type antenna
 
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, lenght2, S2, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght2, S2, EB_WAVE );
 
-        helical_antenna( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
-        helical_antenna( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+        helical_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
+        helical_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }
 
@@ -156,41 +157,35 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
 void control_HelicalAntenna_REF(    gridConfiguration *gridCfg, 
                                     beamAntennaConfiguration *beamCfg,
                                     helicalAntenna *helicAnt, 
-                                    int t_int,
+                                    double t_rise,
                                     double EB_WAVE[NX][NY][NZ_REF] ){
     
     /*Apply helical antenna to grid*/
     if(ant_type == 1){ //Nagoya typeIII helical antenna  
 
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght2, S2, EB_WAVE );
 
-        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
-        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }else if(ant_type == 2){ //Half helical type antenna
 
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght2, S2, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght2, S2, EB_WAVE );
 
-        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, 1, lenght3, S3, EB_WAVE );
-        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_int, -1, lenght4, S4, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }
 
 }
 
-double sinusoidal_current(  beamAntennaConfiguration *beamCfg,
-                            int t_int ){
-
-    return sin( OMEGA_T ); //argument * dt
-}
-
-//Antenna field function
+//Antenna field injection functions
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg, 
                     helicalAntenna *helicAnt, 
-                    int t_int, int J_dir, 
+                    double t_rise, int I_dir, 
                     int lenght, double **S_coord,
                     double EB_WAVE[NX][NY][NZ] ){
 
@@ -204,18 +199,18 @@ int linear_antenna( gridConfiguration *gridCfg,
         kk = 2 * (int)S_coord[ll][2];
 
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
 }
 
-int helical_antenna(  gridConfiguration *gridCfg, 
-                    beamAntennaConfiguration *beamCfg,
-                    helicalAntenna *helicAnt, 
-                    int t_int, int J_dir,
-                    int lenght, double **S_coord,
-                    double EB_WAVE[NX][NY][NZ] ){
+int helical_antenna(    gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg,
+                        helicalAntenna *helicAnt, 
+                        double t_rise, int I_dir,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ] ){
 
     size_t ii, jj, kk, ll;
 
@@ -226,7 +221,7 @@ int helical_antenna(  gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -236,7 +231,7 @@ int helical_antenna(  gridConfiguration *gridCfg,
 int half_circular_antenna(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg,
                             helicalAntenna *helicAnt, 
-                            int t_int, int I_dir,
+                            double t_rise, int I_dir,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] ){
 
@@ -276,8 +271,8 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sinusoidal_current( beamCfg, t_int )*DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T ) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -288,7 +283,7 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 int linear_antenna_ref( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
                         helicalAntenna *helicAnt, 
-                        int t_int, int J_dir, 
+                        double t_rise, int I_dir, 
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -300,9 +295,9 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
         ii = 2 * (int)S_coord[ll][0];
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
-
+        
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -311,7 +306,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
 int helical_antenna_ref(gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
                         helicalAntenna *helicAnt, 
-                        int t_int, int J_dir,
+                        double t_rise, int I_dir,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -324,7 +319,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - J_dir * J_amp * sinusoidal_current( beamCfg, t_int ) * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -333,7 +328,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
 int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
                                 helicalAntenna *helicAnt, 
-                                int t_int, int I_dir,
+                                double t_rise, int I_dir,
                                 int lenght, double **S_coord,
                                 double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -373,8 +368,8 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sinusoidal_current( beamCfg, t_int )*DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T ) * t_rise *  DT;
     }
 
     return EXIT_SUCCESS;
@@ -384,7 +379,7 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 int circular_antenna(   gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
                         helicalAntenna *helicAnt, 
-                        int t_int, int z0, int J_dir,
+                        double t_rise, int z0, int I_dir,
                         double EB_WAVE[NX][NY][NZ] ){
 
     int ii, jj, theta;
@@ -398,14 +393,15 @@ int circular_antenna(   gridConfiguration *gridCfg,
         if ((ii % 2) != 0)  ++ii;
         if ((jj % 2) != 0)  ++jj;
 
-        EB_WAVE[ii+1][jj  ][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
-        EB_WAVE[ii  ][jj+1][z0  ]  += - J_dir * sinusoidal_current( beamCfg, t_int )*DT;
+        EB_WAVE[ii+1][jj  ][z0  ]  += - I_dir * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][z0  ]  += - I_dir * sin( OMEGA_T ) * t_rise * DT;
 
     }
 
     return EXIT_SUCCESS;
 }
 
+//Delete anetnna values to keep only fields
 void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] ){
 
     if( NZ_REF > ( 2*D_ABSORB + (int)PERIOD ) ){
@@ -419,7 +415,7 @@ void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ
     
 }
 
-void delete_field( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2], 
+void delete_field(  gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2], 
                     int lenght, double **S_coord ){
 
     int ii, jj, kk, ll;

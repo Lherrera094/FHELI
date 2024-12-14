@@ -15,6 +15,7 @@
 #include "focal.h"
 #include "grid_io.h"
 #include "auxiliar_module.h"
+#include "helical_antenna.h"
 
 void create_folder(gridConfiguration *gridCfg, saveData *saveDCfg);
 void simulation_folder(const char *path);

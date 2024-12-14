@@ -201,6 +201,8 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
                 }
             }
         }
+
+        delete_ant2save( gridCfg, data2save );
         
         //Append the name of the files
         sprintf( dSet_name, "E_abs__tint%05d", t_int );

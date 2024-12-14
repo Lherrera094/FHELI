@@ -2,16 +2,17 @@
 
 void init_background_profiles(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
+                                helicalAntenna *helicAnt,
                                 double n_e[NX/2][NY/2][NZ/2], 
                                 double J_B0[NX][NY][NZ] ){
 
     printf( "starting defining background plasma density\n" );
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
-    make_density_profile( gridCfg,  
+    make_density_profile( gridCfg, beamCfg, helicAnt, 
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
-            ne_0,
+            ne_0, 
             n_e );
     printf( " ...setting density in absorber to 0...\n ");
     //set_densityInAbsorber_v2( &gridCfg, "z1", n_e );
@@ -32,9 +33,11 @@ void init_background_profiles(  gridConfiguration *gridCfg,
 
 }
 
-int make_density_profile( gridConfiguration *gridCfg, 
-                          double cntrl_para, 
-                          double n_e[NX/2][NY/2][NZ/2] ) {
+int make_density_profile(   gridConfiguration *gridCfg,
+                            beamAntennaConfiguration *beamCfg,
+                            helicalAntenna *helicAnt, 
+                            double cntrl_para, 
+                            double n_e[NX/2][NY/2][NZ/2] ) {
 //{{{
     // This function allows to defines the plasma density profiles. The
     // parameter "cntrl_para" allows to switch between varies options. The
@@ -136,6 +139,7 @@ int make_density_profile( gridConfiguration *gridCfg,
         //       either provide additional parameter in function call
         //       or not load the profile here, but directly in main
         readMyHDF( NX/2, NY/2, NZ/2, "input/grid.h5", "n_e", n_e );
+
     } else if ( ne_profile == 6 ) {
         // same as ne_profile = 3, but plasma cylinder is now along z
         for (ii=0 ; ii<(NX/2) ; ++ii) {
@@ -145,6 +149,38 @@ int make_density_profile( gridConfiguration *gridCfg,
                                                  pow((double)ii-(double)NX/4., 2)/(2*pow(PERIOD/2.,2)) 
                                                 +pow((double)jj-(double)NY/4., 2)/(2*pow(PERIOD/2.,2))
                                              )) * ne_0;
+                }
+            }
+        }
+    } else if ( ne_profile == 7 ) {
+        //Density cylinder along Z axis. Finite radius and decreasing homogeneous density.
+        //profile for helical antenna. density should not reach antenna radius
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
+            for (jj=0 ; jj<(NY/2) ; ++jj) {
+                for (kk=0 ; kk<(NZ/2) ; ++kk) {
+
+                    if( inside_cylinder( ii, jj, ANT_X/2, ANT_Y/2, ant_radius/2 ) ){
+                        n_e[ii][jj][kk]    = exp( -1.* (
+                                                 pow((double)ii-(double)NX/4., 2)/(2*pow(PERIOD/2.,2)) 
+                                                +pow((double)jj-(double)NY/4., 2)/(2*pow(PERIOD/2.,2))
+                                             )) * ne_0;
+                    }
+                    
+                }
+            }
+        }
+
+    } else if ( ne_profile == 8 ) {
+        //Density cylinder along Z axis. Finite radius and constant homogeneous density.
+        //profile for helical antenna. density should not reach antenna radius
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
+            for (jj=0 ; jj<(NY/2) ; ++jj) {
+                for (kk=0 ; kk<(NZ/2) ; ++kk) {
+
+                    if( inside_cylinder( ii, jj, ANT_X/2, ANT_Y/2, ant_radius/2 ) ){
+                        n_e[ii][jj][kk]    =  ne_0;
+                    }
+                    
                 }
             }
         }
@@ -222,3 +258,11 @@ int make_B0_profile( gridConfiguration *gridCfg,
 
     return EXIT_SUCCESS;
 }//}}}
+
+
+int inside_cylinder(int x, int y, int ant_x, int ant_y, int radius ){
+
+    double d_squared = (x - ant_x)*(x - ant_x) + (y - ant_y)*(y - ant_y);
+    return (d_squared < (radius*radius) - 2); 
+
+}

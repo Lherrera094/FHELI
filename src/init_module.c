@@ -43,7 +43,8 @@ void grid_init( gridConfiguration *gridCfg,
     if(exc_signal != 6) {
         NZ_REF  = 2*D_ABSORB + (int)PERIOD;
     } else if( exc_signal == 6 ){
-        NZ_REF = 2*D_ABSORB + (int)ant_lenght;
+        NZ_REF  = 2*D_ABSORB + (int)ant_lenght;
+        //NZ_REF  = NZ;
     }
 
     // dt/dx = 0.5 is commenly used in 2D FDTD codes

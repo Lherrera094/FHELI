@@ -236,7 +236,7 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
         }
     } else if( exc_signal == 6 ){
 
-        control_HelicalAntenna( gridCfg, beamCfg, helicAnt, t_int, EB_WAVE );
+        control_HelicalAntenna( gridCfg, beamCfg, helicAnt, t_rise, EB_WAVE );
 
     }
 
