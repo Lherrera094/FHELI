@@ -12,13 +12,11 @@
 
 void init_background_profiles(  gridConfiguration *gridCfg,  
                                 beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt,
                                 double n_e[NX/2][NY/2][NZ/2], 
                                 double J_B0[NX][NY][NZ] );
 
 int make_density_profile(   gridConfiguration *gridCfg,
-                            beamAntennaConfiguration *beamCfg,
-                            helicalAntenna *helicAnt, 
+                            beamAntennaConfiguration *beamCfg, 
                             double cntrl_para,  
                             double n_e[NX/2][NY/2][NZ/2] );
 

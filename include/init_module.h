@@ -14,21 +14,18 @@
 void control_init(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
                     saveData *saveDCfg,
-                    antennaDetector *antDetect,
-                    helicalAntenna *helicAnt );
+                    antennaDetector *antDetect );
 
 void grid_init( gridConfiguration *gridCfg, 
                 beamAntennaConfiguration *beamCfg,
                 saveData *saveDCfg,
-                antennaDetector *antDetect,
-                helicalAntenna *helicAnt );
+                antennaDetector *antDetect );
 
 /*Functions in charge of JSON reading*/
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
                         saveData *saveDCfg,
-                        antennaDetector *antDetect,
-                        helicalAntenna *helicAnt );
+                        antennaDetector *antDetect );
 
 char *read_json();
 

@@ -4,12 +4,11 @@
 void control_init(  gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg,
                     saveData *saveDCfg,
-                    antennaDetector *antDetect,
-                    helicalAntenna *helicAnt ){
+                    antennaDetector *antDetect ){
 //{{{
         
     /*Initialize System*/
-    grid_init( gridCfg, beamCfg, saveDCfg, antDetect, helicAnt );
+    grid_init( gridCfg, beamCfg, saveDCfg, antDetect );
 
 }//}}}
 
@@ -17,11 +16,10 @@ void control_init(  gridConfiguration *gridCfg,
 void grid_init( gridConfiguration *gridCfg, 
                 beamAntennaConfiguration *beamCfg,
                 saveData *saveDCfg,
-                antennaDetector *antDetect,
-                helicalAntenna *helicAnt ){
+                antennaDetector *antDetect ){
     //{{{
 
-    write_JSON_toGrid( gridCfg, beamCfg, saveDCfg, antDetect, helicAnt );
+    write_JSON_toGrid( gridCfg, beamCfg, saveDCfg, antDetect );
 
     //Checks that maximum density value is respected
     // if density is larger than this value, FDTD code becomes unstable
@@ -63,11 +61,6 @@ void grid_init( gridConfiguration *gridCfg,
     //Timetraces number of columns
     col_for_timetraces = 8;
 
-    //Values for ...
-    Y_at_X1     = .41;
-    k0Ln_at_X1  = 6.;
-    theta_at_X1 = 78.;
-
 }//}}}
 
 
@@ -75,8 +68,7 @@ void grid_init( gridConfiguration *gridCfg,
 void write_JSON_toGrid( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,
                         saveData *saveDCfg,
-                        antennaDetector *antDetect,
-                        helicalAntenna *helicAnt ){
+                        antennaDetector *antDetect ){
     //{{{
 
     /*Read JSON and extract data*/
@@ -262,11 +254,6 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     cJSON *item_Radius = cJSON_GetObjectItemCaseSensitive(json, "Radius");   //
     if( cJSON_IsNumber(item_Radius) ){
         ant_radius = item_Radius->valuedouble;
-    }
-
-    cJSON *item_Num_turns = cJSON_GetObjectItemCaseSensitive(json, "Num_turns");   //
-    if( cJSON_IsNumber(item_Num_turns) ){
-        num_turns = item_Num_turns->valuedouble;
     }
 
     cJSON *item_J_amp = cJSON_GetObjectItemCaseSensitive(json, "Currrent_Amp");   //

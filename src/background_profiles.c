@@ -2,14 +2,13 @@
 
 void init_background_profiles(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt,
                                 double n_e[NX/2][NY/2][NZ/2], 
                                 double J_B0[NX][NY][NZ] ){
 
     printf( "starting defining background plasma density\n" );
             // ne_profile: 1 = plasma mirror
             //             2 = linearly increasing profile
-    make_density_profile( gridCfg, beamCfg, helicAnt, 
+    make_density_profile( gridCfg, beamCfg, 
             // cntrl_para: ne_profile=1 --> 0: plane mirror; oblique mirror: -.36397; 20 degrees: -.17633
             //             ne_profile=2 --> k0*Ln: 25
             ne_0, 
@@ -34,8 +33,7 @@ void init_background_profiles(  gridConfiguration *gridCfg,
 }
 
 int make_density_profile(   gridConfiguration *gridCfg,
-                            beamAntennaConfiguration *beamCfg,
-                            helicalAntenna *helicAnt, 
+                            beamAntennaConfiguration *beamCfg, 
                             double cntrl_para, 
                             double n_e[NX/2][NY/2][NZ/2] ) {
 //{{{

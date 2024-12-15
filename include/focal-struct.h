@@ -42,13 +42,14 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         T_wave,
         exc_signal,
         ant_x, ant_y, ant_z,
-        rampUpMethod;
+        rampUpMethod,
+        ant_type, ant_lenght;               //For helical antennas
     double
         omega_t,
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
-        Y_at_X1, k0Ln_at_X1, theta_at_X1;
+        ant_radius, J_amp;
 } beamAntennaConfiguration;
 
 typedef struct antennaDetector{
@@ -75,7 +76,7 @@ typedef struct powerValues{
         poynt_z1_ref;    
 } powerValues;
 
-typedef struct helicalAntenna{
+/*typedef struct helicalAntenna{
 
     int 
         ant_type, ant_lenght;
@@ -83,6 +84,6 @@ typedef struct helicalAntenna{
     double
         ant_radius, num_turns,
         J_amp;
-} helicalAntenna;
+} helicalAntenna;*/
 
 #endif

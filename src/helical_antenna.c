@@ -18,7 +18,7 @@ static double **S3 = NULL;
 static double **S4 = NULL;
 
 void init_helicalAntenna(   gridConfiguration *gridCfg, 
-                            helicalAntenna *helicAnt ){
+                            beamAntennaConfiguration *beamCfg ){
 
     char fullDir1[PATH_MAX],fullDir2[PATH_MAX],fullDir3[PATH_MAX],
          fullDir4[PATH_MAX], directory[1024];
@@ -128,54 +128,52 @@ int get_lenght(char *filename){
 
 //Functions for implementation of helical antenna 
 void control_HelicalAntenna(    gridConfiguration *gridCfg, 
-                                beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt, 
+                                beamAntennaConfiguration *beamCfg, 
                                 double t_rise,
                                 double EB_WAVE[NX][NY][NZ] ){
 
     /*Apply helical antenna to grid*/
     if(ant_type == 1){ //Nagoya typeIII helical antenna  
 
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, lenght2, S2, EB_WAVE );
 
-        linear_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
-        linear_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }else if(ant_type == 2){ //Half helical type antenna
 
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght2, S2, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght2, S2, EB_WAVE );
 
-        helical_antenna( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
-        helical_antenna( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
+        helical_antenna( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
+        helical_antenna( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }
 
 }
 
 void control_HelicalAntenna_REF(    gridConfiguration *gridCfg, 
-                                    beamAntennaConfiguration *beamCfg,
-                                    helicalAntenna *helicAnt, 
+                                    beamAntennaConfiguration *beamCfg, 
                                     double t_rise,
                                     double EB_WAVE[NX][NY][NZ_REF] ){
     
     /*Apply helical antenna to grid*/
     if(ant_type == 1){ //Nagoya typeIII helical antenna  
 
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght2, S2, EB_WAVE );
 
-        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
-        linear_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }else if(ant_type == 2){ //Half helical type antenna
 
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght2, S2, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght2, S2, EB_WAVE );
 
-        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, 1, lenght3, S3, EB_WAVE );
-        helical_antenna_ref( gridCfg, beamCfg, helicAnt, t_rise, -1, lenght4, S4, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
 
     }
 
@@ -184,7 +182,6 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
 //Antenna field injection functions
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg, 
-                    helicalAntenna *helicAnt, 
                     double t_rise, int I_dir, 
                     int lenght, double **S_coord,
                     double EB_WAVE[NX][NY][NZ] ){
@@ -206,8 +203,7 @@ int linear_antenna( gridConfiguration *gridCfg,
 }
 
 int helical_antenna(    gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg,
-                        helicalAntenna *helicAnt, 
+                        beamAntennaConfiguration *beamCfg, 
                         double t_rise, int I_dir,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ] ){
@@ -229,8 +225,7 @@ int helical_antenna(    gridConfiguration *gridCfg,
 
 
 int half_circular_antenna(  gridConfiguration *gridCfg, 
-                            beamAntennaConfiguration *beamCfg,
-                            helicalAntenna *helicAnt, 
+                            beamAntennaConfiguration *beamCfg, 
                             double t_rise, int I_dir,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] ){
@@ -281,8 +276,7 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 
 //Reference field functions
 int linear_antenna_ref( gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg, 
-                        helicalAntenna *helicAnt, 
+                        beamAntennaConfiguration *beamCfg,  
                         double t_rise, int I_dir, 
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
@@ -304,8 +298,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
 }
 
 int helical_antenna_ref(gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg,
-                        helicalAntenna *helicAnt, 
+                        beamAntennaConfiguration *beamCfg, 
                         double t_rise, int I_dir,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
@@ -326,8 +319,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
 }
 
 int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
-                                beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt, 
+                                beamAntennaConfiguration *beamCfg, 
                                 double t_rise, int I_dir,
                                 int lenght, double **S_coord,
                                 double EB_WAVE[NX][NY][NZ_REF] ){
@@ -378,7 +370,6 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 
 int circular_antenna(   gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        helicalAntenna *helicAnt, 
                         double t_rise, int z0, int I_dir,
                         double EB_WAVE[NX][NY][NZ] ){
 
@@ -431,7 +422,7 @@ void delete_field(  gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2
         
     }
 
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+/*#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
     for (ii=0 ; ii<NX ; ii+=2) {
         for (jj=0 ; jj<NY ; jj+=2) {
             for (kk=0 ; kk<NZ ; kk+=2) {
@@ -442,6 +433,6 @@ void delete_field(  gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2
                     
             }
         }
-    } 
+    } */
 
 }

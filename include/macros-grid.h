@@ -62,9 +62,11 @@
 #define ant_w0xBG(beamCfg)              beamCfg->ant_w0x
 #define ant_w0yBG(beamCfg)              beamCfg->ant_w0y
 #define z2waistBG(beamCfg)              beamCfg->z2waist
-#define Y_at_X1BG(beamCfg)              beamCfg->Y_at_X1
-#define k0Ln_at_X1BG(beamCfg)           beamCfg->k0Ln_at_X1
-#define theta_at_X1BG(beamCfg)          beamCfg->theta_at_X1
+
+#define ant_typeBG(beamCfg)             beamCfg->ant_type
+#define ant_lenghtBG(beamCfg)           beamCfg->ant_lenght
+#define ant_radiusBG(beamCfg)           beamCfg->ant_radius
+#define J_ampBG(beamCfg)                beamCfg->J_amp
      
 #define T_WAVE                          T_waveBG(beamCfg)               
 #define exc_signal                      exc_signalBG(beamCfg)           
@@ -77,10 +79,12 @@
 #define antAngle_zy                     antAngle_zyBG(beamCfg)          
 #define ant_w0x                         ant_w0xBG(beamCfg)              
 #define ant_w0y                         ant_w0yBG(beamCfg)              
-#define z2waist                         z2waistBG(beamCfg)  
-#define Y_at_X1                         Y_at_X1BG(beamCfg)              
-#define k0Ln_at_X1                      k0Ln_at_X1BG(beamCfg)           
-#define theta_at_X1                     theta_at_X1BG(beamCfg)                     
+#define z2waist                         z2waistBG(beamCfg)
+
+#define ant_type                        ant_typeBG(beamCfg)
+#define ant_lenght                      ant_lenghtBG(beamCfg)
+#define ant_radius                      ant_radiusBG(beamCfg)
+#define J_amp                           J_ampBG(beamCfg)
 
 /*Macros for ABC*/
 #define ecoBV(boundaryV)                        boundaryV->eco
@@ -165,18 +169,5 @@
 #define poynt_z1                                powerPoyZ1S(powerVal)   
 #define poynt_z1_ref                            powerPoyZRS(powerVal) 
 #define poynt_z2                                powerPoyZ2S(powerVal)
-
-//Helical Antenna
-#define ant_typeBG(helicAnt)            helicAnt->ant_type
-#define ant_lenghtBG(helicAnt)          helicAnt->ant_lenght
-#define ant_radiusBG(helicAnt)          helicAnt->ant_radius
-#define num_turnsBG(helicAnt)           helicAnt->num_turns
-#define J_ampBG(helicAnt)               helicAnt->J_amp
-
-#define ant_type                        ant_typeBG(helicAnt)
-#define ant_lenght                      ant_lenghtBG(helicAnt)
-#define ant_radius                      ant_radiusBG(helicAnt)
-#define num_turns                       num_turnsBG(helicAnt)
-#define J_amp                           J_ampBG(helicAnt)
 
 #endif

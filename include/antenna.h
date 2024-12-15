@@ -11,26 +11,22 @@
 #include "helical_antenna.h"
 
 void init_antennaInjection( gridConfiguration *gridCfg, 
-                            beamAntennaConfiguration *beamCfg,
-                            helicalAntenna *helicAnt );
+                            beamAntennaConfiguration *beamCfg );
 
 int make_antenna_profile(   gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg );
 
 void control_antennaInjection(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt,
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ],
                                 double EB_WAVE_ref[NX][NY][NZ_REF] );
 
-int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, 
-                helicalAntenna *helicAnt,
+int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
                 int t_int, 
                 double EB_WAVE[NX][NY][NZ] );
 
 int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
-                    helicalAntenna *helicAnt,
                     int t_int, 
                     double EB_WAVE[NX][NY][NZ_REF] );
 

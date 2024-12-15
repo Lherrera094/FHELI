@@ -64,7 +64,6 @@ int main( int argc, char *argv[] ) {
     antennaDetector              *antDetect; 
     boundaryVariables            *boundaryV;
     powerValues                  *powerVal;
-    helicalAntenna               *helicAnt;
 
     /*Alloc structs in memory*/
     ALLOC_1D( gridCfg, 1, gridConfiguration);
@@ -73,7 +72,6 @@ int main( int argc, char *argv[] ) {
     ALLOC_1D( antDetect, 1, antennaDetector );
     ALLOC_1D( boundaryV, 1, boundaryVariables);
     ALLOC_1D( powerVal, 1, powerValues);
-    ALLOC_1D( helicAnt, 1, helicalAntenna);
 
     int  
 #ifdef _OPENMP
@@ -82,14 +80,14 @@ int main( int argc, char *argv[] ) {
         t_int;
 
     // set-up grid (read values from JSON)
-    control_init(  gridCfg, beamCfg, saveDCfg, antDetect, helicAnt );       //function in INIT_MODULE.C
+    control_init(  gridCfg, beamCfg, saveDCfg, antDetect );       //function in INIT_MODULE.C
     create_folder( gridCfg, saveDCfg );                                     //function in SAVE_DATA.C
 
     printf("----------------Initializing Profiles---------------\n");
     init_boundary( gridCfg, boundaryV);                                     //function in BOUNDARY_MODULE.C
     init_antennaDetect( gridCfg, beamCfg, antDetect );                      //function in ANTENNA_DETECTOR.C
     init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C      
-    init_antennaInjection( gridCfg, beamCfg, helicAnt );                    //function in ANTENNA.C
+    init_antennaInjection( gridCfg, beamCfg );                    //function in ANTENNA.C
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -100,7 +98,7 @@ int main( int argc, char *argv[] ) {
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
 
-    init_background_profiles( gridCfg, beamCfg, helicAnt, n_e, J_B0 );      //function in BACKGROUND_PROFILES.C
+    init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );      //function in BACKGROUND_PROFILES.C
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
@@ -121,7 +119,7 @@ int main( int argc, char *argv[] ) {
     for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
         
         //Beam injection to grid
-        control_antennaInjection(  gridCfg, beamCfg, helicAnt, t_int, EB_WAVE, EB_WAVE_ref ); //function in ANTENNA.C
+        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref ); //function in ANTENNA.C
         advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                           //advance EM fields. function in FOCAL.C
 
         //optionally, apply numerical viscosity

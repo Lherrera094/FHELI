@@ -4,8 +4,7 @@ static double **antField_xy = NULL;
 static double **antPhaseTerms = NULL;
 
 void init_antennaInjection( gridConfiguration *gridCfg, 
-                            beamAntennaConfiguration *beamCfg,
-                            helicalAntenna *helicAnt ){
+                            beamAntennaConfiguration *beamCfg ){
 
     //initializevalues for antenna injection
     T_WAVE      = 0;
@@ -23,7 +22,7 @@ void init_antennaInjection( gridConfiguration *gridCfg,
     printf( "...done defining antenna field\n" );
 
     if( exc_signal == 6 ){
-        init_helicalAntenna( gridCfg, helicAnt );
+        init_helicalAntenna( gridCfg, beamCfg );
     }
 
 }
@@ -32,7 +31,6 @@ void init_antennaInjection( gridConfiguration *gridCfg,
 //it summons the source for the main grid and reference grid
 void control_antennaInjection(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg,
-                                helicalAntenna *helicAnt,
                                 int t_int,
                                 double EB_WAVE[NX][NY][NZ],
                                 double EB_WAVE_ref[NX][NY][NZ_REF] ){
@@ -47,10 +45,10 @@ void control_antennaInjection(  gridConfiguration *gridCfg,
     }
 
     // add source
-    add_source( gridCfg, beamCfg, helicAnt,
+    add_source( gridCfg, beamCfg,
                 t_int,  
                 EB_WAVE );
-    add_source_ref( gridCfg, beamCfg, helicAnt,
+    add_source_ref( gridCfg, beamCfg,
                     t_int,  
                     EB_WAVE_ref );
 
@@ -138,7 +136,6 @@ int make_antenna_profile(   gridConfiguration *gridCfg,
 
 
 int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
-                helicalAntenna *helicAnt,
                 int t_int,
                 double EB_WAVE[NX][NY][NZ] ) {
 //{{{
@@ -193,11 +190,10 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
     } else if ( exc_signal == 4) {
         // elliptically polarized for optimum O-SX conversion using Hansen's
         // formula for calculating ratio of wave electric fields 
-
+        double Y = 0.5;
         // calculate factor defining ratio of perpendicular E-fields according to Hansen
-        //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        theta_rad           = theta_at_X1/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        theta_rad           = antAngle_zx/180. * M_PI;
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y );
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
@@ -236,7 +232,7 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
         }
     } else if( exc_signal == 6 ){
 
-        control_HelicalAntenna( gridCfg, beamCfg, helicAnt, t_rise, EB_WAVE );
+        control_HelicalAntenna( gridCfg, beamCfg, t_rise, EB_WAVE );
 
     }
 
@@ -245,7 +241,6 @@ int add_source( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
 
 
 int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg,
-                    helicalAntenna *helicAnt,
                     int t_int,  
                     double EB_WAVE[NX][NY][NZ_REF] ) {
 //{{{
@@ -299,10 +294,9 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
     } else if ( exc_signal == 4) {
         // elliptically polarized for optimum O-SX conversion using Hansen's
         // formula for calculating ratio of wave electric fields 
-
-        //theta_rad           = beamCfg->antAngle_zx/180. * M_PI;
-        theta_rad           = theta_at_X1/180. * M_PI;
-        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y_at_X1 );
+        double Y = 0.5;
+        theta_rad           = antAngle_zx/180. * M_PI;
+        fact1_Hansen_corr   = antenna_calcHansenExEy_O( theta_rad, Y);
         fact2_Hansen_corr   = -1.*cos(theta_rad)/sin(theta_rad) * .0;
 
         if (t_int < 1) {
@@ -341,7 +335,7 @@ int add_source_ref( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCf
         }
     } else if( exc_signal == 6 ){
 
-        control_HelicalAntenna_REF( gridCfg, beamCfg, helicAnt, t_int, EB_WAVE );
+        control_HelicalAntenna_REF( gridCfg, beamCfg, t_int, EB_WAVE );
 
     }
 
