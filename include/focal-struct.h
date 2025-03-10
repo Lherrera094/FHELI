@@ -13,7 +13,8 @@ typedef struct gridConfiguration {      /*Saves the main physical parameters of 
     double
         period,
         dx,dt,
-        ne_0, B0_value;
+        ne_0, B0_value,
+        nu0;
 } gridConfiguration;
 
 typedef struct saveData{                /*Variables related to simulation data saving*/
@@ -49,7 +50,9 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
-        ant_radius, J_amp;
+        ant_radius, J_amp,                  //For helical antennas
+        num_turns, num_arms;                  
+    const char *ant_file;
 } beamAntennaConfiguration;
 
 typedef struct antennaDetector{
@@ -75,15 +78,5 @@ typedef struct powerValues{
         poynt_z1, poynt_z2,
         poynt_z1_ref;    
 } powerValues;
-
-/*typedef struct helicalAntenna{
-
-    int 
-        ant_type, ant_lenght;
-    
-    double
-        ant_radius, num_turns,
-        J_amp;
-} helicalAntenna;*/
 
 #endif

@@ -2,7 +2,7 @@
 
 static int Z_0;             //initial Z coordinate for the antenna
 static int Z_1;             //end Z coordinate for the antenna  
-static int J_Amp;
+static int J_Amp;           //Antenna current value
 static int u;               //Displacement for reference antenna
 
 //Integers that save the lenght of the antenna arrays for implementation
@@ -10,24 +10,114 @@ static int lenght1;
 static int lenght2;
 static int lenght3;
 static int lenght4;
+static int lenght5;
+static int lenght6;
+static int lenght7;
+static int lenght8;
+static int lenght9;
+static int lenght10;
+static int lenght11;
+static int lenght12;
 
 //Each one saves the coordinates for the antenna sections
 static double **S1 = NULL;
 static double **S2 = NULL;
 static double **S3 = NULL;
 static double **S4 = NULL;
+static double **S5 = NULL;
+static double **S6 = NULL;
+static double **S7 = NULL;
+static double **S8 = NULL;
+static double **S9 = NULL;
+static double **S10 = NULL;
+static double **S11 = NULL;
+static double **S12 = NULL;
 
+//Function in charge of controlling the initialization of the helical antenna 
 void init_helicalAntenna(   gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg ){
 
     char fullDir1[PATH_MAX],fullDir2[PATH_MAX],fullDir3[PATH_MAX],
-         fullDir4[PATH_MAX], directory[1024];
-    char dir[] = "tools";
+         fullDir4[PATH_MAX],fullDir5[PATH_MAX],fullDir6[PATH_MAX],
+         fullDir7[PATH_MAX],fullDir8[PATH_MAX],fullDir9[PATH_MAX],
+         fullDir10[PATH_MAX],fullDir11[PATH_MAX],fullDir12[PATH_MAX],
+         directory[1024], input_par[PATH_MAX];
+    char dir[] = "Antenna_Models";
+    
+    //Construct directory path to the .txt coordinate files
+    sprintf(directory, "%s/%s", dir, ant_file);
+
+    if ( access(directory, F_OK) == 0) {
+        
+        sprintf(input_par, "%s/%s", directory, "Input_Parameters.txt");
+        if ( access(input_par, F_OK) == 0){
+
+            FILE *file = fopen(input_par, "r");
+            if (file == NULL) {
+                perror("Error opening file");
+                exit(-1);
+            }
+
+            char line[100]; // Buffer to store each line
+            int new_radius = -1, new_length = -1, 
+                x_center = -1,  y_center = -1,  z_center = -1, 
+                turns=-1, arms=-1;
+
+            // Read the file line by line
+            while (fgets(line, sizeof(line), file)) {
+                // Check if the line contains "Radius"
+                if (strstr(line, "Radius") != NULL) {
+                    sscanf(line, "Radius: %d",  &new_radius );
+                }
+                // Check if the line contains "Length"
+                else if (strstr(line, "Lenght") != NULL) {
+                    sscanf(line, "Lenght: %d",  &new_length );
+                }
+                // Check if the line contains "X_position"
+                else if (strstr(line, "X_position") != NULL) {
+                    sscanf(line, "X_position (center): %d",  &x_center );
+                }
+                // Check if the line contains "Y_position"
+                else if (strstr(line, "Y_position") != NULL) {
+                    sscanf(line, "Y_position (center): %d",  &y_center );
+                }
+                // Check if the line contains "Z_position"
+                else if (strstr(line, "Z_position") != NULL) {
+                    sscanf(line, "Z_position (center): %d",  &z_center );
+                }
+                // Check if the line contains "num_turns"
+                else if (strstr(line, "Number of Turns") != NULL) {
+                    sscanf(line, "Num_turns: %d",  &turns );
+                    num_turns = (int) turns;
+                }
+                // Check if the line contains "num_turns"
+                else if (strstr(line, "Number of Arms") != NULL) {
+                    sscanf(line, "Number of Arms: %d",  &arms );
+                    num_arms = (int) arms;
+                }
+                
+            }
+
+            //Save the inpt parameters into the struct
+            ant_radius = (int) new_radius*2;
+            ant_lenght = (int) new_length*2;
+
+        } else {
+            printf("Input file does not exist.\n");
+            exit(-1);
+        }
+
+    } else{
+
+        printf("Antenna folder does not exist.\n");
+        exit(-1);
+
+    }
     
     /*Compute antenna initial and end point*/
     //The wavelenght is defined by the antenna leght
-    Z_0 = (int)( 0.5 * (NZ - ant_lenght) );
-    Z_1 = (int)( 0.5 * (NZ + ant_lenght) );
+    Z_0 = (int)( ANT_Z - 0.5*ant_lenght); 
+    Z_1 = (int)( ANT_Z + 0.5*ant_lenght);
 
     if ((Z_0 % 2) != 0)  ++Z_0;
     if ((Z_1 % 2) != 0)  ++Z_1;
@@ -35,42 +125,97 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
     //save antenna curret amplitud
     J_Amp = J_amp;
 
-    //Construct directory path to the .txt coordinate files
-    if( ant_type == 1){
-        sprintf(directory, "%s/%s", dir, "Nagoya_antenna");
-        printf("Nagoya Antenna initialized. \n");
-    } else if(ant_type == 2){
-        sprintf(directory, "%s/%s", dir, "Helical_antenna");
-        printf("Half helical Antenna initialized. \n");
-    }
-    
     sprintf(fullDir1,"%s/Section_%s.txt", directory, "1" );
     sprintf(fullDir2,"%s/Section_%s.txt", directory, "2" );
     sprintf(fullDir3,"%s/Section_%s.txt", directory, "3" );
     sprintf(fullDir4,"%s/Section_%s.txt", directory, "4" );
+    sprintf(fullDir5,"%s/Section_%s.txt", directory, "5" );
+    sprintf(fullDir6,"%s/Section_%s.txt", directory, "6" );
+    sprintf(fullDir7,"%s/Section_%s.txt", directory, "7" );
+    sprintf(fullDir8,"%s/Section_%s.txt", directory, "8" );
+    sprintf(fullDir9,"%s/Section_%s.txt", directory, "9" );
+    sprintf(fullDir10,"%s/Section_%s.txt", directory, "10" );
+    sprintf(fullDir11,"%s/Section_%s.txt", directory, "11" );
+    sprintf(fullDir12,"%s/Section_%s.txt", directory, "12" );
+    
+    // Check if the file exists and initialize the antenna section arrays
+    //Saves the coordinates of in the S arrays
+    if ( access(fullDir1, F_OK) == 0) {
+        lenght1 = get_lenght(fullDir1);
+        S1 = allocate2DArray( lenght1, 3 );
+        read_file(fullDir1, S1);
+        printf("Helical Antenna Section 1 saved.\n");
 
-    //Initialize the antenna section arrays
-    lenght1 = get_lenght(fullDir1);
-    S1 = allocate2DArray( lenght1, 3 );
+    } if ( access(fullDir2, F_OK) == 0) {
+        lenght2 = get_lenght(fullDir2);
+        S2 = allocate2DArray( lenght2, 3 );
+        read_file(fullDir2, S2);
+        printf("Helical Antenna Section 2 saved.\n");
+    
+    } if ( access(fullDir3, F_OK) == 0) {
+        lenght3 = get_lenght(fullDir3);
+        S3 = allocate2DArray( lenght3, 3 );
+        read_file(fullDir3, S3);
+        printf("Helical Antenna Section 3 saved.\n");
 
-    lenght2 = get_lenght(fullDir2);
-    S2 = allocate2DArray( lenght2, 3 );
+    } if ( access(fullDir4, F_OK) == 0) {
+        lenght4 = get_lenght(fullDir4);
+        S4 = allocate2DArray( lenght4, 3 );
+        read_file(fullDir4, S4);
+        printf("Helical Antenna Section 4 saved.\n");
 
-    lenght3 = get_lenght(fullDir3);
-    S3 = allocate2DArray( lenght3, 3 );
+    } if ( access(fullDir5, F_OK) == 0) {
+        lenght5 = get_lenght(fullDir5);
+        S5 = allocate2DArray( lenght5, 3 );
+        read_file(fullDir5, S5);
+        printf("Helical Antenna Section 5 saved.\n");
 
-    lenght4 = get_lenght(fullDir4);
-    S4 = allocate2DArray( lenght4, 3 );
+    } if ( access(fullDir6, F_OK) == 0) {
+        lenght6 = get_lenght(fullDir6);
+        S6 = allocate2DArray( lenght6, 3 );
+        read_file(fullDir6, S6);
+        printf("Helical Antenna Section 6 saved.\n");
 
-    //Save the coordinates in the arrays
-    read_file(fullDir1, S1);
-    read_file(fullDir2, S2);
-    read_file(fullDir3, S3);
-    read_file(fullDir4, S4);
+    } if ( access(fullDir7, F_OK) == 0) {
+        lenght7 = get_lenght(fullDir7);
+        S7 = allocate2DArray( lenght7, 3 );
+        read_file(fullDir7, S7);
+        printf("Helical Antenna Section 7 saved.\n");
+
+    } if ( access(fullDir8, F_OK) == 0) {
+        lenght8 = get_lenght(fullDir8);
+        S8 = allocate2DArray( lenght8, 3 );
+        read_file(fullDir8, S8);
+        printf("Helical Antenna Section 8 saved.\n");
+
+    } if ( access(fullDir9, F_OK) == 0) {
+        lenght9 = get_lenght(fullDir9);
+        S9 = allocate2DArray( lenght9, 3 );
+        read_file(fullDir9, S9);
+        printf("Helical Antenna Section 9 saved.\n");
+
+    } if ( access(fullDir10, F_OK) == 0) {
+        lenght10 = get_lenght(fullDir10);
+        S10 = allocate2DArray( lenght10, 3 );
+        read_file(fullDir10, S10);
+        printf("Helical Antenna Section 10 saved.\n");
+
+    } if ( access(fullDir11, F_OK) == 0) {
+        lenght11 = get_lenght(fullDir11);
+        S11 = allocate2DArray( lenght11, 3 );
+        read_file(fullDir11, S11);
+        printf("Helical Antenna Section 11 saved.\n");
+    
+    } if ( access(fullDir12, F_OK) == 0) {
+        lenght12 = get_lenght(fullDir12);
+        S12 = allocate2DArray( lenght12, 3 );
+        read_file(fullDir12, S12);
+        printf("Helical Antenna Section 12 saved.\n");
+
+    }
 
     //Compute z displacement for reference antenna
     u = Z_0 - D_ABSORB - 2;
-    //u = 0;
 
 }
 
@@ -104,6 +249,7 @@ void read_file(char *filename, double **Section_coord ){
     fclose(file);
 }
 
+//Gets the lenght of the file counting the number of rows.
 int get_lenght(char *filename){
 
     FILE *file;
@@ -126,28 +272,109 @@ int get_lenght(char *filename){
     return lenght;
 }
 
-//Functions for implementation of helical antenna 
+//Function to print in terminal parameters of the helical antenna
+void print_helical( beamAntennaConfiguration *beamCfg ){
+
+    char *antenna_type;
+    if(ant_type == 1){
+        antenna_type = "Single Loop";
+    } else if(ant_type == 2){
+        antenna_type = "Spiral";
+    } else if(ant_type == 3){
+        antenna_type = "Double Loop";
+    } else if(ant_type == 4){
+        antenna_type = "Nagoya Type-III";
+    } else if(ant_type == 5){
+        antenna_type = "Boswell";
+    } else if(ant_type == 6){
+        antenna_type = "RH Half-helical";
+    } else if(ant_type == 7){
+        antenna_type = "LH Half-helical";
+    } else if(ant_type == 8){
+        antenna_type = "Birdcage";
+    }
+
+    printf("-------------------Helicon Antenna------------------\n");
+    printf("Geometry selected: %s Antenna.\n", antenna_type);
+    printf( "Antenna Radius = %d \n", (int) ant_radius/2 );
+    printf( "Antenna Lenght = %d \n", ant_lenght/2 );
+
+    if(ant_type == 2 || ant_type == 6 || ant_type == 7){
+        printf( "Number of turns = %f \n", num_turns );
+    } else if( ant_type == 8 ){
+        printf( "Number of arms = %f \n", num_arms );
+    }
+
+    printf( "Antenna Center Coord. (x,y,z) = (%d, %d, %d)\n", ANT_X, ANT_Y, ANT_Z );
+    printf( "Antenna Current = %d \n", J_Amp );
+
+}
+
+//Functions for evolution of helical antenna 
 void control_HelicalAntenna(    gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg, 
                                 double t_rise,
                                 double EB_WAVE[NX][NY][NZ] ){
 
     /*Apply helical antenna to grid*/
-    if(ant_type == 1){ //Nagoya typeIII helical antenna  
+    if( ant_type == 1 ){                                //Single Loop antenna  
 
-        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
 
-        linear_antenna( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
-        linear_antenna( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
+    } else if( ant_type == 2 ){                         //Spiral antenna  
 
-    }else if(ant_type == 2){ //Half helical type antenna
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
 
-        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, lenght2, S2, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
 
-        helical_antenna( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
-        helical_antenna( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
+    } else if( ant_type == 3 ){                         //Double Loop antenna  
+
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+    } else if( ant_type == 4 ){                         //Nagoya typeIII helical antenna  
+
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+
+    } else if( ant_type == 5 ){                         //Boswell antenna  
+
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght5, S5, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght6, S6, EB_WAVE );
+
+    } else if(ant_type == 6 || ant_type == 7){          //RH-LH Half helical type antenna
+
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );
+
+        helical_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        helical_antenna( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+
+    } else if( ant_type == 8 ){                         //Birdcage antenna
+
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );
+
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght4, S4, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght5, S5, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght6, S6, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, 1, 0, lenght7, S7, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght8, S8, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght9, S9, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght10, S10, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght11, S11, EB_WAVE );
+        linear_antenna( gridCfg, beamCfg, t_rise, -1, 0, lenght12, S12, EB_WAVE );
 
     }
 
@@ -159,21 +386,64 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
                                     double EB_WAVE[NX][NY][NZ_REF] ){
     
     /*Apply helical antenna to grid*/
-    if(ant_type == 1){ //Nagoya typeIII helical antenna  
+    if( ant_type == 1 ){                                //Single Loop antenna  
 
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght2, S2, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
 
-        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
-        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
+    } else if( ant_type == 2 ){                         //Spiral antenna  
 
-    }else if(ant_type == 2){ //Half helical type antenna
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
 
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght2, S2, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
 
-        helical_antenna_ref( gridCfg, beamCfg, t_rise, 1, lenght3, S3, EB_WAVE );
-        helical_antenna_ref( gridCfg, beamCfg, t_rise, -1, lenght4, S4, EB_WAVE );
+    } else if( ant_type == 3 ){                         //Double Loop antenna  
+
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+    } else if(ant_type == 4){                           //Nagoya typeIII helical antenna  
+
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght5, S5, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght6, S6, EB_WAVE );
+
+    } else if(ant_type == 5){                           //Boswell antenna  
+
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght2, S2, EB_WAVE );
+
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+
+    } else if(ant_type == 6 || ant_type == 7){ //Half helical type antenna
+
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );
+
+        helical_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        helical_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
+
+    } else if( ant_type == 8 ){
+
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
+        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );
+
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght4, S4, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght5, S5, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght6, S6, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght7, S7, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght8, S8, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght9, S9, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght10, S10, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght11, S11, EB_WAVE );
+        linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, 0, lenght12, S12, EB_WAVE );
 
     }
 
@@ -182,21 +452,22 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
 //Antenna field injection functions
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg, 
-                    double t_rise, int I_dir, 
+                    double t_rise, int I_dir, double Phase, 
                     int lenght, double **S_coord,
                     double EB_WAVE[NX][NY][NZ] ){
 
-    size_t ii, jj ,kk, ll;
+    int ii, jj ,kk, ll;
 
 #pragma omp parallel for
     for( ll = 0 ; ll < lenght ; ll++ ){ 
         
-        ii = 2 * (int)S_coord[ll][0];
-        jj = 2 * (int)S_coord[ll][1];
-        kk = 2 * (int)S_coord[ll][2];
+        ii = 2 * (int)S_coord[ll][0];       //Multply by two for the leapfrog grid
+        jj = 2 * (int)S_coord[ll][1];       //Multply by two for the leapfrog grid
+        kk = 2 * (int)S_coord[ll][2];       //Multply by two for the leapfrog grid
 
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
+
     }
 
     return EXIT_SUCCESS;
@@ -204,7 +475,7 @@ int linear_antenna( gridConfiguration *gridCfg,
 
 int helical_antenna(    gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int I_dir,
+                        double t_rise, int I_dir, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ] ){
 
@@ -217,7 +488,7 @@ int helical_antenna(    gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -226,7 +497,7 @@ int helical_antenna(    gridConfiguration *gridCfg,
 
 int half_circular_antenna(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg, 
-                            double t_rise, int I_dir,
+                            double t_rise, int I_dir, double Phase,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] ){
 
@@ -243,31 +514,31 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
         if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
             jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = -I_dir*J_amp;
+            J_x = J_amp;
+            J_y = -J_amp;
         
         } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
                    jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = I_dir*J_amp;
+            J_x = J_amp;
+            J_y = J_amp;
 
         } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
                    jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = -I_dir*J_amp;
+            J_x = J_amp;
+            J_y = -J_amp;
 
         } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
                    jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = I_dir*J_amp;
+            J_x = J_amp;
+            J_y = J_amp;
 
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T ) * t_rise * DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T + Phase) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -277,7 +548,7 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 //Reference field functions
 int linear_antenna_ref( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg,  
-                        double t_rise, int I_dir, 
+                        double t_rise, int I_dir, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -291,7 +562,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
         kk = (2 * (int)S_coord[ll][2]) - u;
         
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - 2 * J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -299,7 +570,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
 
 int helical_antenna_ref(gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int I_dir,
+                        double t_rise, int I_dir, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -312,7 +583,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
 
-        EB_WAVE[ii  ][jj  ][kk+1] += - I_dir * J_amp * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] += - I_dir * J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
     }
 
     return EXIT_SUCCESS;
@@ -320,7 +591,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
 
 int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg, 
-                                double t_rise, int I_dir,
+                                double t_rise, int I_dir, double Phase,
                                 int lenght, double **S_coord,
                                 double EB_WAVE[NX][NY][NZ_REF] ){
 
@@ -337,31 +608,31 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
         if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
             jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = -I_dir*J_amp;
+            J_x = J_amp;
+            J_y = -J_amp;
         
         } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
                    jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = I_dir*J_amp;
+            J_x = J_amp;
+            J_y = J_amp;
 
         } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
                    jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = -I_dir*J_amp;
+            J_x = J_amp;
+            J_y = -J_amp;
 
         } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
                    jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
 
-            J_x = I_dir*J_amp;
-            J_y = I_dir*J_amp;
+            J_x = J_amp;
+            J_y = J_amp;
 
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T ) * t_rise * DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T ) * t_rise *  DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  += - 0.5 * J_x * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][kk  ]  += - 0.5 * J_y * sin( OMEGA_T + Phase) * t_rise *  DT;
     }
 
     return EXIT_SUCCESS;
@@ -370,7 +641,7 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 
 int circular_antenna(   gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int z0, int I_dir,
+                        double t_rise, int z0, int I_dir, double Phase,
                         double EB_WAVE[NX][NY][NZ] ){
 
     int ii, jj, theta;
@@ -384,8 +655,8 @@ int circular_antenna(   gridConfiguration *gridCfg,
         if ((ii % 2) != 0)  ++ii;
         if ((jj % 2) != 0)  ++jj;
 
-        EB_WAVE[ii+1][jj  ][z0  ]  += - I_dir * sin( OMEGA_T ) * t_rise * DT;
-        EB_WAVE[ii  ][jj+1][z0  ]  += - I_dir * sin( OMEGA_T ) * t_rise * DT;
+        EB_WAVE[ii+1][jj  ][z0  ]  += - I_dir * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj+1][z0  ]  += - I_dir * sin( OMEGA_T + Phase) * t_rise * DT;
 
     }
 

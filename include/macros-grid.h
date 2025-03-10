@@ -18,6 +18,7 @@
 #define B0_profileG(gridCfg)    gridCfg->B0_profile
 #define B0_valueG(gridCfg)      gridCfg->B0_value
 #define boundaryG(gridCfg)      gridCfg->sel_boundary
+#define nu0_G(gridCfg)          gridCfg->nu0
 
 #define NX                      NxG(gridCfg)            
 #define NY                      NyG(gridCfg)          
@@ -33,6 +34,7 @@
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
 #define BOUNDARY                boundaryG(gridCfg)
+#define NU0                     nu0_G(gridCfg)
 
 /*Macros for save data*/
 #define projectPathSt(saveDCfg)         saveDCfg->projectPath
@@ -66,7 +68,10 @@
 #define ant_typeBG(beamCfg)             beamCfg->ant_type
 #define ant_lenghtBG(beamCfg)           beamCfg->ant_lenght
 #define ant_radiusBG(beamCfg)           beamCfg->ant_radius
+#define num_turnsBG(beamCfg)            beamCfg->num_turns
+#define num_armsBG(beamCfg)             beamCfg->num_arms
 #define J_ampBG(beamCfg)                beamCfg->J_amp
+#define ant_fileBG(beamCfg)             beamCfg->ant_file
      
 #define T_WAVE                          T_waveBG(beamCfg)               
 #define exc_signal                      exc_signalBG(beamCfg)           
@@ -84,7 +89,10 @@
 #define ant_type                        ant_typeBG(beamCfg)
 #define ant_lenght                      ant_lenghtBG(beamCfg)
 #define ant_radius                      ant_radiusBG(beamCfg)
+#define num_turns                       num_turnsBG(beamCfg)            
+#define num_arms                        num_armsBG(beamCfg)             
 #define J_amp                           J_ampBG(beamCfg)
+#define ant_file                        ant_fileBG(beamCfg)             
 
 /*Macros for ABC*/
 #define ecoBV(boundaryV)                        boundaryV->eco

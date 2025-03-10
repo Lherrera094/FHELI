@@ -176,6 +176,11 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         BOUNDARY = item_boundary->valueint;
     }
 
+    cJSON *item_nu0_value = cJSON_GetObjectItemCaseSensitive(json, "nu_0");   //normalized electron collision frequency
+    if( cJSON_IsNumber(item_nu0_value) ){
+        NU0 = item_nu0_value->valuedouble;
+    }
+
     cJSON *item_dBoundary = cJSON_GetObjectItemCaseSensitive(json, "UPML_size");   //size absorb boundary
     if( cJSON_IsNumber(item_dBoundary) ){
         D_ABSORB = item_dBoundary->valueint;
@@ -246,19 +251,14 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
         ant_type = item_Antenna_type->valueint;
     }
 
-    cJSON *item_Antenna_lenght = cJSON_GetObjectItemCaseSensitive(json, "Antenna_lenght");   //Helical model
-    if( cJSON_IsNumber(item_Antenna_lenght) ){
-        ant_lenght = item_Antenna_lenght->valueint;
-    }
-
-    cJSON *item_Radius = cJSON_GetObjectItemCaseSensitive(json, "Radius");   //
-    if( cJSON_IsNumber(item_Radius) ){
-        ant_radius = item_Radius->valuedouble;
-    }
-
     cJSON *item_J_amp = cJSON_GetObjectItemCaseSensitive(json, "Currrent_Amp");   //
     if( cJSON_IsNumber(item_J_amp) ){
         J_amp = item_J_amp->valuedouble;
+    }
+
+    cJSON *filname_antenna = cJSON_GetObjectItemCaseSensitive(json, "Antenna_folder");   //Foldername helical antenna
+    if( cJSON_IsString(filname_antenna) && (filname_antenna->valuestring != NULL) ){
+        ant_file = strdup(filname_antenna->valuestring);
     }
 
     //clean up

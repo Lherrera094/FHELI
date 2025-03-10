@@ -103,6 +103,7 @@ int main( int argc, char *argv[] ) {
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
     print_antennaDetec( antDetect );                                        //function in ANTENNA_DETECTOR.C
+    print_helical( beamCfg );                                               //function in HELICAL_ANTENNA.C
 
     printf("--------------------Simulation--------------------\n");
 
@@ -119,8 +120,8 @@ int main( int argc, char *argv[] ) {
     for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
         
         //Beam injection to grid
-        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref ); //function in ANTENNA.C
-        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                           //advance EM fields. function in FOCAL.C
+        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref );             //function in ANTENNA.C
+        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                             //advance EM fields. function in FOCAL.C
 
         //optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
