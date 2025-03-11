@@ -60,6 +60,7 @@ typedef struct antennaDetector{
         antDetect_1D, 
         detAnt_01_zpos, detAnt_02_zpos,
         detAnt_03_zpos, detAnt_04_zpos,
+        detAnt_05_zpos, detAnt_06_zpos,
         detAnt_01_ypos;
 } antennaDetector;
 

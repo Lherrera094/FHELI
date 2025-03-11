@@ -136,6 +136,8 @@
 #define detAnt03zG(antDetect)                   antDetect->detAnt_03_zpos
 #define detAnt04zG(antDetect)                   antDetect->detAnt_04_zpos
 #define detAnt01yG(antDetect)                   antDetect->detAnt_01_ypos
+#define detAnt05zG(antDetect)                   antDetect->detAnt_05_zpos
+#define detAnt06zG(antDetect)                   antDetect->detAnt_06_zpos
 
 #define activate_antDetect1D                    antDetect_1DG(antDetect)
 #define detAnt_01_zpos                          detAnt01zG(antDetect)
@@ -143,7 +145,8 @@
 #define detAnt_03_zpos                          detAnt03zG(antDetect)
 #define detAnt_04_zpos                          detAnt04zG(antDetect)
 #define detAnt_01_ypos                          detAnt01yG(antDetect)
-
+#define detAnt_05_zpos                          detAnt05zG(antDetect)                   
+#define detAnt_06_zpos                          detAnt06zG(antDetect)
 
 /*Macros for power struct*/
 #define powerDectS(powerVal)                    powerVal->pwr_dect

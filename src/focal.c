@@ -389,6 +389,21 @@ int set2zero_1D( size_t N_x, double arr_1D[N_x] ){
     return EXIT_SUCCESS;
 } //}}}
 
+int set2zero_2D( size_t N_x, size_t N_y, double arr_2D[N_x][N_y] ){
+    //{{{
+    
+        size_t
+            ii, jj;
+    
+    #pragma omp parallel for collapse(2) default(shared) private(ii,jj)
+        for (ii=0 ; ii<N_x ; ++ii) {
+            for (jj=0 ; jj<N_y ; ++jj) { 
+                arr_2D[ii][jj]  = .0;
+            }
+        }
+    
+        return EXIT_SUCCESS;
+} //}}}
 
 int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z] ){
 //{{{

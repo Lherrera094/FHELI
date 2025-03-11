@@ -421,7 +421,7 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
         linear_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
         linear_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
 
-    } else if(ant_type == 6 || ant_type == 7){ //Half helical type antenna
+    } else if(ant_type == 6 || ant_type == 7){          //Half helical type antenna
 
         half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
         half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );
@@ -429,7 +429,7 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
         helical_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght3, S3, EB_WAVE );
         helical_antenna_ref( gridCfg, beamCfg, t_rise, -1, M_PI, lenght4, S4, EB_WAVE );
 
-    } else if( ant_type == 8 ){
+    } else if( ant_type == 8 ){                         //Birdcage type antenna
 
         half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght1, S1, EB_WAVE );
         half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 1, 0, lenght2, S2, EB_WAVE );

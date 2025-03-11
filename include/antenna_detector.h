@@ -31,6 +31,11 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
                             double EB_WAVE[NX][NY][NZ], 
                             double **detAnt_fields );
 
+int detAnt2D_storeValues(   gridConfiguration *gridCfg, 
+                            size_t detAnt_zpos, int tt, 
+                            double EB_WAVE[NX][NY][NZ], 
+                            double ***detAnt_fields );
+
 void save_AntDetect(    gridConfiguration *gridCfg, saveData *saveDCfg,
                         antennaDetector *antDetect );
 

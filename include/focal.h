@@ -46,6 +46,7 @@ int apply_numerical_viscosity( gridConfiguration *gridCfg,
                                double EB_WAVE[NX][NY][NZ] );
 
 int set2zero_1D( size_t N_x, double arr_1D[N_x] );
+int set2zero_2D( size_t N_x, size_t N_y, double arr_2D[N_x][N_y] );
 int set2zero_3D( size_t N_x, size_t N_y, size_t N_z, double arr_3D[N_x][N_y][N_z] );
 
 int advance_J_UPML( gridConfiguration *gridCfg, 

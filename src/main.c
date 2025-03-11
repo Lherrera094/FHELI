@@ -80,14 +80,14 @@ int main( int argc, char *argv[] ) {
         t_int;
 
     // set-up grid (read values from JSON)
-    control_init(  gridCfg, beamCfg, saveDCfg, antDetect );       //function in INIT_MODULE.C
+    control_init(  gridCfg, beamCfg, saveDCfg, antDetect );                 //function in INIT_MODULE.C
     create_folder( gridCfg, saveDCfg );                                     //function in SAVE_DATA.C
 
     printf("----------------Initializing Profiles---------------\n");
     init_boundary( gridCfg, boundaryV);                                     //function in BOUNDARY_MODULE.C
+    init_antennaInjection( gridCfg, beamCfg );                              //function in ANTENNA.C
     init_antennaDetect( gridCfg, beamCfg, antDetect );                      //function in ANTENNA_DETECTOR.C
     init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C      
-    init_antennaInjection( gridCfg, beamCfg );                    //function in ANTENNA.C
 
     // arrays realized as variable-length array (VLA)
     // E- and B-wavefield
@@ -98,7 +98,7 @@ int main( int argc, char *argv[] ) {
     // background electron plasma density
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
 
-    init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );      //function in BACKGROUND_PROFILES.C
+    init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );                //function in BACKGROUND_PROFILES.C
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C

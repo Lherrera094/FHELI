@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "auxiliar_module.h"
 #include "focal-struct.h"
 #include "macros-grid.h"
 #include "focal.h"
@@ -26,5 +27,10 @@ int detAnt1D_write2hdf5(    int N_x,
                             char filename[], char detAnt_groupName[], 
                             size_t detAnt_ypos, size_t detAnt_zpos,
                             double **detAnt_fields );
+
+int detAnt2D_write2hdf5( int N_x, int N_y,
+                         char filename[], char detAnt_groupName[], 
+                         size_t detAnt_zpos,
+                         double ***detAnt_fields );
 
 #endif  // GRID_IO_H
