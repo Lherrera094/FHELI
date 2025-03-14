@@ -15,7 +15,7 @@ Developers: [Luis Carlos Herrera Quesada](https://www.linkedin.com/in/lherreraqu
 
 <p align="center">
   
-![Helical_ant](/tools/Helical_projection_PML20.gif "2D FDTD simulation of half-helical antenna .")
+![Helical_ant](/tools/Nagoya_J_20.gif "2D FDTD simulation of half-helical antenna .")
   
 </p>
 

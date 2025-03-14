@@ -9,12 +9,15 @@
     "Grid_size_Nx": 	300,
     "Grid_size_Ny": 	300,
     "Grid_size_Nz": 	900,
-    "t_end": 		100,
+    "t_end": 		50,
     
     "B0_profile":	1,
     "B0_magnitude":	1.0,
-    "ne_profile":	9,
-    "ne_0":		1.0,
+    "ne_profile":	7,
+    "ne_0":		0.0,
+    "ne_s":		2.0,
+    "ne_t":		2.0,
+    "ne_w":		50.0,
     "nu_0":		1e-6,
     
     "Boundary_Method": 	3,

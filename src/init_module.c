@@ -170,6 +170,21 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
     if( cJSON_IsNumber(item_ne_value) ){
         ne_0 = item_ne_value->valuedouble;
     }
+    
+    cJSON *item_ne_s = cJSON_GetObjectItemCaseSensitive(json, "ne_s");      //Density control parameter s
+    if( cJSON_IsNumber(item_ne_s) ){
+        s = item_ne_s->valuedouble;
+    }
+
+    cJSON *item_ne_t = cJSON_GetObjectItemCaseSensitive(json, "ne_t");      //Density control parameter t
+    if( cJSON_IsNumber(item_ne_t) ){
+        t = item_ne_t->valuedouble;
+    }
+
+    cJSON *item_ne_w = cJSON_GetObjectItemCaseSensitive(json, "ne_w");      //Density control parameter s
+    if( cJSON_IsNumber(item_ne_w) ){
+        w = item_ne_w->valuedouble;
+    }
 
     cJSON *item_boundary = cJSON_GetObjectItemCaseSensitive(json, "Boundary_Method");   //boundary option
     if( cJSON_IsNumber(item_boundary) ){

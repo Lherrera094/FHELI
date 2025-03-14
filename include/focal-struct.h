@@ -13,7 +13,8 @@ typedef struct gridConfiguration {      /*Saves the main physical parameters of 
     double
         period,
         dx,dt,
-        ne_0, B0_value,
+        ne_0, ne_s, ne_t, ne_w, 
+        B0_value,
         nu0;
 } gridConfiguration;
 

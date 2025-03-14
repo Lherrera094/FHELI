@@ -15,6 +15,9 @@
 #define dtG(gridCfg)            gridCfg->dt
 #define ne_profileG(gridCfg)    gridCfg->ne_profile
 #define ne_0G(gridCfg)          gridCfg->ne_0
+#define ne_sG(gridCfg)          gridCfg->ne_s
+#define ne_tG(gridCfg)          gridCfg->ne_t
+#define ne_wG(gridCfg)          gridCfg->ne_w
 #define B0_profileG(gridCfg)    gridCfg->B0_profile
 #define B0_valueG(gridCfg)      gridCfg->B0_value
 #define boundaryG(gridCfg)      gridCfg->sel_boundary
@@ -31,6 +34,9 @@
 #define DT                      dtG(gridCfg)
 #define ne_profile              ne_profileG(gridCfg)
 #define ne_0                    ne_0G(gridCfg)
+#define s                       ne_sG(gridCfg)
+#define t                       ne_tG(gridCfg)
+#define w                       ne_wG(gridCfg)
 #define B0_profile              B0_profileG(gridCfg)
 #define B0_value                B0_valueG(gridCfg)
 #define BOUNDARY                boundaryG(gridCfg)
