@@ -215,7 +215,7 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
         ii, jj;
 
     double
-        foo;
+        foo, foob;
 
     // Ex: odd-even-even
     // Ey: even-odd-even
@@ -243,9 +243,21 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
 
         // corresponding to an rms(E)-like quantity
         detAnt_fields[ii/2][jj/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
+        
+        // calculate abs(B)
+        foob = sqrt( pow(EB_WAVE[ii  ][jj+1][detAnt_zpos+1],2)
+                    +pow(EB_WAVE[ii+1][jj  ][detAnt_zpos+1],2)
+                    +pow(EB_WAVE[ii+1][jj+1][detAnt_zpos  ],2) );
+        //Store Magnetic field components
+        //Bx component
+        detAnt_fields[ii/2][jj/2][5]  = EB_WAVE[ii  ][jj+1][detAnt_zpos+1];
+        //By component
+        detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj  ][detAnt_zpos+1];
+        //Bz component
+        detAnt_fields[ii/2][jj/2][7]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
+        //B*B component
+        detAnt_fields[ii/2][jj/2][8]  = foob*foob;
 
-        //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
-        //        tt, ii, detAnt_fields[ii/2][3] );
         }
     }
 

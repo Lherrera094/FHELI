@@ -182,6 +182,31 @@ int make_density_profile(   gridConfiguration *gridCfg,
                 }
             }
         }
+    } else if ( ne_profile == 9 ) {
+        //Density cylinder along Z axis. Improved and better control on the density profile.
+        //profile for helical antenna. Density is zero before reaching antenna position 
+
+        double new_rad, s, t, w;
+
+        s = 2;                  //Controls the lenght of the maximum value
+        t = 2;                  //Controls how fast decays the profile
+        w = ant_radius/2;
+
+        for (ii=0 ; ii<(NX/2) ; ++ii) {
+            for (jj=0 ; jj<(NY/2) ; ++jj) {
+                for (kk=0 ; kk<(NZ/2) ; ++kk) {
+
+                    new_rad = sqrt( pow((float)ii - (float)(ANT_X/2), 2) + pow((float)jj - (float)(ANT_Y/2), 2) );
+
+                    if( pow(new_rad,2) < pow(ant_radius/2,2) ) {
+                        n_e[ii][jj][kk]    =  ne_0 * pow( 1 - pow( new_rad/w,s ), t );
+                    } else {
+                        n_e[ii][jj][kk]    = .0;
+                    }
+                    
+                }
+            }
+        }
     }
 
     return EXIT_SUCCESS;

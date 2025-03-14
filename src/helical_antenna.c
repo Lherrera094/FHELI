@@ -98,9 +98,12 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
                 
             }
 
-            //Save the inpt parameters into the struct
+            //Save the inpt parameters into the beamConfiguration struct
             ant_radius = (int) new_radius*2;
             ant_lenght = (int) new_length*2;
+            ANT_X = x_center*2;
+            ANT_Y = y_center*2;
+            ANT_Z = z_center*2;
 
         } else {
             printf("Input file does not exist.\n");
