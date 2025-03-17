@@ -215,19 +215,19 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
         ii, jj;
 
     double
-        foo, foob;
+        foo_e, foo_b;
 
     // Ex: odd-even-even
     // Ey: even-odd-even
     // Ez: even-even-odd
 
-#pragma omp parallel default(shared) private(ii,foo)
+#pragma omp parallel default(shared) private(ii,jj,foo_e,foo_b)
 #pragma omp for
     for ( ii=2 ; ii <= NX-2 ; ii+=2 ) {
         for ( jj=2 ; jj <= NY-2 ; jj+=2 ) {
         
         // calculate abs(E)
-        foo = sqrt(  pow(EB_WAVE[ii+1][jj  ][detAnt_zpos  ],2)
+        foo_e = sqrt(  pow(EB_WAVE[ii+1][jj  ][detAnt_zpos  ],2)
                     +pow(EB_WAVE[ii  ][jj+1][detAnt_zpos  ],2)
                     +pow(EB_WAVE[ii  ][jj  ][detAnt_zpos+1],2) );
 
@@ -239,24 +239,28 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
         // Ez*Ez
         detAnt_fields[ii/2][jj/2][2]  += pow( EB_WAVE[ii  ][jj  ][detAnt_zpos+1], 2 );
         // E*E
-        detAnt_fields[ii/2][jj/2][3]  += foo*foo;
+        detAnt_fields[ii/2][jj/2][3]  += foo_e*foo_e;
 
         // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][jj/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
+        detAnt_fields[ii/2][jj/2][4]  += ( foo_e * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
         
-        // calculate abs(B)
-        foob = sqrt( pow(EB_WAVE[ii  ][jj+1][detAnt_zpos+1],2)
-                    +pow(EB_WAVE[ii+1][jj  ][detAnt_zpos+1],2)
-                    +pow(EB_WAVE[ii+1][jj+1][detAnt_zpos  ],2) );
-        //Store Magnetic field components
-        //Bx component
-        detAnt_fields[ii/2][jj/2][5]  = EB_WAVE[ii  ][jj+1][detAnt_zpos+1];
-        //By component
-        detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj  ][detAnt_zpos+1];
-        //Bz component
-        detAnt_fields[ii/2][jj/2][7]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
-        //B*B component
-        detAnt_fields[ii/2][jj/2][8]  = foob*foob;
+        if( tt == T_END - 1){
+            // calculate abs(B)
+            foo_b = sqrt( pow(EB_WAVE[ii  ][jj+1][detAnt_zpos+1],2)
+                        +pow(EB_WAVE[ii+1][jj  ][detAnt_zpos+1],2)
+                        +pow(EB_WAVE[ii+1][jj+1][detAnt_zpos  ],2) );
+            
+            //Store Magnetic field components
+            //Bx component
+            detAnt_fields[ii/2][jj/2][5]  = EB_WAVE[ii  ][jj+1][detAnt_zpos+1];
+            //By component
+            detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj  ][detAnt_zpos+1];
+            //Bz component
+            detAnt_fields[ii/2][jj/2][7]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
+            //B*B component
+            detAnt_fields[ii/2][jj/2][8]  = foo_b*foo_b;
+        }
+        
 
         }
     }
