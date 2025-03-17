@@ -727,7 +727,7 @@ int detAnt1D_write2hdf5( int N_x,
 }//#}}}
 //#endif
 
-//
+// Save 2D data sets
 int detAnt2D_write2hdf5( int N_x, int N_y,
                          char filename[], char detAnt_groupName[], 
                          size_t detAnt_zpos,
@@ -840,11 +840,11 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     // prepare array
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ) {
         for ( jj=2 ; jj<=N_y-2 ; jj+=2 ) {
-            data2save[ii/2][jj/2] = (double)(ii) ;
+            data2save[ii/2][jj/2] = (double)(ii/2) ;
         }
     }
     // create data space
-    dataspace_id_i = H5Screate_simple( 1,       // rank of array (number of dimensions of dataspace)
+    dataspace_id_i = H5Screate_simple( 2,       // rank of array (number of dimensions of dataspace)
                                        dims,    // array of the size of each dimension
                                        NULL);   // allow stretching of data space (NULL=no)
 //    printf( "dataspace_id_i=%d\n", dataspace_id_i);
@@ -885,7 +885,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     // store position
     dims[0] = 1;
     data2save[0][0] = (double)(detAnt_zpos);
-    dataspace_id = H5Screate_simple( 1, dims, NULL); 
+    dataspace_id = H5Screate_simple( 2, dims, NULL); 
     // detAnt_zpos
     printf( "start to create dataset 'detAnt_zpos'\n" );
     dataset_id   = H5Dcreate( group_id__detAnt, "detAnt_zpos", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
@@ -901,7 +901,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     dims[1] = N_y/2;
     // since all following arrays have same dimension, dataspace_id needs to be created only once
     // and not closed with H5Sclose(dataspace_id) after each dataset
-    dataspace_id = H5Screate_simple( 1, dims, NULL);
+    dataspace_id = H5Screate_simple( 2, dims, NULL);
     // prepare array to be saved
     set2zero_2D( N_x/2, N_y/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
@@ -911,15 +911,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     }
     
         ;
-    printf( "start to create dataset 'sum_ExEx'\n" );
+    printf( "start to create dataset 'E_x'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_ExEx", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_ExEx", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'sum_ExEx'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'E_x'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'sum_ExEx'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'E_x'\n" );
 
     // store sum_EyEy 
     set2zero_2D( N_x/2, N_y/2, data2save );
@@ -928,15 +928,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
             data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][1];
         }
     }
-    printf( "start to create dataset 'sum_EyEy'\n" );
+    printf( "start to create dataset 'E_y'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EyEy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EyEy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'sum_EyEy'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'E_y'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'sum_EyEy'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'E_y'\n" );
 
     // store sum_EzEz
     set2zero_2D( N_x/2, N_y/2, data2save );
@@ -945,15 +945,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
             data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][2];
         }
     }
-    printf( "start to create dataset 'sum_EzEz'\n" );
+    printf( "start to create dataset 'E_z'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EzEz", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EzEz", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'sum_EzEz'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'E_z'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'sum_EzEz'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'E_z'\n" );
     
     // store sum_EE
     set2zero_2D( N_x/2, N_y/2, data2save );
@@ -962,38 +962,21 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
             data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][3];
         }
     }
-    printf( "start to create dataset 'sum_EE'\n" );
+    printf( "start to create dataset 'E*E'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EE", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E*E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "sum_EE", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "E*E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'sum_EE'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'E*E'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'sum_EE'\n" );
-
-    // store rmsE
-    set2zero_2D( N_x/2, N_y/2, data2save );
-    for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
-        for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
-            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][4];
-        }
-    }
-    printf( "start to create dataset 'rms_E'\n" );
-    if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "rms_E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
-    else
-        dataset_id   = H5Dcreate( group_id__detAnt, "rms_E", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
-    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'rmsE'\n" );
-    status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'rmsE'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'E*E'\n" );
 
     // store Bx component
     set2zero_2D( N_x/2, N_y/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
         for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
-            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][5];
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][4];
         }
     }
     printf( "start to create dataset 'B_x'\n" );
@@ -1010,7 +993,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     set2zero_2D( N_x/2, N_y/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
         for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
-            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][6];
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][5];
         }
     }
     printf( "start to create dataset 'B_y'\n" );
@@ -1027,7 +1010,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     set2zero_2D( N_x/2, N_y/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
         for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
-            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][7];
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][6];
         }
     }
     printf( "start to create dataset 'B_z'\n" );
@@ -1044,7 +1027,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     set2zero_2D( N_x/2, N_y/2, data2save );
     for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
         for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
-            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][8];
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][7];
         }
     }
     printf( "start to create dataset 'B*B'\n" );
