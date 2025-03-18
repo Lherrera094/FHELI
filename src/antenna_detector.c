@@ -123,6 +123,7 @@ int print_antennaDetec( antennaDetector *antDetect ){
     if( activate_antDetect1D == 1 ){
 
         printf("------------Detector Antenna Positions------------\n");
+        printf( "detector antenna y: y1 = %d\n", detAnt_01_ypos );
         printf( "detector antenna 01: z1 = %d\n", detAnt_01_zpos );
         printf( "detector antenna 02: z2 = %d\n", detAnt_02_zpos );
         printf( "detector antenna 03: z3 = %d\n", detAnt_03_zpos );

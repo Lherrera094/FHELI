@@ -750,9 +750,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
 
     // required for check if hdf5-file already exists
     struct      stat st;
-
     int         ii, jj;
-
     double       data2save[N_x/2][N_y/2];
 
     dims[0]     = N_x/2;
@@ -832,7 +830,7 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
         if (status < 0) printf( "ERROR: could not apply shuffle filter\n" );
         status = H5Pset_deflate( dcpl, 9 );
         if (status < 0) printf( "ERROR: could not apply gzip filter\n" );
-        status = H5Pset_chunk(dcpl, 1, chunk );
+        status = H5Pset_chunk(dcpl, 2, chunk );
         if (status < 0) printf( "ERROR: could not set size of chunk\n" );
     } 
 
@@ -875,7 +873,6 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
                        H5P_DEFAULT,         // data transfer property list
                        data2save);          // pointer to data array
     if (status < 0) printf( "ERROR: could not write dataset 'i'\n" );
-
     status       = H5Dclose(dataset_id_i);
     if (status < 0) printf( "ERROR: could not close dataset 'i'\n" );
     status       = H5Sclose(dataspace_id_i);
