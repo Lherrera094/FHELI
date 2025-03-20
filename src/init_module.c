@@ -112,7 +112,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     cJSON *t_save_f = cJSON_GetObjectItemCaseSensitive(json, "data_save_frequency");   //time step for data saving
     if( cJSON_IsNumber(t_save_f) ){
-        t_save = t_save_f->valueint;
+        t_save = t_save_f->valuedouble;
     }
 
     /*Grid configuration values*/

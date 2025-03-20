@@ -709,6 +709,62 @@ int detAnt1D_write2hdf5( int N_x,
     status       = H5Dclose(dataset_id);
     if (status < 0) printf( "ERROR: could not close dataset 'rmsE'\n" );
 
+    // store B_x
+    set2zero_1D( N_x/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
+        data2save[ii/2] = detAnt_fields[ii/2][5];
+    printf( "start to create dataset 'B_x'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'B_x'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'B_x'\n" );
+
+    // store B_y
+    set2zero_1D( N_x/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
+        data2save[ii/2] = detAnt_fields[ii/2][6];
+    printf( "start to create dataset 'B_y'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'B_y'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'B_y'\n" );
+
+    // store B_z
+    set2zero_1D( N_x/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
+        data2save[ii/2] = detAnt_fields[ii/2][7];
+    printf( "start to create dataset 'B_z'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'B_z'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'B_z'\n" );
+
+    // store B_r
+    set2zero_1D( N_x/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 )
+        data2save[ii/2] = detAnt_fields[ii/2][8];
+    printf( "start to create dataset 'B_r'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_r", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "B_r", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'B_r'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'B_r'\n" );
+
     status       = H5Sclose(dataspace_id);
     if (status < 0) printf( "ERROR: could not close dataspace for datasets of E-fields\n" );
     

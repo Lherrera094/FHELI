@@ -54,27 +54,27 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         //       to one 2D array; that way it can be written much more failsafe...
         //       requires some changes in procedures for storing and saving
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_01 = allocate2DArray( NX, 5 );
+            detAnt_1D_01 = allocate2DArray( NX, 9 );
             detAnt_01_fields = allocate3DArray( NX, NY, 8 );
         }
         if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_02 = allocate2DArray( NX, 5 );
+            detAnt_1D_02 = allocate2DArray( NX, 9 );
             detAnt_02_fields = allocate3DArray( NX, NY, 8 );
         }
         if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_03 = allocate2DArray( NX, 5 );
+            detAnt_1D_03 = allocate2DArray( NX, 9 );
             detAnt_03_fields = allocate3DArray( NX, NY, 8 );
         }
         if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_04 = allocate2DArray( NX, 5 );
+            detAnt_1D_04 = allocate2DArray( NX, 9 );
             detAnt_04_fields = allocate3DArray( NX, NY, 8 );
         }
         if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_05 = allocate2DArray( NX, 5 );
+            detAnt_1D_05 = allocate2DArray( NX, 9 );
             detAnt_05_fields = allocate3DArray( NX, NY, 8 );
         }
         if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_06 = allocate2DArray( NX, 5 );
+            detAnt_1D_06 = allocate2DArray( NX, 9 );
             detAnt_06_fields = allocate3DArray( NX, NY, 8 );
         }
         
@@ -203,7 +203,7 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
         ii;
 
     double
-        foo;
+        foo, foo_b;
 
     // Ex: odd-even-even
     // Ey: even-odd-even
@@ -229,6 +229,18 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
 
         // corresponding to an rms(E)-like quantity
         detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
+
+        // Saves magnetic field profiles
+        foo_b = sqrt(    pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1],2)
+                        +pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1],2) );
+
+        detAnt_fields[ii/2][5]  += pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1], 2 );
+        // Ey*Ey
+        detAnt_fields[ii/2][6]  += pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
+        // Ez*Ez
+        detAnt_fields[ii/2][7]  += pow( EB_WAVE[ii+1][detAnt_ypos+1][detAnt_zpos  ], 2 );
+        // E*E
+        detAnt_fields[ii/2][8]  += foo_b*foo_b;
 
         //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
         //        tt, ii, detAnt_fields[ii/2][3] );
@@ -313,37 +325,37 @@ void save_AntDetect(    gridConfiguration *gridCfg, saveData *saveDCfg,
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_01_1D" , 
                                     detAnt_01_ypos, detAnt_01_zpos, detAnt_1D_01 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_01" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_01_2D" , 
                                  detAnt_01_zpos, detAnt_01_fields );
         }
         if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_02_1D" , 
                                     detAnt_01_ypos, detAnt_02_zpos, detAnt_1D_02 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_02" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_02_2D" , 
                                  detAnt_02_zpos, detAnt_02_fields );
         }
         if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_03_1D" , 
                                     detAnt_01_ypos, detAnt_03_zpos, detAnt_1D_03 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_03" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_03_2D" , 
                                  detAnt_03_zpos, detAnt_03_fields );
         }
         if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_04_1D" , 
                                     detAnt_01_ypos, detAnt_04_zpos, detAnt_1D_04 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_04" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_04_2D" , 
                                  detAnt_04_zpos, detAnt_04_fields );
         }
         if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_05_1D" , 
                                     detAnt_01_ypos, detAnt_05_zpos, detAnt_1D_05 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_05" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_05_2D" , 
                                  detAnt_05_zpos, detAnt_05_fields );
         }
         if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
             detAnt1D_write2hdf5(    NX, filename_hdf5, "/detAnt_06_1D" , 
                                     detAnt_01_ypos, detAnt_06_zpos, detAnt_1D_06 );
-            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_06" , 
+            detAnt2D_write2hdf5( NX, NY, filename_hdf5, "/detAnt_06_2D" , 
                                  detAnt_06_zpos, detAnt_06_fields );
         }
 
