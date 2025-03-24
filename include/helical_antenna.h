@@ -35,43 +35,38 @@ int get_lenght(char *filename);
 
 int linear_antenna( gridConfiguration *gridCfg, 
                     beamAntennaConfiguration *beamCfg, 
-                    double t_rise, int I_dir, double Phase,
+                    double t_rise, double Phase,
                     int lenght, double **S_coord,
                     double EB_WAVE[NX][NY][NZ] );
 
-int circular_antenna(   gridConfiguration *gridCfg, 
-                        beamAntennaConfiguration *beamCfg,
-                        double t_rise, int z0, int I_dir, double Phase,
-                        double EB_WAVE[NX][NY][NZ] );
-
 int helical_antenna(    gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int I_dir, double Phase,
+                        double t_rise, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ] );
 
 int half_circular_antenna(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg, 
-                            double t_rise, int I_dir, double Phase,
+                            double t_rise, double Phase,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] );
 
 //Antenna reference functions
 int linear_antenna_ref( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int I_dir, double Phase,
+                        double t_rise, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] );
 
 int helical_antenna_ref(gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
-                        double t_rise, int I_dir, double Phase,
+                        double t_rise, double Phase,
                         int lenght, double **S_coord,
                         double EB_WAVE[NX][NY][NZ_REF] );
 
 int half_circular_antenna_ref(  gridConfiguration *gridCfg, 
                                 beamAntennaConfiguration *beamCfg, 
-                                double t_rise, int I_dir, double Phase,
+                                double t_rise, double Phase,
                                 int lenght, double **S_coord,
                                 double EB_WAVE[NX][NY][NZ_REF] );
 

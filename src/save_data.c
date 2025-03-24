@@ -179,8 +179,10 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
                         saveData *saveDCfg, int t_int,
                         double EB_WAVE[NX][NY][NZ] ){
 
-    if( t_int % (t_save * (int)PERIOD) == 0 && t_int != 0){
-        
+    if( t_int % (int)(t_save * PERIOD) == 0 && t_int != 0){
+
+        printf("Saving field at t_int = %d \n", t_int );
+
         size_t ii, jj, kk;
         /*Char values as directions to the correct folder*/
         char filename_hdf5[PATH_MAX], dSet_name[PATH_MAX];
@@ -202,7 +204,7 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
             }
         }
 
-        delete_ant2save( gridCfg, data2save );
+        //delete_ant2save( gridCfg, data2save );
         
         //Append the name of the files
         sprintf( dSet_name, "E_abs__tint%05d", t_int );

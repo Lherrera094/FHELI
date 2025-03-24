@@ -1,0 +1,6 @@
+Radius: 100.0
+Lenght: 300.0
+X_position (center): 125.0
+Y_position (center): 125.0
+Z_position (center): 200.0
+Number of Turns: 0.5

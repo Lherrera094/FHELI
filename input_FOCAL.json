@@ -1,24 +1,24 @@
 {	
     "Main_Project": 		"VINETTA",
-    "Case_foldername": 		"Nagoya_v0",
+    "Case_foldername": 		"Generic_v1",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
     "scale": 		1,
-    "period": 		2200,
-    "Grid_size_Nx": 	290,
-    "Grid_size_Ny": 	290,
-    "Grid_size_Nz": 	690,
-    "t_end": 		5,
+    "period": 		100,
+    "Grid_size_Nx": 	500,
+    "Grid_size_Ny": 	500,
+    "Grid_size_Nz": 	800,
+    "t_end": 		50,
     
     "B0_profile":	1,
-    "B0_magnitude":	2.0,
+    "B0_magnitude":	25.0,
     "ne_profile":	7,
-    "ne_0":		1.0,
+    "ne_0":		30,
     "ne_s":		2.0,
     "ne_t":		2.0,
-    "ne_w":		50.0,
-    "nu_0":		1e-6,
+    "ne_w":		100.0,
+    "nu_0":		1e-1,
     
     "Boundary_Method": 	3,
     "UPML_size":	20,
@@ -34,13 +34,13 @@
     "Antena_w0y": 	2.0,
     "z2waist":		-298.87,
     
-    "Antenna_folder": "VINETTA_Nagoya",
+    "Antenna_folder": "generic_helic",
     "Helical Antenna": "1: Single_Loop. 2:Spiral. 3:Double_Loop. 4.Nagoya. 5.Boswell. 6:RH_Half-helical. 7:LH_Half-helical. 8:Birdcage",
-    "Antenna_type": 4,
-    "Currrent_Amp": 100,
+    "Antenna_type": 6,
+    "Currrent_Amp": 10,
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 1
+    "data_save_frequency": 0.5
     
 }

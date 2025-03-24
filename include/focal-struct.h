@@ -23,7 +23,9 @@ typedef struct saveData{                /*Variables related to simulation data s
     const char 	*foldername, *projectPath,
     		    *file_hdf5, *file_trace;
 
-    int     t_save, col_for_timetraces;
+    int     col_for_timetraces;
+
+    double  t_save;
 } saveData;
 
 typedef struct boundaryVariables{            /*Store grid value for the boundary variables*/

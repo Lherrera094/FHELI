@@ -3,3 +3,4 @@ Lenght: 200.0
 X_position (center): 75.0
 Y_position (center): 75.0
 Z_position (center): 150.0
+Number of Turns: 0.5
