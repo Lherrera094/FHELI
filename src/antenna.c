@@ -361,11 +361,11 @@ double antenna_field_rampup( int RampUpMethod, double period, int t_int ){
         t_rise,
         tau;
 
-    tau = 1.;
+    tau = 100.;
 
     if (RampUpMethod == 1) {
         // exponential increase reaching 1 after roughly 30 oscillation periods
-        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/(period/100)), 2 )/tau );
+        t_rise  = 1. - exp( -1*pow( ((double)(t_int)/(period)), 2 )/tau );
     } else {
         printf( "antenna_field_rampup: WARNING, rampUpMethod %d does not exist\n", RampUpMethod );
         printf( "                      ==> no smooth ramp-up, just set instantly to 1\n" );
