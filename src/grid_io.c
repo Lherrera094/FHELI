@@ -413,6 +413,30 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
     status = H5Dclose(dataset_id);
     if (status < 0) printf("ERROR: could not close dataset '/config/z2waist'\n");
 
+    // ant_lenght
+    dataset_id = H5Dcreate( file_id, "/config/ant_lenght", H5T_NATIVE_DOUBLE,
+        dataspace_id, 
+        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_double[0]  = ant_lenght;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
+                    H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                    data2write_double); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_lenght' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_lenght'\n");
+
+    // ant_radius
+    dataset_id = H5Dcreate( file_id, "/config/ant_radius", H5T_NATIVE_DOUBLE,
+        dataspace_id, 
+        H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    data2write_double[0]  = ant_radius;
+    status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
+                    H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                    data2write_double); 
+    if (status < 0) printf( "ERROR: could not write dataset '/config/ant_radius' into file '%s'\n", filename);
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '/config/ant_radius'\n");
+
     // terminate access and free ressources/identifiers
     // data space
     status = H5Sclose(dataspace_id);
