@@ -19,11 +19,11 @@ void init_antennaInjection( gridConfiguration *gridCfg,
     /*Initialize antenna beam*/
     printf( "starting to define antenna field...\n" );
     make_antenna_profile( gridCfg, beamCfg );
-    printf( "...done defining antenna field\n" );
 
     if( exc_signal == 6 ){
         init_helicalAntenna( gridCfg, beamCfg );
     }
+    printf( "...done defining antenna field\n" );
 
 }
 

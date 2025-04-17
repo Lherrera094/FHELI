@@ -18,6 +18,8 @@ int writeTimetraces2ascii( int T_end, double Period,
 
 //#ifdef HDF5
 int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2] );
+int writeMyHDF_v4_1D(int dim0, char filename[], char dataset[], double array_1D[dim0]);
+int writeMyHDF_v4_2D(int dim0, int dim1, char filename[], char dataset[], double array_2D[dim0][dim1]);
 int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] );
 int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], double array_3D[dim0][dim1][dim2]);
 //#endif

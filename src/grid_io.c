@@ -203,6 +203,222 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
 }//#}}}
 //#endif
 
+//#ifdef HDF5
+int writeMyHDF_v4_1D(int dim0, char filename[], char dataset[], double array_1D[dim0]) {
+    // hdf related variables
+    hid_t file_id, dataset_id, dataspace_id;
+    hsize_t dims[1];
+    herr_t status;
+
+    // hdf5 related variables used for applying shuffle and compression filter
+    hid_t dcpl;
+    hsize_t chunk[1];
+    unsigned int filter_info;
+    int filter_avail = 1;
+
+    // required for check if hdf5-file already exists
+    struct stat st;
+
+    // Check if file exists
+    if (stat(filename, &st) == 0) {
+        file_id = H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT);
+
+#if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
+        if (H5_VERS_MINOR >= 10) {
+            printf("WARNING: hdf5 version 1.10 (or larger is used)\n");
+            printf("         behavior of H5Lexists was slightly changed in this version\n");
+        }
+        if (H5Lexists(file_id, dataset, H5P_DEFAULT) > 0) {
+            printf("ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename);
+            status = H5Fclose(file_id);
+            if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
+            return EXIT_FAILURE;
+        }
+#endif
+    } else {
+        file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    }
+
+    // Create dataspace
+    dims[0] = dim0;
+    dataspace_id = H5Screate_simple(1, dims, NULL);
+
+    // Check filters
+    if (!(H5Zfilter_avail(H5Z_FILTER_DEFLATE))) {
+        printf("WARNING: gzip filter not available (for hdf5)\n");
+        filter_avail = 0;
+    } else {
+        status = H5Zget_filter_info(H5Z_FILTER_DEFLATE, &filter_info);
+        if (status < 0) printf("ERROR: could not get hdf5 filter info\n");
+        if (!(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
+            !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED)) {
+            printf("WARNING: gzip filter not available for encoding and decoding (for hdf5)\n");
+            filter_avail = 0;
+        }
+    }
+    
+    if (!(H5Zfilter_avail(H5Z_FILTER_SHUFFLE))) {
+        printf("WARNING: shuffle filter not available (for hdf5)\n");
+        filter_avail = 0;
+    } else {
+        status = H5Zget_filter_info(H5Z_FILTER_SHUFFLE, &filter_info);
+        if (status < 0) printf("ERROR: could not get hdf5 filter info\n");
+        if (!(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
+            !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED)) {
+            printf("WARNING: shuffle filter not available for encoding and decoding (for hdf5)\n");
+            filter_avail = 0;
+        }
+    }
+
+    // Create dataset with or without filters
+    if (filter_avail) {
+        chunk[0] = dim0;
+        dcpl = H5Pcreate(H5P_DATASET_CREATE);
+        status = H5Pset_shuffle(dcpl);
+        if (status < 0) printf("ERROR: could not add shuffle filter\n");
+        status = H5Pset_deflate(dcpl, 9);
+        if (status < 0) printf("ERROR: could not add gzip filter\n");
+        status = H5Pset_chunk(dcpl, 1, chunk);
+        if (status < 0) printf("ERROR: could not set chunk size\n");
+        
+        dataset_id = H5Dcreate(file_id, dataset, H5T_NATIVE_DOUBLE, dataspace_id,
+                             H5P_DEFAULT, dcpl, H5P_DEFAULT);
+    } else {
+        dataset_id = H5Dcreate(file_id, dataset, H5T_NATIVE_DOUBLE, dataspace_id,
+                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    }
+
+    // Write data
+    status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+                     H5P_DEFAULT, array_1D);
+    if (status < 0)
+        printf("ERROR: could not write dataset '%s' to file '%s'\n", dataset, filename);
+
+    // Clean up
+    if (filter_avail) {
+        status = H5Pclose(dcpl);
+        if (status < 0) printf("ERROR: could not close filter\n");
+    }
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '%s'\n", dataset);
+    status = H5Sclose(dataspace_id);
+    if (status < 0) printf("ERROR: could not close dataspace for dataset '%s'\n", dataset);
+    status = H5Fclose(file_id);
+    if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
+    
+    return EXIT_SUCCESS;
+}
+//#endif
+
+//#ifdef HDF5
+int writeMyHDF_v4_2D(int dim0, int dim1, char filename[], char dataset[], double array_2D[dim0][dim1]) {
+    // hdf related variables
+    hid_t file_id, dataset_id, dataspace_id;
+    hsize_t dims[2];
+    herr_t status;
+
+    // hdf5 related variables used for applying shuffle and compression filter
+    hid_t dcpl;
+    hsize_t chunk[2];
+    unsigned int filter_info;
+    int filter_avail = 1;
+
+    // required for check if hdf5-file already exists
+    struct stat st;
+
+    // Check if file exists
+    if (stat(filename, &st) == 0) {
+        file_id = H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT);
+
+#if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
+        if (H5_VERS_MINOR >= 10) {
+            printf("WARNING: hdf5 version 1.10 (or larger is used)\n");
+            printf("         behavior of H5Lexists was slightly changed in this version\n");
+        }
+        if (H5Lexists(file_id, dataset, H5P_DEFAULT) > 0) {
+            printf("ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename);
+            status = H5Fclose(file_id);
+            if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
+            return EXIT_FAILURE;
+        }
+#endif
+    } else {
+        file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    }
+
+    // Create dataspace
+    dims[0] = dim0;
+    dims[1] = dim1;
+    dataspace_id = H5Screate_simple(2, dims, NULL);
+
+    // Check filters
+    if (!(H5Zfilter_avail(H5Z_FILTER_DEFLATE))) {
+        printf("WARNING: gzip filter not available (for hdf5)\n");
+        filter_avail = 0;
+    } else {
+        status = H5Zget_filter_info(H5Z_FILTER_DEFLATE, &filter_info);
+        if (status < 0) printf("ERROR: could not get hdf5 filter info\n");
+        if (!(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
+            !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED)) {
+            printf("WARNING: gzip filter not available for encoding and decoding (for hdf5)\n");
+            filter_avail = 0;
+        }
+    }
+    
+    if (!(H5Zfilter_avail(H5Z_FILTER_SHUFFLE))) {
+        printf("WARNING: shuffle filter not available (for hdf5)\n");
+        filter_avail = 0;
+    } else {
+        status = H5Zget_filter_info(H5Z_FILTER_SHUFFLE, &filter_info);
+        if (status < 0) printf("ERROR: could not get hdf5 filter info\n");
+        if (!(filter_info & H5Z_FILTER_CONFIG_ENCODE_ENABLED) ||
+            !(filter_info & H5Z_FILTER_CONFIG_DECODE_ENABLED)) {
+            printf("WARNING: shuffle filter not available for encoding and decoding (for hdf5)\n");
+            filter_avail = 0;
+        }
+    }
+
+    // Create dataset with or without filters
+    if (filter_avail) {
+        chunk[0] = dim0;
+        chunk[1] = dim1;
+        dcpl = H5Pcreate(H5P_DATASET_CREATE);
+        status = H5Pset_shuffle(dcpl);
+        if (status < 0) printf("ERROR: could not add shuffle filter\n");
+        status = H5Pset_deflate(dcpl, 9);
+        if (status < 0) printf("ERROR: could not add gzip filter\n");
+        status = H5Pset_chunk(dcpl, 2, chunk);
+        if (status < 0) printf("ERROR: could not set chunk size\n");
+        
+        dataset_id = H5Dcreate(file_id, dataset, H5T_NATIVE_DOUBLE, dataspace_id,
+                             H5P_DEFAULT, dcpl, H5P_DEFAULT);
+    } else {
+        dataset_id = H5Dcreate(file_id, dataset, H5T_NATIVE_DOUBLE, dataspace_id,
+                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    }
+
+    // Write data
+    status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+                     H5P_DEFAULT, array_2D);
+    if (status < 0)
+        printf("ERROR: could not write dataset '%s' to file '%s'\n", dataset, filename);
+
+    // Clean up
+    if (filter_avail) {
+        status = H5Pclose(dcpl);
+        if (status < 0) printf("ERROR: could not close filter\n");
+    }
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset '%s'\n", dataset);
+    status = H5Sclose(dataspace_id);
+    if (status < 0) printf("ERROR: could not close dataspace for dataset '%s'\n", dataset);
+    status = H5Fclose(file_id);
+    if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
+    
+    return EXIT_SUCCESS;
+}
+//#endif
+
 
 //#ifdef HDF5
 int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] ) {
@@ -1116,6 +1332,23 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     if (status < 0) printf( "ERROR: could not write dataset 'B*B'\n" );
     status       = H5Dclose(dataset_id);
     if (status < 0) printf( "ERROR: could not close dataset 'B*B'\n" );
+
+    // store Abs(B) component
+    set2zero_2D( N_x/2, N_y/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
+        for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][8];
+        }
+    }
+    printf( "start to create dataset 'Power_proyection'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "Power_proyection", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "Power_proyection", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'Power_proyection'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'Power_proyection'\n" );
 
     status       = H5Sclose(dataspace_id);
     if (status < 0) printf( "ERROR: could not close dataspace for datasets of Wave-fields\n" );

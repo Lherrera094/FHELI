@@ -55,27 +55,27 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         //       requires some changes in procedures for storing and saving
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_01 = allocate2DArray( NX, 9 );
-            detAnt_01_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_01_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_02 = allocate2DArray( NX, 9 );
-            detAnt_02_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_02_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_03 = allocate2DArray( NX, 9 );
-            detAnt_03_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_03_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_04 = allocate2DArray( NX, 9 );
-            detAnt_04_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_04_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_05 = allocate2DArray( NX, 9 );
-            detAnt_05_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_05_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_06 = allocate2DArray( NX, 9 );
-            detAnt_06_fields = allocate3DArray( NX, NY, 8 );
+            detAnt_06_fields = allocate3DArray( NX, NY, 9 );
         }
         
     }
@@ -142,7 +142,8 @@ int print_antennaDetec( antennaDetector *antDetect ){
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
                             int t_int,
-                            double EB_WAVE[NX][NY][NZ] ){
+                            double EB_WAVE[NX][NY][NZ],
+                            double J_B0[NX][NY][NZ] ){
 
     if( activate_antDetect1D == 1 ){ 
         // store wavefields for detector antennas over the final 10 
@@ -153,37 +154,37 @@ int control_antennaDetect(  gridConfiguration *gridCfg,
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_01_zpos,
                                             t_int, EB_WAVE, detAnt_1D_01 );
                     detAnt2D_storeValues(   gridCfg, detAnt_01_zpos, t_int,  
-                                            EB_WAVE, detAnt_01_fields );
+                                            EB_WAVE, J_B0, detAnt_01_fields );
                 }
                 if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_02_zpos,
                                             t_int, EB_WAVE, detAnt_1D_02 );
                     detAnt2D_storeValues(   gridCfg, detAnt_02_zpos, t_int, 
-                                            EB_WAVE, detAnt_02_fields );
+                                            EB_WAVE, J_B0, detAnt_02_fields );
                 }
                 if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_03_zpos,
                                             t_int, EB_WAVE, detAnt_1D_03 );
                     detAnt2D_storeValues(   gridCfg, detAnt_03_zpos, t_int,
-                                            EB_WAVE, detAnt_03_fields );
+                                            EB_WAVE, J_B0, detAnt_03_fields );
                 }
                 if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_04_zpos,
                                             t_int, EB_WAVE, detAnt_1D_04 );
-                    detAnt2D_storeValues(       gridCfg, detAnt_04_zpos, t_int,
-                                        EB_WAVE, detAnt_04_fields );
+                    detAnt2D_storeValues(   gridCfg, detAnt_04_zpos, t_int,
+                                            EB_WAVE, J_B0, detAnt_04_fields );
                 }
                 if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_05_zpos,
                                             t_int, EB_WAVE, detAnt_1D_05 );
                     detAnt2D_storeValues(   gridCfg, detAnt_05_zpos, t_int,
-                                            EB_WAVE, detAnt_05_fields );
+                                            EB_WAVE, J_B0, detAnt_05_fields );
                 }
                 if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
                     detAnt1D_storeValues(   gridCfg, detAnt_01_ypos, detAnt_06_zpos,
                                             t_int, EB_WAVE, detAnt_1D_06 );
                     detAnt2D_storeValues(   gridCfg, detAnt_06_zpos, t_int,
-                                            EB_WAVE, detAnt_06_fields );
+                                            EB_WAVE, J_B0, detAnt_06_fields );
                 }
             }
 
@@ -252,7 +253,8 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
 
 int detAnt2D_storeValues(   gridConfiguration *gridCfg, 
                             size_t detAnt_zpos, int tt, 
-                            double EB_WAVE[NX][NY][NZ], 
+                            double EB_WAVE[NX][NY][NZ],
+                            double J_B0[NX][NY][NZ], 
                             double ***detAnt_fields ) { 
     //{{{
     size_t
@@ -302,6 +304,13 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
                 detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
                 //B*B absolute value
                 detAnt_fields[ii/2][jj/2][7]  = foo_b*foo_b;
+
+                //Power value 
+                detAnt_fields[ii/2][jj/2][8]  = J_B0[ii+1][jj  ][detAnt_zpos  ]*EB_WAVE[ii+1][jj  ][detAnt_zpos  ] + 
+                                                J_B0[ii  ][jj+1][detAnt_zpos  ]*EB_WAVE[ii  ][jj+1][detAnt_zpos  ] + 
+                                                J_B0[ii  ][jj  ][detAnt_zpos+1]*EB_WAVE[ii  ][jj  ][detAnt_zpos+1] ;
+
+
                 
             }
         }

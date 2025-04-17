@@ -44,10 +44,23 @@ double **allocate2DArray(int N_x, int N_y) {
 
 void free2DArray(double **array, int N_x){
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for(int i = 0 ; i<N_x ; i+=1 ){
         free(array[i]);
     }
+    free(array);
+}
+
+// Function to allocate memory for a 1D array with given dimensions
+double *allocate1DArray(int N_x) {
+
+    double *array = (double *)calloc( N_x, sizeof(double ));
+    
+    return array;
+}
+
+void free1DArray(double *array){
+
     free(array);
 }
 

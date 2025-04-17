@@ -49,6 +49,7 @@
 #include "grid_io.h"
 #include "background_profiles.h"
 #include "power_calc.h"
+#include "energy_calc_module.h"
 #include "save_data.h"
 #include "boundary_module.h"
 #include "antenna_detector.h"
@@ -87,16 +88,14 @@ int main( int argc, char *argv[] ) {
     init_boundary( gridCfg, boundaryV);                                     //function in BOUNDARY_MODULE.C
     init_antennaInjection( gridCfg, beamCfg );                              //function in ANTENNA.C
     init_antennaDetect( gridCfg, beamCfg, antDetect );                      //function in ANTENNA_DETECTOR.C
-    init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C      
+    init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C  
+    init_energyCalculations( gridCfg );                                     //function in ENERGY_CALC_MODULE.C                                       
 
     // arrays realized as variable-length array (VLA)
-    // E- and B-wavefield
-    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);
+    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);      // E- and B-wavefield
     double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
-    // J-wavefield (in plasma) and background magnetic field
-    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);
-    // background electron plasma density
-    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);
+    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
+    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
 
     init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );                //function in BACKGROUND_PROFILES.C
 
@@ -120,29 +119,32 @@ int main( int argc, char *argv[] ) {
     for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
         
         //Beam injection to grid
-        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref );             //function in ANTENNA.C
-        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                             //advance EM fields. function in FOCAL.C
+        control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref );         //function in ANTENNA.C
+        advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                         //function in FOCAL.C
 
         //optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
 
-        advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );                       //function in BOUNDARY_MODULE.C
-        control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE );                        //function in ANTENNA_DETECTOR.C
-        compute_power( gridCfg, beamCfg, powerVal, t_int, EB_WAVE, EB_WAVE_ref );            //function in POWER_CALC.C
+        advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );                      //function in BOUNDARY_MODULE.C
+        control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE, J_B0 );                 //function in ANTENNA_DETECTOR.C
+        compute_power( gridCfg, beamCfg, powerVal, t_int, EB_WAVE, EB_WAVE_ref );           //function in POWER_CALC.C
+        control_energy_calc( gridCfg, beamCfg, t_int, EB_WAVE, J_B0 );                      //function in ENERGY_CALC_MODULE.C
         //stores abs(E) into HDF5 file
-        save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );                              //function in SAVE_DATA.C
+        save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );                             //function in SAVE_DATA.C
 
     } // end of time loop
     
     printf("--------------------Finished!-------------------\n");
 
     // write timetrace data into file
-    write_timetraces( gridCfg, saveDCfg );                                                   //function in POWER_CALC.C
-    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                   //function in SAVE_DATA.C      
-    save_AntDetect( gridCfg, saveDCfg, antDetect );                                          //function in ANTENNA_DETECTOR.C
+    write_timetraces( gridCfg, saveDCfg );                                                  //function in POWER_CALC.C
+    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                  //function in SAVE_DATA.C      
+    save_AntDetect( gridCfg, saveDCfg, antDetect );                                         //function in ANTENNA_DETECTOR.C
+    save_EnergyPower( gridCfg, saveDCfg);                                                   //function in ENERGY_CALC_MODULE.C
 
     //free allocated arrays
     free_boundary( gridCfg );
+    free_EnergyArray_memory();
     free_antDetect( gridCfg, antDetect );
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
