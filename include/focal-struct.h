@@ -15,7 +15,8 @@ typedef struct gridConfiguration {      /*Saves the main physical parameters of 
         dx,dt,
         ne_0, ne_s, ne_t, ne_w, 
         B0_value,
-        nu0;
+        nu0,
+        run_time;
 } gridConfiguration;
 
 typedef struct saveData{                /*Variables related to simulation data saving*/

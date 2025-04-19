@@ -1,6 +1,6 @@
 /**
- * Author:      Alf Köhn-Seemann
- * Email:       koehn@igvp.uni-stuttgart.de
+ * Author:      Luis Herrera Quesada/Alf Köhn-Seemann
+ * Email:       luis.herreraquesada@/koehn@igvp.uni-stuttgart.de
  * Copyright:   University of Stuttgart
  * 
  * This is a 3D FDTD code for simulating electromagnetic waves in cold 
@@ -13,50 +13,15 @@
  *
  **/
 
-//Include C libraries
-#include <limits.h>
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <strings.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <getopt.h>
-#include <sys/stat.h>
-#include <stdbool.h>
-
-// check if compiler understands OMP, if not, this file does probably not exist
-#ifdef _OPENMP
-    #include <omp.h>  
-#endif
-
-#define HDF5
-#ifdef HDF5
-    #include "hdf5.h"
-#endif
-//PI values is defined in the math.h
-#ifndef M_PI    
-  #define M_PI 3.14159265358979323846   
-#endif
-
-//Include FOCAL modules headers
-#include "focal-struct.h"
-#include "macros-grid.h"
-#include "alloc-memory.h"
-#include "init_module.h"
-#include "focal.h"
-#include "antenna.h"
-#include "grid_io.h"
-#include "background_profiles.h"
-#include "power_calc.h"
-#include "energy_calc_module.h"
-#include "save_data.h"
-#include "boundary_module.h"
-#include "antenna_detector.h"
-
+ #include "main_header.h"
 
 int main( int argc, char *argv[] ) {
 //{{{
+    //Start clock for CPU running time measuring
+    clock_t start_CPU = clock();
+    
+    struct timespec start_Ftime, end_Ftime;
+    double time_elapsed;                                        //Computes running time for functions/CPU run time
 
     //Call structures
     gridConfiguration            *gridCfg;
@@ -97,7 +62,12 @@ int main( int argc, char *argv[] ) {
     double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
     double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
 
+    clock_gettime(CLOCK_MONOTONIC, &start_Ftime);
     init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );                //function in BACKGROUND_PROFILES.C
+    clock_gettime(CLOCK_MONOTONIC, &end_Ftime);
+    time_elapsed =  (end_Ftime.tv_sec - start_Ftime.tv_sec) + 
+                    (end_Ftime.tv_nsec - start_Ftime.tv_nsec) / 1e9;
+    printf("Background profiles RUN_TIME: %f seconds\n", time_elapsed);
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
@@ -116,6 +86,7 @@ int main( int argc, char *argv[] ) {
 #endif
 
     //System's time evolution
+    clock_gettime(CLOCK_MONOTONIC, &start_Ftime);                                           //Counts time for 1 iteration
     for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
         
         //Beam injection to grid
@@ -132,15 +103,29 @@ int main( int argc, char *argv[] ) {
         //stores abs(E) into HDF5 file
         save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE );                             //function in SAVE_DATA.C
 
+        if(t_int == 0){
+            clock_gettime(CLOCK_MONOTONIC, &end_Ftime);
+            time_elapsed =  (end_Ftime.tv_sec - start_Ftime.tv_sec) + 
+                            (end_Ftime.tv_nsec - start_Ftime.tv_nsec) / 1e9;
+            printf("ITERATION RUN_TIME: %f seconds\n", time_elapsed);
+        } //end iteration running time calculation
+
     } // end of time loop
     
     printf("--------------------Finished!-------------------\n");
-
+    clock_gettime(CLOCK_MONOTONIC, &end_Ftime);
+    time_elapsed =  (end_Ftime.tv_sec - start_Ftime.tv_sec) + 
+                    (end_Ftime.tv_nsec - start_Ftime.tv_nsec) / 1e9;
+    printf("%d ITERATIONS RUN_TIME: %f seconds\n", T_END, time_elapsed);
+    
     // write timetrace data into file
     write_timetraces( gridCfg, saveDCfg );                                                  //function in POWER_CALC.C
-    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                  //function in SAVE_DATA.C      
     save_AntDetect( gridCfg, saveDCfg, antDetect );                                         //function in ANTENNA_DETECTOR.C
     save_EnergyPower( gridCfg, saveDCfg);                                                   //function in ENERGY_CALC_MODULE.C
+    clock_t end_CPU = clock();
+    run_time = ((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC;
+    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                  //function in SAVE_DATA.C      
+    
 
     //free allocated arrays
     free_boundary( gridCfg );
@@ -152,6 +137,9 @@ int main( int argc, char *argv[] ) {
     printf( "freed J_B0\n" );
     free( n_e );
     printf( "freed n_e\n" );
+
+    end_CPU = clock();
+    printf("CPU running time: %f seconds\n", ((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC );
     
     return EXIT_SUCCESS;
 }//}}}
