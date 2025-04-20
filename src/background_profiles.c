@@ -182,7 +182,7 @@ int make_density_profile(   gridConfiguration *gridCfg,
                     new_rad = sqrt( pow((float)ii - (float)(ANT_X/2), 2) + pow((float)jj - (float)(ANT_Y/2), 2) );
 
                     if( pow(new_rad,2) < pow(ant_radius/2,2) ) {
-                        n_e[ii][jj][kk]    =  ne_0 * pow( 1 - pow( new_rad/w,s ), t );
+                        n_e[ii][jj][kk]    =  ne_0 * pow( 1 - pow( new_rad/(ant_radius/2),s ), t );
                     }
                     
                 }
