@@ -13,7 +13,7 @@
  *
  **/
 
- #include "main_header.h"
+#include "main_header.h"
 
 int main( int argc, char *argv[] ) {
 //{{{
@@ -139,7 +139,7 @@ int main( int argc, char *argv[] ) {
     printf( "freed n_e\n" );
 
     end_CPU = clock();
-    printf("CPU running time: %f seconds\n", ((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC );
+    printf("CPU running time: %f seconds\n", (((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC) / 3600 );
     
     return EXIT_SUCCESS;
 }//}}}
