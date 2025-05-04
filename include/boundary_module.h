@@ -66,4 +66,20 @@ double sigma(int pml_size, double nn, int m, double ds);
 
 void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boundaryV);
 
+/*Plasma boundary conditions*/
+void control_bc_helicon(    gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg,
+                            double EB_WAVE_ref[NX][NY][NZ],
+                            double J_B0[NX][NY][NZ] );
+
+int conducting_BC(  gridConfiguration *gridCfg, 
+                    beamAntennaConfiguration *beamCfg,
+                    double EB_WAVE[NX][NY][NZ],
+                    double J_B0[NX][NY][NZ] );
+
+int insulating_BC(  gridConfiguration *gridCfg, 
+                    beamAntennaConfiguration *beamCfg,
+                    double EB_WAVE[NX][NY][NZ],
+                    double J_B0[NX][NY][NZ] );
+
 #endif

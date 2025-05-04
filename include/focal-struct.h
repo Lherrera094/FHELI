@@ -48,7 +48,8 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         exc_signal,
         ant_x, ant_y, ant_z,
         rampUpMethod,
-        ant_type, ant_lenght;               //For helical antennas
+        ant_type, ant_lenght,               //For helical antennas
+        bc_helicon;               
     double
         omega_t,
         antAngle_zy, antAngle_zx,

@@ -76,6 +76,7 @@
 #define ant_typeBG(beamCfg)             beamCfg->ant_type
 #define ant_lenghtBG(beamCfg)           beamCfg->ant_lenght
 #define ant_radiusBG(beamCfg)           beamCfg->ant_radius
+#define bc_heliconBG(beamCfg)           beamCfg->bc_helicon
 #define num_turnsBG(beamCfg)            beamCfg->num_turns
 #define num_armsBG(beamCfg)             beamCfg->num_arms
 #define J_ampBG(beamCfg)                beamCfg->J_amp
@@ -97,6 +98,7 @@
 #define ant_type                        ant_typeBG(beamCfg)
 #define ant_lenght                      ant_lenghtBG(beamCfg)
 #define ant_radius                      ant_radiusBG(beamCfg)
+#define bc_helicon                      bc_heliconBG(beamCfg)
 #define num_turns                       num_turnsBG(beamCfg)            
 #define num_arms                        num_armsBG(beamCfg)             
 #define J_amp                           J_ampBG(beamCfg)

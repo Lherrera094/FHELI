@@ -95,7 +95,7 @@ int main( int argc, char *argv[] ) {
 
         //optionally, apply numerical viscosity
         //apply_numerical_viscosity( &gridCfg, EB_WAVE );
-
+        control_bc_helicon(  gridCfg, beamCfg, EB_WAVE, J_B0 );                             //function in BOUNDARY_MODULE.C
         advance_boundary(  gridCfg, boundaryV, EB_WAVE, EB_WAVE_ref );                      //function in BOUNDARY_MODULE.C
         control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE, J_B0 );                 //function in ANTENNA_DETECTOR.C
         compute_power( gridCfg, beamCfg, powerVal, t_int, EB_WAVE, EB_WAVE_ref );           //function in POWER_CALC.C

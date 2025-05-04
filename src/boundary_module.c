@@ -1141,3 +1141,79 @@ void init_UPML_parameters(   gridConfiguration *gridCfg, boundaryVariables *boun
 }//End omp parallel
 }
 
+/*Boundary conditions for plasma column in helicon discharges*/
+void control_bc_helicon(    gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg,
+                            double EB_WAVE[NX][NY][NZ],
+                            double J_B0[NX][NY][NZ]  ) {
+
+    /*Selects helicon boundary from input*/
+    if( bc_helicon == 1 ){
+        conducting_BC(  gridCfg, beamCfg, EB_WAVE, J_B0 );
+    } else if( bc_helicon == 2 ){
+        insulating_BC(  gridCfg, beamCfg, EB_WAVE, J_B0 );
+    }
+
+}
+
+int conducting_BC(  gridConfiguration *gridCfg, 
+                    beamAntennaConfiguration *beamCfg,
+                    double EB_WAVE[NX][NY][NZ],
+                    double J_B0[NX][NY][NZ] ) {
+
+    double new_rad;
+    size_t
+    ii, jj, kk;
+
+#pragma omp parallel for collapse(3) schedule(static) default(shared) private(ii,jj,kk) 
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
+
+                new_rad = pow((float)ii - (float)(ANT_X), 2) + pow((float)jj - (float)(ANT_Y), 2);
+
+                if( new_rad == pow(ant_radius,2) ) {
+                    EB_WAVE[ii  ][jj+1][kk+1]   =  0;
+                    EB_WAVE[ii+1][jj  ][kk+1]   =  0;
+                    EB_WAVE[ii  ][jj  ][kk+1]   =  0;
+                }
+            
+            }
+        }
+    }
+    return EXIT_SUCCESS;
+
+}
+
+int insulating_BC(  gridConfiguration *gridCfg, 
+                    beamAntennaConfiguration *beamCfg,
+                    double EB_WAVE[NX][NY][NZ],
+                    double J_B0[NX][NY][NZ] ){
+
+    double new_rad;
+    size_t
+    ii, jj, kk;
+
+#pragma omp parallel for collapse(3) schedule(static) default(shared) private(ii,jj,kk) 
+    for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
+        for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
+            for (kk=D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
+
+                new_rad =  pow((float)ii - (float)(ANT_X), 2) + pow((float)jj - (float)(ANT_Y), 2);
+
+                if( new_rad == pow(ant_radius,2) ){
+                    EB_WAVE[ii  ][jj+1][kk+1]   =  0;
+                    EB_WAVE[ii+1][jj  ][kk+1]   =  0;
+                }
+
+                if( new_rad == pow(ant_radius-2,2) ){
+                    J_B0[ii-1][jj-2][kk  ]	    =  0;
+                    J_B0[ii-2][jj-1][kk  ]	    =  0;
+                }
+
+            }
+        }
+    }
+    return EXIT_SUCCESS;
+
+}
