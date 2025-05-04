@@ -86,30 +86,32 @@ int init_antennaDetect( gridConfiguration *gridCfg,
 /*Liberates the allocated memory for the antenna*/
 int free_antDetect( gridConfiguration *gridCfg,
                     antennaDetector *antDetect ){
-
-    if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_01, NX);
-        free3DArray(detAnt_01_fields, NX, NY);            
-    }
-    if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_02, NX);
-        free3DArray(detAnt_02_fields, NX, NY);
-    }
-    if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_03, NX);
-        free3DArray(detAnt_03_fields, NX, NY);
-    }
-    if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_04, NX);
-        free3DArray(detAnt_04_fields, NX, NY);
-    }
-    if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_05, NX);
-        free3DArray(detAnt_05_fields, NX, NY);
-    }
-    if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
-        free2DArray(detAnt_1D_06, NX);
-        free3DArray(detAnt_06_fields, NX, NY);
+    
+    if( activate_antDetect1D == 1 ) {
+        if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_01, NX);
+            free3DArray(detAnt_01_fields, NX, NY);            
+        }
+        if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_02, NX);
+            free3DArray(detAnt_02_fields, NX, NY);
+        }
+        if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_03, NX);
+            free3DArray(detAnt_03_fields, NX, NY);
+        }
+        if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_04, NX);
+            free3DArray(detAnt_04_fields, NX, NY);
+        }
+        if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_05, NX);
+            free3DArray(detAnt_05_fields, NX, NY);
+        }
+        if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
+            free2DArray(detAnt_1D_06, NX);
+            free3DArray(detAnt_06_fields, NX, NY);
+        }
     }
 
     printf("Freed Antenna detector allocated memory. \n");
@@ -118,20 +120,52 @@ int free_antDetect( gridConfiguration *gridCfg,
 }
 
 /*Print in console the antennad detect information*/
-int print_antennaDetec( antennaDetector *antDetect ){
+int print_antennaDetec( gridConfiguration *gridCfg,
+                        antennaDetector *antDetect ){
 
     if( activate_antDetect1D == 1 ){
 
         printf("------------Detector Antenna Positions------------\n");
         printf( "detector antenna y: y1 = %d\n", detAnt_01_ypos );
-        printf( "detector antenna 01: z1 = %d\n", detAnt_01_zpos );
-        printf( "detector antenna 02: z2 = %d\n", detAnt_02_zpos );
-        printf( "detector antenna 03: z3 = %d\n", detAnt_03_zpos );
-        printf( "detector antenna 04: z4 = %d\n", detAnt_04_zpos );
-        printf( "detector antenna 05: z5 = %d\n", detAnt_05_zpos );
-        printf( "detector antenna 06: z6 = %d\n", detAnt_06_zpos );
+
+        if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 01: z1 = %d\n", detAnt_01_zpos );
+        } else {
+            printf( "detector antenna 01: out of boundaries\n");
+        }
+
+        if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 02: z2 = %d\n", detAnt_02_zpos );
+        } else {
+            printf( "detector antenna 02: out of boundaries\n");
+        }
+
+        if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 03: z3 = %d\n", detAnt_03_zpos );
+        } else {
+            printf( "detector antenna 03: out of boundaries\n");
+        }
+
+        if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 04: z4 = %d\n", detAnt_04_zpos );
+        } else {
+            printf( "detector antenna 04: out of boundaries\n");
+        }
+
+        if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 05: z5 = %d\n", detAnt_05_zpos );
+        } else {
+            printf( "detector antenna 05: out of boundaries\n");
+        }
+
+        if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
+            printf( "detector antenna 06: z6 = %d\n", detAnt_06_zpos );
+        } else {
+            printf( "detector antenna 06: out of boundaries\n");
+        }
 
     } else {
+        printf("------------Detector Antenna Positions------------\n");
         printf("No detector antenna initialized. \n");
     }
 

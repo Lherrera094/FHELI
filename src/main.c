@@ -71,7 +71,7 @@ int main( int argc, char *argv[] ) {
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
-    print_antennaDetec( antDetect );                                        //function in ANTENNA_DETECTOR.C
+    print_antennaDetec( gridCfg, antDetect );                                        //function in ANTENNA_DETECTOR.C
     print_helical( beamCfg );                                               //function in HELICAL_ANTENNA.C
 
     printf("--------------------Simulation--------------------\n");
@@ -130,7 +130,7 @@ int main( int argc, char *argv[] ) {
     //free allocated arrays
     free_boundary( gridCfg );
     free_EnergyArray_memory();
-    free_antDetect( gridCfg, antDetect );
+    free_antDetect( gridCfg, antDetect );                                                   //function in
     free( EB_WAVE );
     printf( "freed EB_WAVE\n" );
     free( J_B0 );
@@ -139,7 +139,7 @@ int main( int argc, char *argv[] ) {
     printf( "freed n_e\n" );
 
     end_CPU = clock();
-    printf("CPU running time: %f seconds\n", (((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC) / 3600 );
+    printf("CPU running time: %f hora(s) \n", (((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC) / 3600 );
     
     return EXIT_SUCCESS;
 }//}}}

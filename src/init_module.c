@@ -26,7 +26,7 @@ void grid_init( gridConfiguration *gridCfg,
     if( ne_0 > PERIOD * 2./5.){
         printf("Density value is too large for code stability. \n");
         printf("Maximum density: %.3f. \n", PERIOD * 2./5.);
-        exit(-1);
+        //exit(-1);
     }
 
     //Grid configuration variables computation

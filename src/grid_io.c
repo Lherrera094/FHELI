@@ -633,7 +633,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
     dataset_id = H5Dcreate( file_id, "/config/ant_lenght", H5T_NATIVE_DOUBLE,
         dataspace_id, 
         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_double[0]  = ant_lenght;
+    data2write_double[0]  = ant_lenght/2;
     status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
                     H5S_ALL, H5S_ALL, H5P_DEFAULT,
                     data2write_double); 
@@ -645,7 +645,7 @@ int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamC
     dataset_id = H5Dcreate( file_id, "/config/ant_radius", H5T_NATIVE_DOUBLE,
         dataspace_id, 
         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    data2write_double[0]  = ant_radius;
+    data2write_double[0]  = ant_radius/2;
     status = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE,
                     H5S_ALL, H5S_ALL, H5P_DEFAULT,
                     data2write_double); 

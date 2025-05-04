@@ -1,0 +1,5 @@
+Radius: 100.0
+Lenght: 1840.0
+X_position (center): 115.0
+Y_position (center): 115.0
+Z_position (center): 935.0

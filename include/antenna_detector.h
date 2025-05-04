@@ -18,7 +18,8 @@ int init_antennaDetect( gridConfiguration *gridCfg,
 int free_antDetect( gridConfiguration *gridCfg,
                     antennaDetector *antDetect );
 
-int print_antennaDetec( antennaDetector *antDetect );
+int print_antennaDetec( gridConfiguration *gridCfg,
+                        antennaDetector *antDetect );
 
 int control_antennaDetect(  gridConfiguration *gridCfg,
                             antennaDetector *antDetect,
