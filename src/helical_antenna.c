@@ -295,6 +295,8 @@ void print_helical( beamAntennaConfiguration *beamCfg ){
         antenna_type = "LH Half-helical";
     } else if(ant_type == 8){
         antenna_type = "Birdcage";
+    } else {
+        antenna_type = "Unknown";
     }
 
     printf("-------------------Helicon Antenna------------------\n");
@@ -413,8 +415,6 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
 
         linear_antenna_ref( gridCfg, beamCfg, t_rise, 0,    lenght3, S3, EB_WAVE );
         linear_antenna_ref( gridCfg, beamCfg, t_rise, M_PI, lenght4, S4, EB_WAVE );
-        linear_antenna_ref( gridCfg, beamCfg, t_rise, 0,    lenght5, S5, EB_WAVE );
-        linear_antenna_ref( gridCfg, beamCfg, t_rise, M_PI, lenght6, S6, EB_WAVE );
 
     } else if(ant_type == 5){                           //Boswell antenna  
 
@@ -505,7 +505,7 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
                             double EB_WAVE[NX][NY][NZ] ){
 
     int ii, jj, kk, ll;
-    double J_x, J_y;
+    double J_x, J_y, theta,x,y;
 
 #pragma omp parallel for
     for( ll = 0 ; ll < lenght ; ll++ ){
@@ -514,34 +514,50 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
-            jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
+        x = (ii - ANT_X)/ant_radius;
+        y = (jj - ANT_Y)/ant_radius;
+        theta = atan2(x,y);
 
-            J_x = J_amp/4;
-            J_y = -J_amp/4;
+        if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {
+
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
         
-        } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
-                   jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
+        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = J_amp/4;
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
 
-        } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
-                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = -J_amp/4;
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
 
-        } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
-                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+        } else if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = J_amp/4;
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
 
+        } else if( (ii = ANT_X) && ( jj = (ANT_Y - ant_radius) ) ){
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
+        } else if( (ii = ANT_X + ant_radius) && ( jj = ANT_Y ) ){
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
+        } else if( (ii = ANT_X - ant_radius) && ( jj = ANT_Y ) ){
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
+        } else if( (ii = ANT_X ) && ( jj = ANT_Y + ant_radius ) ){
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
     }
 
     return EXIT_SUCCESS;
