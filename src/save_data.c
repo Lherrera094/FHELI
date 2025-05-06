@@ -191,7 +191,7 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
         sprintf(filename_hdf5,"%s/%s/%s", projectPath, foldername, file_hdf5);
 
         // abs(E)
-    // prepare array for that
+        // prepare array for that
 #pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
         for (ii=0 ; ii<NX ; ii+=2) {
             for (jj=0 ; jj<NY ; jj+=2) {
@@ -208,6 +208,28 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
         
         //Append the name of the files
         sprintf( dSet_name, "E_abs__tint%05d", t_int );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // abs(B)
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = 
+                        sqrt( pow(EB_WAVE[ii  ][jj+1][kk+1],2) 
+                            +pow(EB_WAVE[ii+1][jj  ][kk+1],2) 
+                            +pow(EB_WAVE[ii+1][jj+1][kk  ],2) );
+                }
+            }
+        }
+
+    //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "B_abs__tint%05d", t_int );
         printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
 
         free( data2save );

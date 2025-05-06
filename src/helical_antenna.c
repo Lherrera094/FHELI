@@ -615,7 +615,7 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
                                 double EB_WAVE[NX][NY][NZ_REF] ){
 
     int ii, jj, kk, ll;
-    double J_x, J_y;
+    double J_x, J_y, x, y, theta;
 
 #pragma omp parallel for
     for( ll = 0 ; ll < lenght ; ll++ ){
@@ -624,34 +624,50 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
 
-        if( ii <= (ANT_X + ant_radius) && ii > ANT_X &&
-            jj <= (ANT_Y + ant_radius) && jj > ANT_Y ){
+        x = (ii - ANT_X)/ant_radius;
+        y = (jj - ANT_Y)/ant_radius;
+        theta = atan2(x,y);
 
-            J_x = J_amp/4;
-            J_y = -J_amp/4;
+        if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {
+
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
         
-        } else if( ii  > (ANT_X - ant_radius) && ii <= ANT_X &&
-                   jj < (ANT_Y + ant_radius) && jj >=  ANT_Y ){
+        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = J_amp/4;
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
 
-        } else if( ii > (ANT_X - ant_radius) && ii <= ANT_X &&
-                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = -J_amp/4;
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
 
-        } else if( ii < (ANT_X + ant_radius) && ii >= ANT_X &&
-                   jj >= (ANT_Y - ant_radius) && jj <  ANT_Y ){
+        } else if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
-            J_x = J_amp/4;
-            J_y = J_amp/4;
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
 
+        } else if( (ii = ANT_X) && ( jj = (ANT_Y - ant_radius) ) ){
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
+        } else if( (ii = ANT_X + ant_radius) && ( jj = ANT_Y ) ){
+            J_x = J_Amp * cos( theta );
+            J_y = J_Amp * sin( theta );
+        } else if( (ii = ANT_X - ant_radius) && ( jj = ANT_Y ) ){
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
+        } else if( (ii = ANT_X ) && ( jj = ANT_Y + ant_radius ) ){
+            J_x = J_Amp * cos( -theta );
+            J_y = J_Amp * sin( -theta );
         }
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
     }
 
     return EXIT_SUCCESS;
