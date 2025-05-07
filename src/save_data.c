@@ -177,7 +177,8 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
 
 int save_field_toHDF5(  gridConfiguration *gridCfg, 
                         saveData *saveDCfg, int t_int,
-                        double EB_WAVE[NX][NY][NZ] ){
+                        double EB_WAVE[NX][NY][NZ],
+                        double J_B0[NX][NY][NZ] ){
 
     if( t_int % (int)(t_save * PERIOD) == 0 && t_int != 0){
 
@@ -226,11 +227,184 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
             }
         }
 
-    //delete_ant2save( gridCfg, data2save );
+        //delete_ant2save( gridCfg, data2save );
 
         //Append the name of the files
         sprintf( dSet_name, "B_abs__tint%05d", t_int );
         printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // E_x
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii+1][jj  ][kk  ];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "E_x" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // E_y
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii  ][jj+1][kk  ];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "E_y" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // E_z
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii  ][jj  ][kk+1];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "E_z" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // B_x
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii  ][jj+1][kk+1];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "B_x" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // B_y
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii+1][jj  ][kk+1];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "B_y" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // B_z
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = EB_WAVE[ii+1][jj  ][kk+1];
+                }
+            }
+        }
+
+        //delete_ant2save( gridCfg, data2save );
+
+        //Append the name of the files
+        sprintf( dSet_name, "B_z" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // Jx component
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii+1][jj  ][kk  ] ;
+
+                }
+            }
+        }
+
+        //Append the name of the files
+        sprintf( dSet_name, "J_x" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // Jy component
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii  ][jj+1][kk  ] ;
+
+                }
+            }
+        }
+
+        //Append the name of the files
+        sprintf( dSet_name, "J_y" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
+
+        // Jz component
+        // prepare array for that
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk)
+        for (ii=0 ; ii<NX ; ii+=2) {
+            for (jj=0 ; jj<NY ; jj+=2) {
+                for (kk=0 ; kk<NZ ; kk+=2) {
+
+                    data2save[(ii/2)][(jj/2)][(kk/2)] = J_B0[ii  ][jj  ][kk+1] ;
+
+                }
+            }
+        }
+
+        //Append the name of the files
+        sprintf( dSet_name, "J_z" );
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_v4( NX/2, NY/2, NZ/2, filename_hdf5, dSet_name, data2save ) ) ;
+
+        set2zero_3D( NX/2, NY/2, NZ/2, data2save );
 
         free( data2save );
     }

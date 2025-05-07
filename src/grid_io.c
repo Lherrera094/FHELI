@@ -80,10 +80,16 @@ int writeMyHDF_v4( int dim0, int dim1, int dim2, char filename[], char dataset[]
                         H5P_DEFAULT )           // link access property list identifiert
                 > 0 ) {                         // NOTE: for version 1.8.10, this might be slightly different
             printf( "ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename );
-            printf( "       dataset will NOT be saved (no overwrite by default)\n" );
-            status = H5Fclose(file_id);
-            if (status < 0) printf( "ERROR: could not close file '%s'\n", filename );
-            return EXIT_FAILURE;
+            printf( "       dataset WILL be overwrite. \n" );
+            status = H5Ldelete( file_id, dataset, H5P_DEFAULT );
+            //printf( "ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename );
+            //printf( "       dataset will NOT be saved (no overwrite by default)\n" );
+            //status = H5Fclose(file_id);
+            if (status < 0) {
+                printf( "ERROR: could not close file '%s'\n", filename );
+                H5Fclose(file_id);
+                return EXIT_FAILURE;
+            }
         }
 #endif
     } else {

@@ -37,6 +37,7 @@ int save_data_toHDF5(   gridConfiguration *gridCfg,
 
 int save_field_toHDF5(  gridConfiguration *gridCfg, 
                         saveData *saveDCfg, int t_int,
-                        double EB_WAVE[NX][NY][NZ] );
+                        double EB_WAVE[NX][NY][NZ],
+                        double J_B0[NX][NY][NZ] );
 
 #endif
