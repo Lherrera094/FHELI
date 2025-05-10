@@ -425,6 +425,94 @@ int writeMyHDF_v4_2D(int dim0, int dim1, char filename[], char dataset[], double
 }
 //#endif
 
+//#ifdef HDF5
+int writeMyHDF_single_value( char filename[], int value ) {
+    //#{{{
+
+    long        data2write_long[1];
+
+    // hdf related variables
+    hid_t       file_id, dataset_id, dataspace_id;      // object identifiers
+    hsize_t     dims[1];                                // size used for dimensions
+    herr_t      status;                                 // function return value
+
+    // note that shuffle and compression filter is not applied here, as only single values are saved
+
+    // required for check if hdf5-file already exists
+    struct      stat st;
+
+    // check if specified hdf5 file already exists
+    // if not, create new one; if yes, open and add dataset to it
+    if ( stat( filename, &st )==0 ) {
+        // open file for read + write access
+        file_id = H5Fopen( filename,            // filename
+                           H5F_ACC_RDWR,        // allow read & write access (_RDONLY for read only)
+                           H5P_DEFAULT);        // file access property list (default one)
+
+        // hdf5 version 1.8.0 introduced H5Lexists to check if link (to group or dataset) exists in hdf5-file
+#if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
+        if ( H5_VERS_MINOR >= 10 ) {
+            printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
+            printf( "         behavior of H5Lexists was slightly changed in this version\n" );
+            printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
+        }
+        if (H5Lexists(file_id, "/last_t_fields", H5P_DEFAULT) > 0) {
+            status = H5Ldelete(file_id, "/last_t_fields", H5P_DEFAULT);
+            if (status < 0) {
+                printf("WARNING: could not delete existing dataset '/last_t_fields'\n");
+            }
+        }
+#endif
+    } else {
+        // create a new file using default properties.
+        file_id = H5Fcreate( filename,          // filename
+                             H5F_ACC_TRUNC,     // how file should be created (removes existing file)
+                             H5P_DEFAULT,       // file creating property list
+                             H5P_DEFAULT);      // file access property list
+    }
+    
+    // create simple data space for the dataset
+    // (simple = regular N-dimensional array, i.e. data on regular rectangular grid)
+    // (complex = e.g.: irregular grids resulting from dynamic refinement of mesh)
+    dims[0] = 1;
+    dataspace_id = H5Screate_simple( 1,     // number of dimensions of dataspace 
+                                     dims,  // size of array in each dimension
+                                     NULL); // allow stretching of data space (NULL=no)
+
+    // Value
+    // create the dataset
+    dataset_id = H5Dcreate( file_id,                // file identifier (or group identifier)
+                            "last_t_fields",        // name of dataset (relative to group specified, if speficied)
+                            H5T_NATIVE_LONG,        // datatype to use when creating dataset
+                            dataspace_id,           // dataspace identifier
+                            H5P_DEFAULT,            // link creation property list (was dataset creating property list <=v1.6)
+                            H5P_DEFAULT,            // dataset creation property list (added in HDF5v1.8)
+                            H5P_DEFAULT);           // dataset access property list (added in HDF5v1.8)
+
+    // write the dataset
+    data2write_long[0]  = (long)value;
+    status = H5Dwrite( dataset_id,                  // dataset identifier
+                       H5T_NATIVE_LONG,             // informs hdf about format of data in memory of computer
+                       H5S_ALL,                     // identifier of memory dataspace
+                       H5S_ALL,                     // file space identifier
+                       H5P_DEFAULT,                 // data transfer property list
+                       data2write_long);            // pointer to data array
+    if (status < 0) printf( "ERROR: could not write dataset 'value' into file '%s'\n", filename);
+    // terminate access and free ressources/identifiers for dataset
+    status = H5Dclose(dataset_id);
+    if (status < 0) printf("ERROR: could not close dataset 'value'\n");
+
+    // terminate access and free ressources/identifiers
+    // data space
+    status = H5Sclose(dataspace_id);
+    if (status < 0) printf("ERROR: could not close dataspace'\n");
+    // file 
+    status = H5Fclose(file_id);
+    if (status < 0) printf( "ERROR: could not close file '%s'\n", filename);
+    
+    return EXIT_SUCCESS;
+}
+//#endif
 
 //#ifdef HDF5
 int writeConfig2HDF( gridConfiguration *gridCfg, beamAntennaConfiguration *beamCfg, char filename[] ) {
