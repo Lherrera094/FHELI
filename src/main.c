@@ -45,6 +45,12 @@ int main( int argc, char *argv[] ) {
 #endif
         t_int;
 
+    // arrays realized as variable-length array (VLA)
+    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);      // E- and B-wavefield
+    double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
+    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
+    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
+
     // set-up grid (read values from JSON)
     control_init(  gridCfg, beamCfg, saveDCfg, antDetect );                 //function in INIT_MODULE.C
     create_folder( gridCfg, saveDCfg );                                     //function in SAVE_DATA.C
@@ -54,13 +60,8 @@ int main( int argc, char *argv[] ) {
     init_antennaInjection( gridCfg, beamCfg );                              //function in ANTENNA.C
     init_antennaDetect( gridCfg, beamCfg, antDetect );                      //function in ANTENNA_DETECTOR.C
     init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C  
-    init_energyCalculations( gridCfg );                                     //function in ENERGY_CALC_MODULE.C                                       
-
-    // arrays realized as variable-length array (VLA)
-    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);      // E- and B-wavefield
-    double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
-    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
-    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
+    init_continuity( gridCfg, saveDCfg, EB_WAVE, J_B0 );                    //function in CONTINUITY_MODULE
+    init_energyCalculations( gridCfg, saveDCfg );                           //function in ENERGY_CALC_MODULE.C
 
     clock_gettime(CLOCK_MONOTONIC, &start_Ftime);
     init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );                //function in BACKGROUND_PROFILES.C
@@ -71,7 +72,7 @@ int main( int argc, char *argv[] ) {
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
-    print_antennaDetec( gridCfg, antDetect );                                        //function in ANTENNA_DETECTOR.C
+    print_antennaDetec( gridCfg, antDetect );                               //function in ANTENNA_DETECTOR.C
     print_helical( beamCfg );                                               //function in HELICAL_ANTENNA.C
 
     printf("--------------------Simulation--------------------\n");
@@ -87,8 +88,8 @@ int main( int argc, char *argv[] ) {
 
     //System's time evolution
     clock_gettime(CLOCK_MONOTONIC, &start_Ftime);                                           //Counts time for 1 iteration
-    for ( t_int=0 ; t_int <= T_END ; ++t_int ) {
-        
+    for ( t_int = last_t_fields ; t_int <= T_END ; ++t_int ) {
+
         //Beam injection to grid
         control_antennaInjection(  gridCfg, beamCfg, t_int, EB_WAVE, EB_WAVE_ref );         //function in ANTENNA.C
         advance_fields( gridCfg, EB_WAVE, EB_WAVE_ref, J_B0, n_e );                         //function in FOCAL.C

@@ -1,23 +1,26 @@
 #include "energy_calc_module.h"
 
-//static double   *energy         = NULL;
 static double   *energy_average = NULL;
-//static double   *power          = NULL;
 static double   *power_absorbed = NULL;
-int              t_count        = 0;            //index saves the index to store the values until tuples of PERIOD/4
-//int              EP_indx        = 0;                
+int              t_count        = 0;            //index saves the index to store the values until tuples of PERIOD/4               
 
 /*Initialize energy and power storage arrays*/
-void init_energyCalculations(   gridConfiguration *gridCfg ){
+void init_energyCalculations(   gridConfiguration *gridCfg,
+                                saveData *saveDCfg ){
 
     //Allocate memory for energy_wave and power_absorbed
     // Energy wave: stores time evolution the energy of the EM wave inside plasma region
     energy_average =    allocate1DArray( T_END );
-    //energy         =    allocate1DArray( PERIOD/4 );
     // Power absorbed: stores time evolution of wavepower obsorbed by the plasma
     power_absorbed =    allocate1DArray( T_END );
-    //power          =    allocate1DArray( PERIOD/4 );
 
+    if ( last_t_fields != 0 ){
+        /*Stored saved values for continuation*/
+        stored_saved_dataset( gridCfg, saveDCfg );
+        t_count = last_t_fields + 1;
+    }
+
+    printf("Energy and Power arrays initialized. \n");
 }
 
 void free_EnergyArray_memory(){
@@ -77,18 +80,6 @@ int compute_energy_values(  gridConfiguration *gridCfg,
     power_absorbed[t_count]      =   P * pow(DX,3); 
     t_count += 1;
 
-    //Computes averaged energy and power to save into hdf5 file
-    /*if( t_count == PERIOD/4 ){
-
-        for (int i=0 ; i<PERIOD/4 ; i+=1){
-            energy_average[EP_indx] += energy[i] / (PERIOD/4);
-            power_absorbed[EP_indx] += power[i] / (PERIOD/4);
-        }
-        
-        EP_indx += 1;
-        t_count = 0;
-    }*/
-
     return EXIT_SUCCESS;
 }
 
@@ -104,5 +95,28 @@ void save_EnergyPower( gridConfiguration *gridCfg, saveData *saveDCfg){
 
 }
 
+int stored_saved_dataset(   gridConfiguration *gridCfg,
+                            saveData *saveDCfg ){
+    
+    double (*Array_tmp)  = calloc( last_t_fields, sizeof *Array_tmp );
+    char fullDir[PATH_MAX];
+
+    sprintf(fullDir,"%s/%s/%s", projectPath, foldername, file_hdf5);
+
+    readMyHDF_1D( last_t_fields, fullDir, "Energy_wave(t)", Array_tmp );
+    for( int i = 0 ; i == last_t_fields ; i+=1 ){
+        energy_average[i] = Array_tmp[i];
+        Array_tmp[i] = .0;
+    }
+
+    readMyHDF_1D( last_t_fields, fullDir, "Absorbed_power(t)", Array_tmp );
+    for( int i = 0 ; i == last_t_fields ; i+=1 ){
+        power_absorbed[i] = Array_tmp[i];
+        Array_tmp[i] = .0;
+    }
+
+    free( Array_tmp );
+    return EXIT_SUCCESS;
+}
 
 

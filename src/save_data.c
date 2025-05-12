@@ -406,7 +406,8 @@ int save_field_toHDF5(  gridConfiguration *gridCfg,
 
         set2zero_3D( NX/2, NY/2, NZ/2, data2save );
 
-        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_single_value( filename_hdf5, t_int ) ) ;
+        last_t_fields = t_int;
+        printf( "status of writeMyHDF_v4: %d\n", writeMyHDF_single_value( filename_hdf5, last_t_fields ) ) ;
 
         free( data2save );
     }

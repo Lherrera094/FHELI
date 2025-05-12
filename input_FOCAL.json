@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"Test_circular",
-    "Case_foldername": 		"test_last",
+    "Main_Project": 		"Test_continuation",
+    "Case_foldername": 		"test_0",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
@@ -9,7 +9,7 @@
     "Grid_size_Nx": 	460,
     "Grid_size_Ny": 	460,
     "Grid_size_Nz": 	1660,
-    "t_end": 		10,
+    "t_end": 		20,
     
     "B0_profile":	1,
     "B0_magnitude":	0.0136,

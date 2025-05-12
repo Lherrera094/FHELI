@@ -221,7 +221,7 @@ int make_B0_profile( gridConfiguration *gridCfg,
         ii, jj, kk; 
 //    double
 //        aux;
-
+    printf("Magnetic field definition");
     // B0x: even-odd-odd
     // B0y: odd-even-odd
     // B0z: odd-odd-even

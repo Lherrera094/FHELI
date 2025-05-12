@@ -24,7 +24,7 @@ typedef struct saveData{                /*Variables related to simulation data s
     const char 	*foldername, *projectPath,
     		    *file_hdf5, *file_trace;
 
-    int     col_for_timetraces;
+    int     col_for_timetraces, last_t_fields;
 
     double  t_save;
 } saveData;

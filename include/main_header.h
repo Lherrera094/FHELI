@@ -43,5 +43,6 @@
 #include "save_data.h"
 #include "boundary_module.h"
 #include "antenna_detector.h"
+#include "continuation_module.h"
 
 #endif

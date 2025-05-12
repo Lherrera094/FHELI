@@ -807,6 +807,90 @@ int readMyHDF( int dim0, int dim1, int dim2, char filename[], char dataset[], do
 }//#}}}
 //#endif
 
+int readMyHDF_1D( int dim0, char filename[], char dataset[], double array_1D[dim0]) {
+    //#{{{
+
+    // hdf handles
+    hid_t           file_id, dset_id;
+    herr_t          status;
+    //hsize_t         dims[3] = { dim0, dim1, dim2};
+
+    // open file using default properties
+    file_id = H5Fopen( filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+    // open dataset using default properties
+    dset_id = H5Dopen( file_id, dataset, H5P_DEFAULT);
+
+    // Read the data using the default properties.
+    status = H5Dread( dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                      array_1D );
+    if (status < 0)
+        printf( "ERROR: could not read dataset '%s' from file '%s'\n", dataset, filename );
+
+    // close the dataset
+    status = H5Dclose( dset_id);
+    if (status < 0)
+        printf( "ERROR: could not close dataset '%s' from file '%s'\n", dataset, filename );
+
+    // close the file
+    status = H5Fclose( file_id);
+    if (status < 0)
+        printf( "ERROR: could not close file '%s'\n", filename );
+
+    return EXIT_SUCCESS;
+}//#}}}
+//#endif
+
+int readMyHDFInt( const char *filename, const char *dataset, int *scalar_value ) {
+    hid_t file_id, dset_id;
+    herr_t status;
+
+    // Open the file (read-only)
+    file_id = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file_id < 0) {
+        fprintf(stderr, "ERROR: Could not open file '%s'\n", filename);
+        return EXIT_FAILURE;
+    }
+
+    // Open the dataset
+    dset_id = H5Dopen(file_id, dataset, H5P_DEFAULT);
+    if (dset_id < 0) {
+        fprintf(stderr, "ERROR: Could not open dataset '%s'\n", dataset);
+        H5Fclose(file_id);
+        return EXIT_FAILURE;
+    }
+
+    // Read the scalar value
+    status = H5Dread(
+        dset_id,                // Dataset ID
+        H5T_NATIVE_INT,         // Memory datatype (double)
+        H5S_ALL,                // Memory space (scalar)
+        H5S_ALL,                // File space (scalar)
+        H5P_DEFAULT,            // Transfer properties
+        scalar_value            // Output buffer
+    );
+
+    if (status < 0) {
+        fprintf(stderr, "ERROR: Could not read dataset '%s'\n", dataset);
+        H5Dclose(dset_id);
+        H5Fclose(file_id);
+        return EXIT_FAILURE;
+    }
+
+    // Close resources
+    status = H5Dclose(dset_id);
+    if (status < 0) {
+        fprintf(stderr, "WARNING: Could not close dataset '%s'\n", dataset);
+    }
+
+    status = H5Fclose(file_id);
+    if (status < 0) {
+        fprintf(stderr, "WARNING: Could not close file '%s'\n", filename);
+    }
+
+    return EXIT_SUCCESS;
+}
+
 
 //#if defined(HDF5) && defined(DETECTOR_ANTENNA_1D)
 int detAnt1D_write2hdf5( int N_x, 

@@ -7,9 +7,12 @@
 #include "macros-grid.h"
 #include "auxiliar_module.h"
 #include "grid_io.h"
+#include "continuation_module.h"
 
 /*Initialize energy and power storage arrays*/
-void init_energyCalculations(   gridConfiguration *gridCfg );
+void init_energyCalculations(   gridConfiguration *gridCfg,
+                                saveData *saveDCfg );
+
 void free_EnergyArray_memory();
 
 void control_energy_calc(   gridConfiguration *gridCfg, 
@@ -24,5 +27,8 @@ int compute_energy_values(  gridConfiguration *gridCfg,
                             double J_B0[NX][NY][NZ] );
 
 void save_EnergyPower( gridConfiguration *gridCfg, saveData *saveDCfg);
+
+int stored_saved_dataset(   gridConfiguration *gridCfg,
+                            saveData *saveDCfg );
 
 #endif
