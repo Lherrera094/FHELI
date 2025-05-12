@@ -45,12 +45,6 @@ int main( int argc, char *argv[] ) {
 #endif
         t_int;
 
-    // arrays realized as variable-length array (VLA)
-    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);      // E- and B-wavefield
-    double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
-    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
-    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
-
     // set-up grid (read values from JSON)
     control_init(  gridCfg, beamCfg, saveDCfg, antDetect );                 //function in INIT_MODULE.C
     create_folder( gridCfg, saveDCfg );                                     //function in SAVE_DATA.C
@@ -60,8 +54,12 @@ int main( int argc, char *argv[] ) {
     init_antennaInjection( gridCfg, beamCfg );                              //function in ANTENNA.C
     init_antennaDetect( gridCfg, beamCfg, antDetect );                      //function in ANTENNA_DETECTOR.C
     init_powerValues( gridCfg, powerVal );                                  //function in POWER_CALC.C  
-    init_continuity( gridCfg, saveDCfg, EB_WAVE, J_B0 );                    //function in CONTINUITY_MODULE
-    init_energyCalculations( gridCfg, saveDCfg );                           //function in ENERGY_CALC_MODULE.C
+
+    // arrays realized as variable-length array (VLA)
+    double (*EB_WAVE)[NY][NZ]           = calloc(NX, sizeof *EB_WAVE);      // E- and B-wavefield
+    double (*EB_WAVE_ref)[NY][NZ_REF]   = calloc(NX, sizeof *EB_WAVE_ref);
+    double (*J_B0)[NY][NZ]              = calloc(NX, sizeof *J_B0);         // J-(in plasma) and background magnetic field
+    double (*n_e)[NY/2][NZ/2]           = calloc(NX/2, sizeof *n_e);        // background electron plasma density
 
     clock_gettime(CLOCK_MONOTONIC, &start_Ftime);
     init_background_profiles( gridCfg, beamCfg, n_e, J_B0 );                //function in BACKGROUND_PROFILES.C
@@ -69,6 +67,9 @@ int main( int argc, char *argv[] ) {
     time_elapsed =  (end_Ftime.tv_sec - start_Ftime.tv_sec) + 
                     (end_Ftime.tv_nsec - start_Ftime.tv_nsec) / 1e9;
     printf("Background profiles RUN_TIME: %f seconds\n", time_elapsed);
+
+    init_continuity( gridCfg, saveDCfg, EB_WAVE, J_B0 );                    //function in CONTINUITY_MODULE.C
+    init_energyCalculations( gridCfg, saveDCfg );                           //function in ENERGY_CALC_MODULE.C
 
     //Simulation values print to terminal
     print_systemConfiguration( gridCfg, beamCfg );                          //function in INIT_MODULE.C
@@ -140,7 +141,7 @@ int main( int argc, char *argv[] ) {
     printf( "freed n_e\n" );
 
     end_CPU = clock();
-    printf("CPU running time: %f hora(s) \n", (((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC) / 3600 );
+    printf("CPU running time: %f seconds. \n", (((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC) );
     
     return EXIT_SUCCESS;
 }//}}}

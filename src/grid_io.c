@@ -225,24 +225,44 @@ int writeMyHDF_v4_1D(int dim0, char filename[], char dataset[], double array_1D[
     // required for check if hdf5-file already exists
     struct stat st;
 
-    // Check if file exists
-    if (stat(filename, &st) == 0) {
-        file_id = H5Fopen(filename, H5F_ACC_RDWR, H5P_DEFAULT);
+    // check if specified hdf5 file already exists 
+    // if not, create new one; if yes, open and add dataset to it
+    if ( stat( filename, &st )==0 ) {
+        // open file for read + write access
+        file_id = H5Fopen( filename,            // filename
+                           H5F_ACC_RDWR,        // allow read & write access (_RDONLY for read only)
+                           H5P_DEFAULT);        // file access property list (default one)
 
+        // hdf5 version 1.8.0 introduced H5Lexists to check if link (to group or dataset) exists in hdf5-file
 #if H5_VERS_MAJOR>=1 && H5_VERS_MINOR>=8
-        if (H5_VERS_MINOR >= 10) {
-            printf("WARNING: hdf5 version 1.10 (or larger is used)\n");
-            printf("         behavior of H5Lexists was slightly changed in this version\n");
+        if ( H5_VERS_MINOR >= 10 ) {
+            printf( "WARNING: hdf5 version 1.10 (or larger is used)\n" );
+            printf( "         behavior of H5Lexists was slightly changed in this version\n" );
+            printf( "         for details, see https://support.hdfgroup.org/HDF5/doc/RM/RM_H5L.html#Link-Exists\n" );
         }
-        if (H5Lexists(file_id, dataset, H5P_DEFAULT) > 0) {
-            printf("ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename);
-            status = H5Fclose(file_id);
-            if (status < 0) printf("ERROR: could not close file '%s'\n", filename);
-            return EXIT_FAILURE;
+        if ( H5Lexists( file_id,                // file or group identifier
+                        dataset,                // name of link (to group or dataset) to check
+                        H5P_DEFAULT )           // link access property list identifiert
+                > 0 ) {                         // NOTE: for version 1.8.10, this might be slightly different
+            printf( "ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename );
+            printf( "       dataset WILL be overwrite. \n" );
+            status = H5Ldelete( file_id, dataset, H5P_DEFAULT );
+            //printf( "ERROR: dataset named '%s' already exists in file '%s'\n", dataset, filename );
+            //printf( "       dataset will NOT be saved (no overwrite by default)\n" );
+            //status = H5Fclose(file_id);
+            if (status < 0) {
+                printf( "ERROR: could not close file '%s'\n", filename );
+                H5Fclose(file_id);
+                return EXIT_FAILURE;
+            }
         }
 #endif
     } else {
-        file_id = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+        // create a new file using default properties.
+        file_id = H5Fcreate( filename,          // filename
+                             H5F_ACC_TRUNC,     // how file should be created (removes existing file)
+                             H5P_DEFAULT,       // file creating property list
+                             H5P_DEFAULT);      // file access property list
     }
 
     // Create dataspace
@@ -915,9 +935,7 @@ int detAnt1D_write2hdf5( int N_x,
 
     // required for check if hdf5-file already exists
     struct      stat st;
-
     int         ii;
-
     double       data2save[N_x/2];
 
     dims[0]     = N_x/2;

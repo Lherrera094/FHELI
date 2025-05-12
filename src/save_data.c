@@ -25,6 +25,8 @@ void simulation_folder(const char *path){
             printf("Error creating directory: %s\n", path);
             return;
         }
+    } else {
+        printf("Main project folder already exists.\n");
     }
 }//}}}
 
