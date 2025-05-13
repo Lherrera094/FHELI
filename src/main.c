@@ -121,13 +121,12 @@ int main( int argc, char *argv[] ) {
     printf("%d ITERATIONS RUN_TIME: %f seconds\n", T_END, time_elapsed);
     
     // write timetrace data into file
+    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                  //function in SAVE_DATA.C
     write_timetraces( gridCfg, saveDCfg );                                                  //function in POWER_CALC.C
-    save_AntDetect( gridCfg, saveDCfg, antDetect );                                         //function in ANTENNA_DETECTOR.C
     save_EnergyPower( gridCfg, saveDCfg);                                                   //function in ENERGY_CALC_MODULE.C
+    save_AntDetect( gridCfg, saveDCfg, antDetect );                                         //function in ANTENNA_DETECTOR.C
     clock_t end_CPU = clock();
-    run_time = ((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC;
-    save_SimData( gridCfg, beamCfg ,saveDCfg, n_e, J_B0 );                                  //function in SAVE_DATA.C      
-    
+    run_time = ((double) (end_CPU - start_CPU)) / CLOCKS_PER_SEC;      
 
     //free allocated arrays
     free_boundary( gridCfg );

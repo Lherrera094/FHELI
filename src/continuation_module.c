@@ -40,8 +40,8 @@ void check_hdf5(    gridConfiguration *gridCfg,
         }
 
     } else {
-        printf("HDF5 file does not exist or cannot be accessed. \n
-                 Simulation will start from t_int=0.\n");
+        printf("HDF5 file does not exist or cannot be accessed. \n");
+        printf("Simulation will start from t_int=0.\n");
         last_t_fields = 0;
     }
 
