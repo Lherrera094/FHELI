@@ -1,6 +1,6 @@
 {	
     "Main_Project": 		"Test_Current",
-    "Case_foldername": 		"test_0",
+    "Case_foldername": 		"test_6",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
@@ -40,7 +40,7 @@
     "Currrent_Amp": 	10,
     "Boundary_layer":	1,
     
-    "Detector_Antenna": 0,
+    "Detector_Antenna": 1,
     
     "data_save_frequency": 10
     

@@ -14,11 +14,11 @@ void init_energyCalculations(   gridConfiguration *gridCfg,
     // Power absorbed: stores time evolution of wavepower obsorbed by the plasma
     power_absorbed =    allocate1DArray( T_END );
 
-    //if ( last_t_fields != 0 ){
+    if ( last_t_fields != 0 ){
         /*Stored saved values for continuation*/
-        /*stored_saved_dataset( gridCfg, saveDCfg );
+        stored_saved_dataset( gridCfg, saveDCfg );
         t_count = last_t_fields + 1;
-    }*/
+    }
 
     printf("Energy and Power arrays initialized. \n");
 }
