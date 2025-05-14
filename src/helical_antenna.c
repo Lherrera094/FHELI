@@ -147,73 +147,73 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
         lenght1 = get_lenght(fullDir1);
         S1 = allocate2DArray( lenght1, 3 );
         read_file(fullDir1, S1);
-        printf("Helical Antenna Section 1 saved.\n");
+        printf("Antenna Section 1 saved.\n");
 
     } if ( access(fullDir2, F_OK) == 0) {
         lenght2 = get_lenght(fullDir2);
         S2 = allocate2DArray( lenght2, 3 );
         read_file(fullDir2, S2);
-        printf("Helical Antenna Section 2 saved.\n");
+        printf("Antenna Section 2 saved.\n");
     
     } if ( access(fullDir3, F_OK) == 0) {
         lenght3 = get_lenght(fullDir3);
         S3 = allocate2DArray( lenght3, 3 );
         read_file(fullDir3, S3);
-        printf("Helical Antenna Section 3 saved.\n");
+        printf("Antenna Section 3 saved.\n");
 
     } if ( access(fullDir4, F_OK) == 0) {
         lenght4 = get_lenght(fullDir4);
         S4 = allocate2DArray( lenght4, 3 );
         read_file(fullDir4, S4);
-        printf("Helical Antenna Section 4 saved.\n");
+        printf("Antenna Section 4 saved.\n");
 
     } if ( access(fullDir5, F_OK) == 0) {
         lenght5 = get_lenght(fullDir5);
         S5 = allocate2DArray( lenght5, 3 );
         read_file(fullDir5, S5);
-        printf("Helical Antenna Section 5 saved.\n");
+        printf("Antenna Section 5 saved.\n");
 
     } if ( access(fullDir6, F_OK) == 0) {
         lenght6 = get_lenght(fullDir6);
         S6 = allocate2DArray( lenght6, 3 );
         read_file(fullDir6, S6);
-        printf("Helical Antenna Section 6 saved.\n");
+        printf("Antenna Section 6 saved.\n");
 
     } if ( access(fullDir7, F_OK) == 0) {
         lenght7 = get_lenght(fullDir7);
         S7 = allocate2DArray( lenght7, 3 );
         read_file(fullDir7, S7);
-        printf("Helical Antenna Section 7 saved.\n");
+        printf("Antenna Section 7 saved.\n");
 
     } if ( access(fullDir8, F_OK) == 0) {
         lenght8 = get_lenght(fullDir8);
         S8 = allocate2DArray( lenght8, 3 );
         read_file(fullDir8, S8);
-        printf("Helical Antenna Section 8 saved.\n");
+        printf("Antenna Section 8 saved.\n");
 
     } if ( access(fullDir9, F_OK) == 0) {
         lenght9 = get_lenght(fullDir9);
         S9 = allocate2DArray( lenght9, 3 );
         read_file(fullDir9, S9);
-        printf("Helical Antenna Section 9 saved.\n");
+        printf("Antenna Section 9 saved.\n");
 
     } if ( access(fullDir10, F_OK) == 0) {
         lenght10 = get_lenght(fullDir10);
         S10 = allocate2DArray( lenght10, 3 );
         read_file(fullDir10, S10);
-        printf("Helical Antenna Section 10 saved.\n");
+        printf("Antenna Section 10 saved.\n");
 
     } if ( access(fullDir11, F_OK) == 0) {
         lenght11 = get_lenght(fullDir11);
         S11 = allocate2DArray( lenght11, 3 );
         read_file(fullDir11, S11);
-        printf("Helical Antenna Section 11 saved.\n");
+        printf("Antenna Section 11 saved.\n");
     
     } if ( access(fullDir12, F_OK) == 0) {
         lenght12 = get_lenght(fullDir12);
         S12 = allocate2DArray( lenght12, 3 );
         read_file(fullDir12, S12);
-        printf("Helical Antenna Section 12 saved.\n");
+        printf("Antenna Section 12 saved.\n");
 
     }
 

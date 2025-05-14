@@ -302,7 +302,7 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
     // Ez: even-even-odd
     
     // Save the Electric and Magnetic field components of the last -1 time step
-    if( tt == T_END - 1) {
+    if( tt == T_END - 1 ) {
 
 #pragma omp parallel default(shared) private(ii,jj,foo_e,foo_b)
 #pragma omp for
@@ -315,12 +315,14 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
                                +pow(EB_WAVE[ii  ][jj  ][detAnt_zpos+1],2) );
 
                 // Store Electric field components
-                // Ex component
-                detAnt_fields[ii/2][jj/2][0]  = EB_WAVE[ii+1][jj  ][detAnt_zpos  ];
-                // Ey component
-                detAnt_fields[ii/2][jj/2][1]  = EB_WAVE[ii  ][jj+1][detAnt_zpos  ];
-                // Ez Component
-                detAnt_fields[ii/2][jj/2][2]  = EB_WAVE[ii  ][jj  ][detAnt_zpos+1];
+                // Poynting Vector at z = detAnt_zpos
+                detAnt_fields[ii/2][jj/2][0]  = EB_WAVE[ii+1][jj  ][detAnt_zpos  ] * EB_WAVE[ii+1][jj  ][detAnt_zpos+1]
+                                               -EB_WAVE[ii  ][jj+1][detAnt_zpos  ] * EB_WAVE[ii  ][jj+1][detAnt_zpos+1] ;
+                // Wave Polarization (E_x/E_y)
+                detAnt_fields[ii/2][jj/2][1]  = safe_check( EB_WAVE[ii+1][jj  ][detAnt_zpos  ] , EB_WAVE[ii  ][jj+1][detAnt_zpos  ] );
+                // Er^2 Component (E_x^2 + E_y^2)
+                detAnt_fields[ii/2][jj/2][2]  = pow(EB_WAVE[ii+1][jj  ][detAnt_zpos  ],2) 
+                                              + pow(EB_WAVE[ii  ][jj+1][detAnt_zpos  ],2);
                 // E*E abslute value
                 detAnt_fields[ii/2][jj/2][3]  = foo_e*foo_e;
                 

@@ -1412,15 +1412,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     }
     
         ;
-    printf( "start to create dataset 'E_x'\n" );
+    printf( "start to create dataset 'Poynting_Vector'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Poynting_Vector", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_x", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Poynting_Vector", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'E_x'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'Poynting_Vector'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'E_x'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'Poynting_Vector'\n" );
 
     // store sum_EyEy 
     set2zero_2D( N_x/2, N_y/2, data2save );
@@ -1429,15 +1429,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
             data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][1];
         }
     }
-    printf( "start to create dataset 'E_y'\n" );
+    printf( "start to create dataset 'Wave_Polarization'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Wave_Polarization", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_y", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Wave_Polarization", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'E_y'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'Wave_Polarization'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'E_y'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'Wave_Polarization'\n" );
 
     // store sum_EzEz
     set2zero_2D( N_x/2, N_y/2, data2save );
@@ -1446,15 +1446,15 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
             data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][2];
         }
     }
-    printf( "start to create dataset 'E_z'\n" );
+    printf( "start to create dataset 'Er^2'\n" );
     if (filter_avail)
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Er^2", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
     else
-        dataset_id   = H5Dcreate( group_id__detAnt, "E_z", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+        dataset_id   = H5Dcreate( group_id__detAnt, "Er^2", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
     status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
-    if (status < 0) printf( "ERROR: could not write dataset 'E_z'\n" );
+    if (status < 0) printf( "ERROR: could not write dataset 'Er^2'\n" );
     status       = H5Dclose(dataset_id);
-    if (status < 0) printf( "ERROR: could not close dataset 'E_z'\n" );
+    if (status < 0) printf( "ERROR: could not close dataset 'Er^2'\n" );
     
     // store sum_EE
     set2zero_2D( N_x/2, N_y/2, data2save );

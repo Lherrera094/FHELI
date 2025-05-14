@@ -17,4 +17,7 @@ void free1DArray(double *array);
 
 int set2zero3DArray( double ***arr_3D, size_t N_x, size_t N_y, size_t N_z  );
 
+//Functions on operations
+double safe_division( double a, double b);
+
 #endif

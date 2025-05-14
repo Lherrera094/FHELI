@@ -82,3 +82,17 @@ int set2zero3DArray( double ***arr_3D, size_t N_x, size_t N_y, size_t N_z  ){
     return EXIT_SUCCESS;
 } //}}}
 
+//Functions on operations
+double safe_check( double a, double b){
+
+    double result;
+
+    if( b == 0.0 ) {
+        result = -1.0;
+    } else {
+        result = a / b;
+    }
+
+    return result;
+}
+
