@@ -112,6 +112,10 @@ int main( int argc, char *argv[] ) {
             printf("ITERATION RUN_TIME: %f seconds\n", time_elapsed);
         } //end iteration running time calculation
 
+        if( t_int%10000 == 0 ){
+            printf("Status update: On interation T_INT = %d \n", t_int );
+        } //Print status when t_int is large.
+
     } // end of time loop
     
     printf("--------------------Finished!-------------------\n");
