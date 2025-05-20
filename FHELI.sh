@@ -13,14 +13,14 @@
 
 EXECUTABLE=bin/./exe
 
+module load lib/hdf5/1.14-gnu-14.2-
+module load mpi/openmpi/5.0-gnu-14.2
+
 # Set OpenMP environment variables
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK             # Use all allocated threads. Max=96
 export OMP_PLACES=cores                                 # Bind threads to physical cores
 export OMP_PROC_BIND=close                              # Keep threads close to their memory
 
 echo "Running ${EXECUTABLE} with ${OMP_NUM_THREADS} threads"
-
-module load lib/hdf5/1.14-gnu-14.2-
-module load mpi/openmpi/5.0-gnu-14.2
 
 mpirun --bind-to core --map-by core -report-bindings ${EXECUTABLE}

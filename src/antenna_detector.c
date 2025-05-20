@@ -54,27 +54,27 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         //       to one 2D array; that way it can be written much more failsafe...
         //       requires some changes in procedures for storing and saving
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_01 = allocate2DArray( NX, 9 );
+            detAnt_1D_01 = allocate2DArray( NX, 13 );
             detAnt_01_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_02 = allocate2DArray( NX, 9 );
+            detAnt_1D_02 = allocate2DArray( NX, 13 );
             detAnt_02_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_03 = allocate2DArray( NX, 9 );
+            detAnt_1D_03 = allocate2DArray( NX, 13 );
             detAnt_03_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_04 = allocate2DArray( NX, 9 );
+            detAnt_1D_04 = allocate2DArray( NX, 13 );
             detAnt_04_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_05 = allocate2DArray( NX, 9 );
+            detAnt_1D_05 = allocate2DArray( NX, 13 );
             detAnt_05_fields = allocate3DArray( NX, NY, 9 );
         }
         if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
-            detAnt_1D_06 = allocate2DArray( NX, 9 );
+            detAnt_1D_06 = allocate2DArray( NX, 13 );
             detAnt_06_fields = allocate3DArray( NX, NY, 9 );
         }
         
@@ -254,28 +254,39 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
 
         // sum of E over time
         // Ex*Ex
-        detAnt_fields[ii/2][0]  += pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ], 2 );
+        detAnt_fields[ii/2][0]  = pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ], 2 );
         // Ey*Ey
-        detAnt_fields[ii/2][1]  += pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], 2 );
+        detAnt_fields[ii/2][1]  = pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], 2 );
         // Ez*Ez
-        detAnt_fields[ii/2][2]  += pow( EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1], 2 );
+        detAnt_fields[ii/2][2]  = pow( EB_WAVE[ii  ][detAnt_ypos  ][detAnt_zpos+1], 2 );
+        // Er*Er
+        detAnt_fields[ii/2][3]  = pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ], 2 ) 
+                                + pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], 2 );
+        //E_th*E_th
+        detAnt_fields[ii/2][4]  = pow( atan2( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos  ], EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos  ] ),2);
         // E*E
-        detAnt_fields[ii/2][3]  += foo*foo;
+        detAnt_fields[ii/2][5]  = foo*foo;
 
         // corresponding to an rms(E)-like quantity
-        detAnt_fields[ii/2][4]  += ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
+        detAnt_fields[ii/2][6]  = ( foo * sqrt(1./( (double)(tt)/(double)(PERIOD) + 1e-6 )) );
 
         // Saves magnetic field profiles
         foo_b = sqrt(    pow(EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1],2)
                         +pow(EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1],2) );
-
-        detAnt_fields[ii/2][5]  += pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1], 2 );
-        // Ey*Ey
-        detAnt_fields[ii/2][6]  += pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
-        // Ez*Ez
-        detAnt_fields[ii/2][7]  += pow( EB_WAVE[ii+1][detAnt_ypos+1][detAnt_zpos  ], 2 );
-        // E*E
-        detAnt_fields[ii/2][8]  += foo_b*foo_b;
+        // Bx*Bx
+        detAnt_fields[ii/2][7]  = pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1], 2 );
+        // By*By
+        detAnt_fields[ii/2][8]  = pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
+        // Bz*Bz
+        detAnt_fields[ii/2][9]  = pow( EB_WAVE[ii+1][detAnt_ypos+1][detAnt_zpos  ], 2 );
+        // Br*Br
+        detAnt_fields[ii/2][10]  = pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1], 2 ) 
+                                + pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
+        //B_th*B_th
+        detAnt_fields[ii/2][11]  = pow( atan2( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1] ),2);
+        
+        // B*B
+        detAnt_fields[ii/2][12]  = foo_b*foo_b;
 
         //printf( "tt = %d, ii = %d, sum_t(E*E) = %13.5e\n",
         //        tt, ii, detAnt_fields[ii/2][3] );
