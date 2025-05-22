@@ -102,7 +102,7 @@ int main( int argc, char *argv[] ) {
         control_antennaDetect(  gridCfg, antDetect, t_int, EB_WAVE, J_B0 );                 //function in ANTENNA_DETECTOR.C
         compute_power( gridCfg, beamCfg, powerVal, t_int, EB_WAVE, EB_WAVE_ref );           //function in POWER_CALC.C
         control_energy_calc( gridCfg, beamCfg, t_int, EB_WAVE, J_B0 );                      //function in ENERGY_CALC_MODULE.C
-        //stores abs(E) into HDF5 file
+        //stores abs(E) into HDF5 file 
         save_field_toHDF5( gridCfg, saveDCfg, t_int, EB_WAVE, J_B0 );                       //function in SAVE_DATA.C
 
         if(t_int == 0){

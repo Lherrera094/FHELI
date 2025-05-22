@@ -518,46 +518,34 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
         y = (jj - ANT_Y)/ant_radius;
         theta = atan2(x,y);
 
-        if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+        if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&              // theta = [0, PI/2]
             ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {
 
             J_x = J_Amp * cos( theta );
             J_y = J_Amp * sin( theta );
         
-        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+        } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, PI/2]  
                    ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){
 
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
+            J_x = -J_Amp * cos( theta );
+            J_y = -J_Amp * sin( theta );
 
-        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
+        } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, 3PI/2] 
                    ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
+            J_x = -J_Amp * cos( theta );
+            J_y = -J_Amp * sin( theta );
 
-        } else if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
+        } else if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&
                    ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
 
             J_x = J_Amp * cos( theta );
             J_y = J_Amp * sin( theta );
 
-        } else if( (ii = ANT_X) && ( jj = (ANT_Y - ant_radius) ) ){
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
-        } else if( (ii = ANT_X + ant_radius) && ( jj = ANT_Y ) ){
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
-        } else if( (ii = ANT_X - ant_radius) && ( jj = ANT_Y ) ){
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
-        } else if( (ii = ANT_X ) && ( jj = ANT_Y + ant_radius ) ){
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
-        }
+        } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase ) * t_rise * DT * 0.5;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase ) * t_rise * DT * 0.5;
     }
 
     return EXIT_SUCCESS;

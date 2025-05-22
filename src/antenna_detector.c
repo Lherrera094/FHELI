@@ -55,27 +55,27 @@ int init_antennaDetect( gridConfiguration *gridCfg,
         //       requires some changes in procedures for storing and saving
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_01 = allocate2DArray( NX, 13 );
-            detAnt_01_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_01_fields = allocate3DArray( NX, NY, 11 );
         }
         if (detAnt_02_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_02 = allocate2DArray( NX, 13 );
-            detAnt_02_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_02_fields = allocate3DArray( NX, NY, 11 );
         }
         if (detAnt_03_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_03 = allocate2DArray( NX, 13 );
-            detAnt_03_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_03_fields = allocate3DArray( NX, NY, 11 );
         }
         if (detAnt_04_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_04 = allocate2DArray( NX, 13 );
-            detAnt_04_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_04_fields = allocate3DArray( NX, NY, 11 );
         }
         if (detAnt_05_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_05 = allocate2DArray( NX, 13 );
-            detAnt_05_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_05_fields = allocate3DArray( NX, NY, 11 );
         }
         if (detAnt_06_zpos < ( NZ - D_ABSORB)) {
             detAnt_1D_06 = allocate2DArray( NX, 13 );
-            detAnt_06_fields = allocate3DArray( NX, NY, 9 );
+            detAnt_06_fields = allocate3DArray( NX, NY, 11 );
         }
         
     }
@@ -122,10 +122,11 @@ int free_antDetect( gridConfiguration *gridCfg,
 /*Print in console the antennad detect information*/
 int print_antennaDetec( gridConfiguration *gridCfg,
                         antennaDetector *antDetect ){
+        
+    printf("-------------Detector Antenna Positions-------------\n");
 
     if( activate_antDetect1D == 1 ){
 
-        printf("------------Detector Antenna Positions------------\n");
         printf( "detector antenna y: y1 = %d\n", detAnt_01_ypos );
 
         if (detAnt_01_zpos < ( NZ - D_ABSORB)) {
@@ -165,7 +166,6 @@ int print_antennaDetec( gridConfiguration *gridCfg,
         }
 
     } else {
-        printf("------------Detector Antenna Positions------------\n");
         printf("No detector antenna initialized. \n");
     }
 
@@ -281,10 +281,9 @@ int detAnt1D_storeValues(   gridConfiguration *gridCfg,
         detAnt_fields[ii/2][9]  = pow( EB_WAVE[ii+1][detAnt_ypos+1][detAnt_zpos  ], 2 );
         // Br*Br
         detAnt_fields[ii/2][10]  = pow( EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1], 2 ) 
-                                + pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
+                                 + pow( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], 2 );
         //B_th*B_th
         detAnt_fields[ii/2][11]  = pow( atan2( EB_WAVE[ii+1][detAnt_ypos  ][detAnt_zpos+1], EB_WAVE[ii  ][detAnt_ypos+1][detAnt_zpos+1] ),2);
-        
         // B*B
         detAnt_fields[ii/2][12]  = foo_b*foo_b;
 
@@ -313,7 +312,7 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
     // Ez: even-even-odd
     
     // Save the Electric and Magnetic field components of the last -1 time step
-    if( tt == T_END - 1 ) {
+    if( tt == T_END ) {
 
 #pragma omp parallel default(shared) private(ii,jj,foo_e,foo_b)
 #pragma omp for
@@ -325,17 +324,20 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
                                +pow(EB_WAVE[ii  ][jj+1][detAnt_zpos  ],2)
                                +pow(EB_WAVE[ii  ][jj  ][detAnt_zpos+1],2) );
 
-                // Store Electric field components
                 // Poynting Vector at z = detAnt_zpos
                 detAnt_fields[ii/2][jj/2][0]  = EB_WAVE[ii+1][jj  ][detAnt_zpos  ] * EB_WAVE[ii+1][jj  ][detAnt_zpos+1]
                                                -EB_WAVE[ii  ][jj+1][detAnt_zpos  ] * EB_WAVE[ii  ][jj+1][detAnt_zpos+1] ;
                 // Wave Polarization (E_x/E_y)
                 detAnt_fields[ii/2][jj/2][1]  = safe_check( EB_WAVE[ii+1][jj  ][detAnt_zpos  ] , EB_WAVE[ii  ][jj+1][detAnt_zpos  ] );
-                // Er^2 Component (E_x^2 + E_y^2)
+                // Er*Er Component (E_x^2 + E_y^2)
                 detAnt_fields[ii/2][jj/2][2]  = pow(EB_WAVE[ii+1][jj  ][detAnt_zpos  ],2) 
                                               + pow(EB_WAVE[ii  ][jj+1][detAnt_zpos  ],2);
+                //E_th*E_th
+                detAnt_fields[ii/2][jj/2][3]  = pow( atan2( EB_WAVE[ii  ][jj+1][detAnt_zpos  ], EB_WAVE[ii+1][jj  ][detAnt_zpos  ] ),2);
+                // Ez*Ez
+                detAnt_fields[ii/2][jj/2][4]  = pow( EB_WAVE[ii  ][jj  ][detAnt_zpos+1], 2 );
                 // E*E abslute value
-                detAnt_fields[ii/2][jj/2][3]  = foo_e*foo_e;
+                detAnt_fields[ii/2][jj/2][5]  = foo_e*foo_e;
                 
                 // calculate abs(B)
                 foo_b = sqrt(   pow(EB_WAVE[ii  ][jj+1][detAnt_zpos+1],2)
@@ -343,17 +345,21 @@ int detAnt2D_storeValues(   gridConfiguration *gridCfg,
                                +pow(EB_WAVE[ii+1][jj+1][detAnt_zpos  ],2) );
                     
                 //Store Magnetic field components
-                //Bx component
-                detAnt_fields[ii/2][jj/2][4]  = EB_WAVE[ii  ][jj+1][detAnt_zpos+1];
-                //By component
-                detAnt_fields[ii/2][jj/2][5]  = EB_WAVE[ii+1][jj  ][detAnt_zpos+1];
-                //Bz component
-                detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
+                //Bx component detAnt_fields[ii/2][jj/2][4]  = EB_WAVE[ii  ][jj+1][detAnt_zpos+1];
+                //By component detAnt_fields[ii/2][jj/2][5]  = EB_WAVE[ii+1][jj  ][detAnt_zpos+1];
+                //Bz component detAnt_fields[ii/2][jj/2][6]  = EB_WAVE[ii+1][jj+1][detAnt_zpos  ];
+                // Br*Br Component (E_x^2 + E_y^2)
+                detAnt_fields[ii/2][jj/2][6]  = pow(EB_WAVE[ii  ][jj+1][detAnt_zpos+1],2) 
+                                              + pow(EB_WAVE[ii+1][jj  ][detAnt_zpos+1],2);
+                //B_th*B_th
+                detAnt_fields[ii/2][jj/2][7]  = pow( atan2( EB_WAVE[ii+1][jj  ][detAnt_zpos+1], EB_WAVE[ii  ][jj+1][detAnt_zpos+1] ),2);
+                // Bz*Bz
+                detAnt_fields[ii/2][jj/2][8]  = pow( EB_WAVE[ii+1][jj+1][detAnt_zpos  ], 2 );
                 //B*B absolute value
-                detAnt_fields[ii/2][jj/2][7]  = foo_b*foo_b;
+                detAnt_fields[ii/2][jj/2][9]  = foo_b*foo_b;
 
                 //Power value 
-                detAnt_fields[ii/2][jj/2][8]  = J_B0[ii+1][jj  ][detAnt_zpos  ]*EB_WAVE[ii+1][jj  ][detAnt_zpos  ] + 
+                detAnt_fields[ii/2][jj/2][10] = J_B0[ii+1][jj  ][detAnt_zpos  ]*EB_WAVE[ii+1][jj  ][detAnt_zpos  ] + 
                                                 J_B0[ii  ][jj+1][detAnt_zpos  ]*EB_WAVE[ii  ][jj+1][detAnt_zpos  ] + 
                                                 J_B0[ii  ][jj  ][detAnt_zpos+1]*EB_WAVE[ii  ][jj  ][detAnt_zpos+1] ;
 

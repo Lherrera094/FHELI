@@ -23,4 +23,4 @@ export OMP_PROC_BIND=close                              # Keep threads close to 
 
 echo "Running ${EXECUTABLE} with ${OMP_NUM_THREADS} threads"
 
-mpirun --bind-to core --map-by core -report-bindings ${EXECUTABLE}
+mpirun -report-bindings ${EXECUTABLE}
