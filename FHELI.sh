@@ -13,7 +13,7 @@
 
 EXECUTABLE=bin/./exe
 
-module load lib/hdf5/1.14-gnu-14.2-
+module load lib/hdf5/1.14-gnu-14.2-serial
 module load mpi/openmpi/5.0-gnu-14.2
 
 # Set OpenMP environment variables
