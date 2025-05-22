@@ -37,7 +37,7 @@
     "Antenna_folder": 	"VINETTA_dLoop",
     "Helical Antenna": 	"1: Single_Loop. 2:Spiral. 3:Double_Loop. 4.Nagoya. 5.Boswell. 6:RH_Half-helical. 7:LH_Half-helical. 8:Birdcage",
     "Antenna_type": 	3,
-    "Currrent_Amp": 	5e1,
+    "Currrent_Amp": 	1e6,
     "Boundary_layer":	2,
     
     "Detector_Antenna": 1,
