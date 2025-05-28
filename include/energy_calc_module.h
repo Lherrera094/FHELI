@@ -19,12 +19,14 @@ void control_energy_calc(   gridConfiguration *gridCfg,
                             beamAntennaConfiguration *beamCfg,
                             int t_int,
                             double EB_WAVE[NX][NY][NZ],
-                            double J_B0[NX][NY][NZ] );
+                            double J_B0[NX][NY][NZ],
+                            double n_e[NX/2][NY/2][NZ/2] );
 
 int compute_energy_values(  gridConfiguration *gridCfg, 
                             beamAntennaConfiguration *beamCfg,
                             double EB_WAVE[NX][NY][NZ],
-                            double J_B0[NX][NY][NZ] );
+                            double J_B0[NX][NY][NZ],
+                            double n_e[NX/2][NY/2][NZ/2] );
 
 void save_EnergyPower( gridConfiguration *gridCfg, saveData *saveDCfg);
 

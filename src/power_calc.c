@@ -52,7 +52,7 @@ int calculate_power(    gridConfiguration *gridCfg,
                         double EB_WAVE_ref[NX][NY][NZ_REF] ){
 
     // IQ detector for power detection
-    if ( t_int >= 20*PERIOD ) {
+    if ( t_int >= PERIOD ) {
         // z1-plane and z2-plane
         poynt_z1_ref    = calc_poynt_4( gridCfg, powerVal, "ref_z1", EB_WAVE, EB_WAVE_ref );
         poynt_z1        = calc_poynt_4( gridCfg, powerVal, "z1",     EB_WAVE, EB_WAVE_ref );
