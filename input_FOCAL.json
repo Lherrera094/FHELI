@@ -5,11 +5,11 @@
     "filename_timetraces": 	"timetraces.dat",
     
     "scale": 		1,
-    "period": 		88440,
+    "period": 		24,
     "Grid_size_Nx": 	460,
     "Grid_size_Ny": 	460,
     "Grid_size_Nz": 	2460,
-    "t_end": 		15,
+    "t_end": 		13,
     
     "B0_profile":	1,
     "B0_magnitude":	206.41,

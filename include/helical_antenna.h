@@ -51,6 +51,12 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
                             int lenght, double **S_coord,
                             double EB_WAVE[NX][NY][NZ] );
 
+int circular_antenna(   gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg, 
+                        double t_rise, double Phase,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ] );
+
 //Antenna reference functions
 int linear_antenna_ref( gridConfiguration *gridCfg, 
                         beamAntennaConfiguration *beamCfg, 
@@ -69,6 +75,12 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
                                 double t_rise, double Phase,
                                 int lenght, double **S_coord,
                                 double EB_WAVE[NX][NY][NZ_REF] );
+
+int circular_antenna_ref(   gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg, 
+                            double t_rise, double Phase,
+                            int lenght, double **S_coord,
+                            double EB_WAVE[NX][NY][NZ_REF] );
 
 //Delete anetnna values to keep only fields
 void delete_ant2save( gridConfiguration *gridCfg, double array_3D[NX/2][NY/2][NZ/2] );

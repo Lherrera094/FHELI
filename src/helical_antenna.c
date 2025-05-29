@@ -2,7 +2,7 @@
 
 static int Z_0;             //initial Z coordinate for the antenna
 static int Z_1;             //end Z coordinate for the antenna  
-static int J_Amp;           //Antenna current value
+static int I_0;             //Antenna current value
 static int u;               //Displacement for reference antenna
 
 //Integers that save the lenght of the antenna arrays for implementation
@@ -126,7 +126,7 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
     if ((Z_1 % 2) != 0)  ++Z_1;
     
     //save antenna curret amplitud
-    J_Amp = J_amp;
+    I_0 = I0;
 
     sprintf(fullDir1,"%s/Section_%s.txt", directory, "1" );
     sprintf(fullDir2,"%s/Section_%s.txt", directory, "2" );
@@ -218,7 +218,7 @@ void init_helicalAntenna(   gridConfiguration *gridCfg,
     }
 
     //Compute z displacement for reference antenna
-    u = Z_0 - D_ABSORB - 2;
+    u = 0;
 
 }
 
@@ -311,7 +311,7 @@ void print_helical( beamAntennaConfiguration *beamCfg ){
     }
 
     printf( "Antenna Center Coord. (x,y,z) = (%d, %d, %d)\n", ANT_X, ANT_Y, ANT_Z );
-    printf( "Antenna Current = %d \n", J_Amp );
+    printf( "Antenna Current = %d \n", I_0 );
 
 }
 
@@ -324,7 +324,7 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
     /*Apply helical antenna to grid*/
     if( ant_type == 1 ){                                //Single Loop antenna  
 
-        half_circular_antenna( gridCfg, beamCfg, t_rise, 0, lenght1, S1, EB_WAVE );
+        circular_antenna( gridCfg, beamCfg, t_rise, 0, lenght1, S1, EB_WAVE );
 
     } else if( ant_type == 2 ){                         //Spiral antenna  
 
@@ -336,8 +336,8 @@ void control_HelicalAntenna(    gridConfiguration *gridCfg,
 
     } else if( ant_type == 3 ){                         //Double Loop antenna  
 
-        half_circular_antenna( gridCfg, beamCfg, t_rise, 0,     lenght1, S1, EB_WAVE );
-        half_circular_antenna( gridCfg, beamCfg, t_rise, M_PI,  lenght2, S2, EB_WAVE );
+        circular_antenna( gridCfg, beamCfg, t_rise, 0,  lenght1, S1, EB_WAVE );
+        circular_antenna( gridCfg, beamCfg, t_rise, 0,  lenght2, S2, EB_WAVE );
 
     } else if( ant_type == 4 ){                         //Nagoya typeIII helical antenna  
 
@@ -393,7 +393,7 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
     /*Apply helical antenna to grid*/
     if( ant_type == 1 ){                                //Single Loop antenna  
 
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 0, lenght1, S1, EB_WAVE );
+        circular_antenna_ref( gridCfg, beamCfg, t_rise, 0, lenght1, S1, EB_WAVE );
 
     } else if( ant_type == 2 ){                         //Spiral antenna  
 
@@ -405,8 +405,8 @@ void control_HelicalAntenna_REF(    gridConfiguration *gridCfg,
 
     } else if( ant_type == 3 ){                         //Double Loop antenna  
 
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, 0,     lenght1, S1, EB_WAVE );
-        half_circular_antenna_ref( gridCfg, beamCfg, t_rise, M_PI,  lenght2, S2, EB_WAVE );
+        circular_antenna_ref( gridCfg, beamCfg, t_rise, 0,  lenght1, S1, EB_WAVE );
+        circular_antenna_ref( gridCfg, beamCfg, t_rise, 0,  lenght2, S2, EB_WAVE );
 
     } else if(ant_type == 4){                           //Nagoya typeIII helical antenna  
 
@@ -469,7 +469,7 @@ int linear_antenna( gridConfiguration *gridCfg,
         kk = 2 * (int)S_coord[ll][2];       //Multply by two for the leapfrog grid
 
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] = - J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
 
     }
 
@@ -491,7 +491,7 @@ int helical_antenna(    gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        EB_WAVE[ii  ][jj  ][kk+1] = - J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
     }
 
     return EXIT_SUCCESS;
@@ -505,7 +505,7 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
                             double EB_WAVE[NX][NY][NZ] ){
 
     int ii, jj, kk, ll;
-    double J_x, J_y, theta,x,y;
+    double J_x, J_y, x, y;
 
 #pragma omp parallel for
     for( ll = 0 ; ll < lenght ; ll++ ){
@@ -516,36 +516,65 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 
         x = (ii - ANT_X)/ant_radius;
         y = (jj - ANT_Y)/ant_radius;
-        theta = atan2(x,y);
 
         if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&              // theta = [0, PI/2]
-            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {
+            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {                 //counterclockwise
 
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
+            J_x = -(I_0/2) * y * cos( Phase ) ;
+            J_y =  (I_0/2) * x * cos( Phase ) ;
         
         } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, PI/2]  
-                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){
+                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){           //clockwise
 
-            J_x = -J_Amp * cos( theta );
-            J_y = -J_Amp * sin( theta );
+            J_x =  (I_0/2) * y * cos( Phase ) ;
+            J_y = -(I_0/2) * x * cos( Phase ) ;
 
         } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, 3PI/2] 
-                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){           //clockwise
 
-            J_x = -J_Amp * cos( theta );
-            J_y = -J_Amp * sin( theta );
+            J_x =  (I_0/2) * y * cos( Phase ) ;
+            J_y = -(I_0/2) * x * cos( Phase ) ;
 
-        } else if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&
-                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
+        } else if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&      // theta = [3PI/2, 0]
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){           //counterclockwise
 
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
+            J_x = -(I_0/2) * y * cos( Phase ) ;
+            J_y =  (I_0/2) * x * cos( Phase ) ;
 
         } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase ) * t_rise * DT * 0.5;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase ) * t_rise * DT * 0.5;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
+    }
+
+    return EXIT_SUCCESS;
+
+}
+
+int circular_antenna(   gridConfiguration *gridCfg, 
+                        beamAntennaConfiguration *beamCfg, 
+                        double t_rise, double Phase,
+                        int lenght, double **S_coord,
+                        double EB_WAVE[NX][NY][NZ] ){
+
+    int ii, jj, kk, ll;
+    double J_x, J_y, x, y;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){
+        
+        ii = 2 * (int)S_coord[ll][0];
+        jj = 2 * (int)S_coord[ll][1];
+        kk = 2 * (int)S_coord[ll][2];
+
+        x = (ii - ANT_X)/ant_radius;
+        y = (jj - ANT_Y)/ant_radius;
+        
+        J_x =  I_0 * y * cos( Phase ) ;
+        J_y = -I_0 * x * cos( Phase ) ;
+
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
     }
 
     return EXIT_SUCCESS;
@@ -569,7 +598,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
         kk = (2 * (int)S_coord[ll][2]) - u;
         
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] = - J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
     }
 
     return EXIT_SUCCESS;
@@ -590,7 +619,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
 
-        EB_WAVE[ii  ][jj  ][kk+1] = - J_amp * sin( OMEGA_T + Phase) * t_rise * DT;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
     }
 
     return EXIT_SUCCESS;
@@ -603,59 +632,76 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
                                 double EB_WAVE[NX][NY][NZ_REF] ){
 
     int ii, jj, kk, ll;
-    double J_x, J_y, x, y, theta;
+    double J_x, J_y, x, y;
 
 #pragma omp parallel for
     for( ll = 0 ; ll < lenght ; ll++ ){
         
         ii = 2 * (int)S_coord[ll][0];
         jj = 2 * (int)S_coord[ll][1];
-        kk = (2 * (int)S_coord[ll][2]) - u;
+        kk = 2 * (int)S_coord[ll][2];
 
         x = (ii - ANT_X)/ant_radius;
         y = (jj - ANT_Y)/ant_radius;
-        theta = atan2(x,y);
 
-        if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
-            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {
+        if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&              // theta = [0, PI/2]
+            ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ) {                 //counterclockwise
 
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
+            J_x = -(I_0/2) * y * cos( Phase ) ;
+            J_y =  (I_0/2) * x * cos( Phase ) ;
         
-        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
-                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){
+        } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, PI/2]  
+                   ( jj > ANT_Y ) && ( jj < (ANT_Y + ant_radius) ) ){           //clockwise
 
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
+            J_x =  (I_0/2) * y * cos( Phase ) ;
+            J_y = -(I_0/2) * x * cos( Phase ) ;
 
-        } else if( ( ii < ANT_X ) && ( ii > (ANT_X - ant_radius) ) &&
-                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
+        } else if( ( ii < ANT_X ) && ( ii >= (ANT_X - ant_radius) ) &&       // theta = [PI, 3PI/2] 
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){           //clockwise
 
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
+            J_x =  (I_0/2) * y * cos( Phase ) ;
+            J_y = -(I_0/2) * x * cos( Phase ) ;
 
-        } else if( ( ii > ANT_X ) && ( ii < (ANT_X + ant_radius) ) &&
-                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){
+        } else if( ( ii > ANT_X ) && ( ii <= (ANT_X + ant_radius) ) &&      // theta = [3PI/2, 0]
+                   ( jj < ANT_Y ) && ( jj > (ANT_Y - ant_radius) ) ){           //counterclockwise
 
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
+            J_x = -(I_0/2) * y * cos( Phase ) ;
+            J_y =  (I_0/2) * x * cos( Phase ) ;
 
-        } else if( (ii = ANT_X) && ( jj = (ANT_Y - ant_radius) ) ){
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
-        } else if( (ii = ANT_X + ant_radius) && ( jj = ANT_Y ) ){
-            J_x = J_Amp * cos( theta );
-            J_y = J_Amp * sin( theta );
-        } else if( (ii = ANT_X - ant_radius) && ( jj = ANT_Y ) ){
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
-        } else if( (ii = ANT_X ) && ( jj = ANT_Y + ant_radius ) ){
-            J_x = J_Amp * cos( -theta );
-            J_y = J_Amp * sin( -theta );
-        }
+        } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T + Phase) * t_rise * DT * 0.5;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
+    }
+
+    return EXIT_SUCCESS;
+
+}
+
+int circular_antenna_ref(   gridConfiguration *gridCfg, 
+                            beamAntennaConfiguration *beamCfg, 
+                            double t_rise, double Phase,
+                            int lenght, double **S_coord,
+                            double EB_WAVE[NX][NY][NZ_REF] ){
+
+    int ii, jj, kk, ll;
+    double J_x, J_y, x, y;
+
+#pragma omp parallel for
+    for( ll = 0 ; ll < lenght ; ll++ ){
+        
+        ii = 2 * (int)S_coord[ll][0];
+        jj = 2 * (int)S_coord[ll][1];
+        kk = 2 * (int)S_coord[ll][2];
+
+        x = (ii - ANT_X)/ant_radius;
+        y = (jj - ANT_Y)/ant_radius;
+        
+        J_x =  I_0 * y * cos( Phase ) ;
+        J_y = -I_0 * x * cos( Phase ) ;
+
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
     }
 
     return EXIT_SUCCESS;

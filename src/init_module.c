@@ -41,8 +41,8 @@ void grid_init( gridConfiguration *gridCfg,
     if(exc_signal != 6) {
         NZ_REF  = 2*D_ABSORB + (int)PERIOD;
     } else if( exc_signal == 6 ){
-        NZ_REF  = 2*D_ABSORB + (int)ant_lenght;
-        //NZ_REF  = NZ;
+        //NZ_REF  = 2*D_ABSORB + (int)ant_lenght;
+        NZ_REF  = NZ;
     }
 
     // dt/dx = 0.5 is commenly used in 2D FDTD codes
@@ -268,7 +268,7 @@ void write_JSON_toGrid( gridConfiguration *gridCfg,
 
     cJSON *item_J_amp = cJSON_GetObjectItemCaseSensitive(json, "Currrent_Amp");   //
     if( cJSON_IsNumber(item_J_amp) ){
-        J_amp = item_J_amp->valuedouble;
+        I0 = item_J_amp->valuedouble;
     }
 
     cJSON *filname_antenna = cJSON_GetObjectItemCaseSensitive(json, "Antenna_folder");   //Foldername helical antenna

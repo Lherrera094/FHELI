@@ -55,7 +55,7 @@ typedef struct beamAntennaConfiguration {   /*Antenna configuration variables*/
         antAngle_zy, antAngle_zx,
         ant_w0x, ant_w0y,
         z2waist,
-        ant_radius, J_amp,                  //For helical antennas
+        ant_radius, I_0,                  //For helical antennas
         num_turns, num_arms;                  
     
     const char *ant_file;

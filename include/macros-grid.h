@@ -81,7 +81,7 @@
 #define bc_heliconBG(beamCfg)           beamCfg->bc_helicon
 #define num_turnsBG(beamCfg)            beamCfg->num_turns
 #define num_armsBG(beamCfg)             beamCfg->num_arms
-#define J_ampBG(beamCfg)                beamCfg->J_amp
+#define I_0BG(beamCfg)                  beamCfg->I_0
 #define ant_fileBG(beamCfg)             beamCfg->ant_file
      
 #define T_WAVE                          T_waveBG(beamCfg)               
@@ -103,7 +103,7 @@
 #define bc_helicon                      bc_heliconBG(beamCfg)
 #define num_turns                       num_turnsBG(beamCfg)            
 #define num_arms                        num_armsBG(beamCfg)             
-#define J_amp                           J_ampBG(beamCfg)
+#define I0                              I_0BG(beamCfg)
 #define ant_file                        ant_fileBG(beamCfg)             
 
 /*Macros for ABC*/
