@@ -74,11 +74,10 @@ int compute_energy_values(  gridConfiguration *gridCfg,
 
                 radius_check = sqrt( pow((float)(ii/2) - (float)(ANT_X/2), 2) + pow((float)(jj/2) - (float)(ANT_Y/2), 2) );
                 if( pow(radius_check,2) < pow(ant_radius/2,2) ) {
-                    
                     //E2 = Ex^2 + Ey^2 + Ez^2
                     E2 += pow(EB_WAVE[ii+1][jj  ][kk  ],2) + pow(EB_WAVE[ii  ][jj+1][kk  ],2) + pow(EB_WAVE[ii  ][jj  ][kk+1],2);
                     //B2 = Bx^2 + By^2 + Bz^2
-                    B2 += pow(EB_WAVE[ii  ][jj+1][kk+1],2) + pow(EB_WAVE[ii  ][jj+1][kk  ],2) + pow(EB_WAVE[ii  ][jj  ][kk+1],2); 
+                    B2 += pow(EB_WAVE[ii  ][jj+1][kk+1],2) + pow(EB_WAVE[ii+1][jj   ][kk+1],2) + pow(EB_WAVE[ii+1][jj+1][kk  ],2); 
                     //J2 = Jx^2 + Jy^2 + Jz^2
                     J2 += ( pow(J_B0[ii+1][jj  ][kk  ],2) + pow(J_B0[ii  ][jj+1][kk  ],2) 
                           + pow(J_B0[ii  ][jj  ][kk+1],2) ) / pow(n_e[(ii/2)][(jj/2)][(kk/2)],2);
