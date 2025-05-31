@@ -543,8 +543,8 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 
         } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * 0.5;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * 0.5;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
     }
 
     return EXIT_SUCCESS;
@@ -670,8 +670,8 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 
         } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * 0.5;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * 0.5;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
     }
 
     return EXIT_SUCCESS;

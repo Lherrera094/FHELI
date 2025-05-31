@@ -9,12 +9,12 @@
     "Grid_size_Nx": 	460,
     "Grid_size_Ny": 	460,
     "Grid_size_Nz": 	2460,
-    "t_end": 		14,
+    "t_end": 		5,
     
     "B0_profile":	1,
-    "B0_magnitude":	206.41,
+    "B0_magnitude":	1.0,
     "ne_profile":	9,
-    "ne_0":		2093.65,
+    "ne_0":		1.0,
     "ne_s":		2.0,
     "ne_t":		2.0,
     "ne_w":		1.0,
@@ -34,14 +34,14 @@
     "Antena_w0y": 	2.0,
     "z2waist":		-298.87,
     
-    "Antenna_folder": 	"VINETTA_",
+    "Antenna_folder": 	"VINETTA_Nagoya",
     "Helical Antenna": 	"1: Single_Loop. 2:Spiral. 3:Double_Loop. 4.Nagoya. 5.Boswell. 6:RH_Half-helical. 7:LH_Half-helical. 8:Birdcage",
-    "Antenna_type": 	3,
+    "Antenna_type": 	4,
     "Currrent_Amp": 	1e5,
     "Boundary_layer":	2,
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 0.5
+    "data_save_frequency": 5
     
 }
