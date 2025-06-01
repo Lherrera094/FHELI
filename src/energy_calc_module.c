@@ -92,7 +92,7 @@ int compute_energy_values(  gridConfiguration *gridCfg,
 
     energy_storage          +=  (E2 + B2) * DX / 2;
     total_energy_storage    +=  (E2 + B2 + J2) * DX / 2;
-    J_average               +=  J2 ;
+    J_average               +=  pow(J2,2) * DX ;
     t_count += 1;
 
     if( t_count == PERIOD ){
