@@ -1,9 +1,9 @@
 #include "energy_calc_module.h"
 
-static long double   *energy_average         = NULL;
-static long double   *total_energy_average   = NULL;
-static long double   *power_absorbed         = NULL;
-static long double   *impedance              = NULL;
+static double   *energy_average         = NULL;
+static double   *total_energy_average   = NULL;
+static double   *power_absorbed         = NULL;
+static double   *impedance              = NULL;
 
 int         t_count                 = 0;       //index saves the index to store the values
 int         counter                 = 0;       
@@ -90,9 +90,9 @@ int compute_energy_values(  gridConfiguration *gridCfg,
         }
     }
 
-    energy_storage          +=  (E2 + B2) * DX / 2;
-    total_energy_storage    +=  (E2 + B2 + J2) * DX / 2;
-    J_average               +=  pow(J2,2) * DX ;
+    energy_storage          +=  (E2 + B2) * pow(DX,2) / 2 ;
+    total_energy_storage    +=  (E2 + B2 + pow(J2,2)) * pow(DX,2) / 2 ;
+    J_average               +=  pow(J2,2) * pow(DX,2) ;
     t_count += 1;
 
     if( t_count == PERIOD ){
