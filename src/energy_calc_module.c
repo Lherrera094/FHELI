@@ -1,9 +1,9 @@
 #include "energy_calc_module.h"
 
-static double   *energy_average         = NULL;
-static double   *total_energy_average   = NULL;
-static double   *power_absorbed         = NULL;
-static double   *impedance              = NULL;
+static long double   *energy_average         = NULL;
+static long double   *total_energy_average   = NULL;
+static long double   *power_absorbed         = NULL;
+static long double   *impedance              = NULL;
 
 int         t_count                 = 0;       //index saves the index to store the values
 int         counter                 = 0;       
@@ -78,9 +78,11 @@ int compute_energy_values(  gridConfiguration *gridCfg,
                     E2 += pow(EB_WAVE[ii+1][jj  ][kk  ],2) + pow(EB_WAVE[ii  ][jj+1][kk  ],2) + pow(EB_WAVE[ii  ][jj  ][kk+1],2);
                     //B2 = Bx^2 + By^2 + Bz^2
                     B2 += pow(EB_WAVE[ii  ][jj+1][kk+1],2) + pow(EB_WAVE[ii+1][jj   ][kk+1],2) + pow(EB_WAVE[ii+1][jj+1][kk  ],2); 
-                    //J2 = Jx^2 + Jy^2 + Jz^2
-                    J2 += ( pow(J_B0[ii+1][jj  ][kk  ],2) + pow(J_B0[ii  ][jj+1][kk  ],2) 
-                          + pow(J_B0[ii  ][jj  ][kk+1],2) ) / pow(n_e[(ii/2)][(jj/2)][(kk/2)],2);
+                    //Power = Ex*Jx + Ey*Jy + Ez*Jz
+                    //J2 += ( pow(J_B0[ii+1][jj  ][kk  ],2) + pow(J_B0[ii  ][jj+1][kk  ],2) + pow(J_B0[ii  ][jj  ][kk+1],2) ) ;
+                    J2 += EB_WAVE[ii+1][jj  ][kk  ]*J_B0[ii+1][jj  ][kk  ] 
+                        + EB_WAVE[ii  ][jj+1][kk  ]*J_B0[ii  ][jj+1][kk  ]
+                        + EB_WAVE[ii  ][jj  ][kk+1]*J_B0[ii  ][jj  ][kk+1] ;
 
                 }
 
@@ -88,18 +90,17 @@ int compute_energy_values(  gridConfiguration *gridCfg,
         }
     }
 
-    energy_storage          +=  (E2 + B2) / 2;
-    total_energy_storage    +=  (E2 + B2 + J2) / 2;
-    E_average               +=  sqrt(E2) / PERIOD;
-    J_average               +=  sqrt(J2) / PERIOD;
+    energy_storage          +=  (E2 + B2) * DX / 2;
+    total_energy_storage    +=  (E2 + B2 + J2) * DX / 2;
+    J_average               +=  J2 ;
     t_count += 1;
 
     if( t_count == PERIOD ){
 
         energy_average[counter]         = energy_storage / PERIOD;
         total_energy_average[counter]   = total_energy_storage / PERIOD;
-        power_absorbed[counter]         = E_average*J_average;
-        impedance[counter]              = 2 * (E_average*J_average) / pow(I0,2);
+        power_absorbed[counter]         = J_average / PERIOD;
+        impedance[counter]              = 2 * J_average / pow(I0,2);
 
         counter                += 1;
         t_count                 = 0;

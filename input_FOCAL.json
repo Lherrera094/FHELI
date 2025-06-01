@@ -9,10 +9,10 @@
     "Grid_size_Nx": 	460,
     "Grid_size_Ny": 	460,
     "Grid_size_Nz": 	2460,
-    "t_end": 		12,
+    "t_end": 		10,
     
     "B0_profile":	1,
-    "B0_magnitude":	20.64,
+    "B0_magnitude":	206.41,
     "ne_profile":	9,
     "ne_0":		2093.65,
     "ne_s":		2.0,
