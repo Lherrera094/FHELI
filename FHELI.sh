@@ -2,7 +2,7 @@
 #SBATCH --nodes=1                                       # Use 1 node (OpenMP is shared-memory)
 #SBATCH --ntasks-per-node=1                             # Run 1 task (OpenMP threads handle parallelism)
 #SBATCH --cpus-per-task=64                              # Max=96 logical cores (48 cores × 2 threads)
-#SBATCH --mem=20000M                                    # ~370GB (leave 10GB for system overhead)
+#SBATCH --mem=40000M                                    # ~370GB (leave 10GB for system overhead)
 #SBATCH --time=72:00:00                                 # Max runtime 72:00:00 (3 days)
 #SBATCH --mail-type=BEGIN,END,FAIL                      # Replaces `-m bea` in msub or qsub
 #SBATCH --job-name=helicon_sim_Double                   # Job name
