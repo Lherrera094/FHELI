@@ -92,7 +92,7 @@ int compute_energy_values(  gridConfiguration *gridCfg,
     }
 
     energy_storage          +=  (E2 + B2) * pow(DX,2) / 2 ;
-    total_energy_storage    +=  (E2 + B2 + J2,2) * pow(DX,2) / 2 ;
+    total_energy_storage    +=  (E2 + B2 + J2) * pow(DX,2) / 2 ;
     Power_save              +=  pow(P2,2) * pow(DX,2) ;
     t_count += 1;
 
