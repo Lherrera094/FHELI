@@ -67,7 +67,7 @@ int compute_energy_values(  gridConfiguration *gridCfg,
     size_t
         ii, jj, kk;
 
-#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) reduction(+:E2,B2,J2)
+#pragma omp parallel for collapse(3) default(shared) private(ii,jj,kk) reduction(+:E2,B2,J2,P2)
     for (ii=D_ABSORB ; ii<=NX-2-D_ABSORB ; ii+=2) {
         for (jj=D_ABSORB ; jj<=NY-2-D_ABSORB ; jj+=2) {
             for (kk=D_ABSORB ; kk<=NZ-2-D_ABSORB ; kk+=2) {
