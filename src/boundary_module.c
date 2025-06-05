@@ -1210,8 +1210,8 @@ int insulating_BC(  gridConfiguration *gridCfg,
                     EB_WAVE[ii  ][jj+1][kk+1]   =  0;
                     EB_WAVE[ii+1][jj  ][kk+1]   =  0;
 
-                    J_B0[ii-1][jj-2][kk  ]	    =  0;
-                    J_B0[ii-2][jj-1][kk  ]	    =  0;
+                    J_B0[ii+1][jj  ][kk  ]	    =  0;
+                    J_B0[ii  ][jj+1][kk  ]	    =  0;
                 }
 
             }
