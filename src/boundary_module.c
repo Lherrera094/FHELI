@@ -1201,14 +1201,17 @@ int insulating_BC(  gridConfiguration *gridCfg,
 
                 new_rad =  pow((float)ii - (float)(ANT_X), 2) + pow((float)jj - (float)(ANT_Y), 2);
 
-                if( new_rad == pow(ant_radius,2) ){
+                /*if( new_rad == pow(ant_radius,2) ){
                     EB_WAVE[ii  ][jj+1][kk+1]   =  0;
                     EB_WAVE[ii+1][jj  ][kk+1]   =  0;
-                }
+                }*/
 
                 if( new_rad == pow(ant_radius-2,2) ){
-                    J_B0[ii+1][jj  ][kk  ]	    =  0;
-                    J_B0[ii  ][jj+1][kk  ]	    =  0;
+                    EB_WAVE[ii  ][jj+1][kk+1]   =  0;
+                    EB_WAVE[ii+1][jj  ][kk+1]   =  0;
+
+                    J_B0[ii-1][jj-2][kk  ]	    =  0;
+                    J_B0[ii-2][jj-1][kk  ]	    =  0;
                 }
 
             }

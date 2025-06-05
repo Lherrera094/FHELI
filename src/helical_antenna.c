@@ -573,8 +573,8 @@ int circular_antenna(   gridConfiguration *gridCfg,
         J_x =  I_0 * y * cos( Phase ) ;
         J_y = -I_0 * x * cos( Phase ) ;
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5) ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5) ;
     }
 
     return EXIT_SUCCESS;
