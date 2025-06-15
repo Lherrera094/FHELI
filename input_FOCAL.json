@@ -1,6 +1,6 @@
 {	
     "Main_Project": 		"VINETTA_",
-    "Case_foldername": 		"Standard(n_e1e19-B0.1-nu_c4.9e4-Je5)",
+    "Case_foldername": 		"n_e1e16-B0.01-nu_c4.4e-3-Je5",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
@@ -12,13 +12,13 @@
     "t_end": 		8,
     
     "B0_profile":	1,
-    "B0_magnitude":	206.41,
+    "B0_magnitude":	66.21,
     "ne_profile":	9,
-    "ne_0":		2093.65,
+    "ne_0":		20.64,
     "ne_s":		2.0,
     "ne_t":		2.0,
-    "ne_w":		1.0,
-    "nu_0":		1e-3,
+    "ne_w":		0.3,
+    "nu_0":		4.4e-3,
     
     "Boundary_Method": 	3,
     "UPML_size":	20,
@@ -42,6 +42,6 @@
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 0.5
+    "data_save_frequency": 0.25
     
 }
