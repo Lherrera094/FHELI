@@ -91,16 +91,16 @@ int compute_energy_values(  gridConfiguration *gridCfg,
         }
     }
 
-    energy_storage          +=  (E2 + B2) * pow(DX,2) / 2 ;
-    total_energy_storage    +=  (E2 + B2 + J2) * pow(DX,2) / 2 ;
-    Power_save              +=  pow(P2,2) * pow(DX,2) ;
+    energy_storage          +=  (E2 + B2) / 2 ;
+    total_energy_storage    +=  (E2 + B2 + J2) / 2 ;
+    Power_save              +=  pow(P2,2) ;
     t_count += 1;
 
     if( t_count == PERIOD ){
 
-        energy_average[counter]         = energy_storage / PERIOD;
-        total_energy_average[counter]   = total_energy_storage / PERIOD;
-        power_absorbed[counter]         = Power_save / PERIOD;
+        energy_average[counter]         = energy_storage * pow(DX,3) / PERIOD;
+        total_energy_average[counter]   = total_energy_storage * pow(DX,3) / PERIOD;
+        power_absorbed[counter]         = Power_save * pow(DX,3) / PERIOD;
         impedance[counter]              = 2 * Power_save / pow(I0,2);
 
         counter                += 1;
