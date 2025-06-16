@@ -5,19 +5,19 @@
     "filename_timetraces": 	"timetraces.dat",
     
     "scale": 		1,
-    "period": 		88440,
-    "Grid_size_Nx": 	460,
-    "Grid_size_Ny": 	460,
-    "Grid_size_Nz": 	2460,
+    "period": 		176880,
+    "Grid_size_Nx": 	860,
+    "Grid_size_Ny": 	860,
+    "Grid_size_Nz": 	4860,
     "t_end": 		8,
     
     "B0_profile":	1,
-    "B0_magnitude":	20.64,
+    "B0_magnitude":	103.21,
     "ne_profile":	9,
-    "ne_0":		66.21,
+    "ne_0":		20.94,
     "ne_s":		2.0,
     "ne_t":		2.0,
-    "ne_w":		0.3,
+    "ne_w":		0.0,
     "nu_0":		4.4e-3,
     
     "Boundary_Method": 	3,
@@ -34,14 +34,14 @@
     "Antena_w0y": 	2.0,
     "z2waist":		-298.87,
     
-    "Antenna_folder": 	"VINETTA_",
+    "Antenna_folder": 	"_medium",
     "Helical Antenna": 	"1: Single_Loop. 2:Spiral. 3:Double_Loop. 4.Nagoya. 5.Boswell. 6:RH_Half-helical. 7:LH_Half-helical. 8:Birdcage",
     "Antenna_type": 	3,
-    "Currrent_Amp": 	1e5,
+    "Currrent_Amp": 	5e5,
     "Boundary_layer":	2,
     
     "Detector_Antenna": 1,
     
-    "data_save_frequency": 0.25
+    "data_save_frequency": 0.1
     
 }
