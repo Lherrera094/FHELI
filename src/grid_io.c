@@ -1650,6 +1650,23 @@ int detAnt2D_write2hdf5( int N_x, int N_y,
     status       = H5Dclose(dataset_id);
     if (status < 0) printf( "ERROR: could not close dataset 'Power_proyection'\n" );
 
+    // store Total energy component
+    set2zero_2D( N_x/2, N_y/2, data2save );
+    for ( ii=2 ; ii<=N_x-2 ; ii+=2 ){
+        for ( jj=2 ; jj<=N_y-2 ; jj+=2 ){
+            data2save[ii/2][jj/2] = detAnt_fields[ii/2][jj/2][11];
+        }
+    }
+    printf( "start to create dataset 'Wave_energy'\n" );
+    if (filter_avail)
+        dataset_id   = H5Dcreate( group_id__detAnt, "Wave_energy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, dcpl, H5P_DEFAULT);  
+    else
+        dataset_id   = H5Dcreate( group_id__detAnt, "Wave_energy", H5T_NATIVE_DOUBLE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);  
+    status       = H5Dwrite( dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data2save);
+    if (status < 0) printf( "ERROR: could not write dataset 'Wave_energy'\n" );
+    status       = H5Dclose(dataset_id);
+    if (status < 0) printf( "ERROR: could not close dataset 'Wave_energy'\n" );
+
     status       = H5Sclose(dataspace_id);
     if (status < 0) printf( "ERROR: could not close dataspace for datasets of Wave-fields\n" );
     
