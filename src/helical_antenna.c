@@ -469,7 +469,7 @@ int linear_antenna( gridConfiguration *gridCfg,
         kk = 2 * (int)S_coord[ll][2];       //Multply by two for the leapfrog grid
 
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] = - (I_0) * sin( OMEGA_T + Phase) * t_rise * DT ;
+        EB_WAVE[ii  ][jj  ][kk+1] = - (I_0) * sin( OMEGA_T + Phase) * t_rise * (DT / DX) ;
 
     }
 
@@ -491,7 +491,7 @@ int helical_antenna(    gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = 2 * (int)S_coord[ll][2];
 
-        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -543,8 +543,8 @@ int half_circular_antenna(  gridConfiguration *gridCfg,
 
         } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ; 
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * (DT / DX) ; 
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -573,8 +573,8 @@ int circular_antenna(   gridConfiguration *gridCfg,
         J_x =  I_0 * y * cos( Phase ) ;
         J_y = -I_0 * x * cos( Phase ) ;
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT ;
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT ;
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * (DT / DX) ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -598,7 +598,7 @@ int linear_antenna_ref( gridConfiguration *gridCfg,
         kk = (2 * (int)S_coord[ll][2]) - u;
         
         //Current goes in the Z-direction
-        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -619,7 +619,7 @@ int helical_antenna_ref(gridConfiguration *gridCfg,
         jj = 2 * (int)S_coord[ll][1];
         kk = (2 * (int)S_coord[ll][2]) - u;
 
-        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * DT ;
+        EB_WAVE[ii  ][jj  ][kk+1] = - I_0 * sin( OMEGA_T + Phase) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -670,8 +670,8 @@ int half_circular_antenna_ref(  gridConfiguration *gridCfg,
 
         } 
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * (DT / DX) ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
@@ -700,8 +700,8 @@ int circular_antenna_ref(   gridConfiguration *gridCfg,
         J_x =  I_0 * y * cos( Phase ) ;
         J_y = -I_0 * x * cos( Phase ) ;
 
-        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
-        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * DT * sqrt(0.5);
+        EB_WAVE[ii+1][jj  ][kk  ]  = - J_x * sin( OMEGA_T ) * t_rise * (DT / DX) ;
+        EB_WAVE[ii  ][jj+1][kk  ]  = - J_y * sin( OMEGA_T ) * t_rise * (DT / DX) ;
     }
 
     return EXIT_SUCCESS;
