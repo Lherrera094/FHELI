@@ -1,6 +1,6 @@
 {	
-    "Main_Project": 		"VINETTA_",
-    "Case_foldername": 		"n_e1e16-B0.01-nu_c4.4e-3-Je5",
+    "Main_Project": 		"Circular_test",
+    "Case_foldername": 		"n_e1e16-B0.01-nu_c4.4e-3-Je10",
     "filename_hdf5": 		"fileout.h5",
     "filename_timetraces": 	"timetraces.dat",
     
@@ -37,7 +37,7 @@
     "Antenna_folder": 	"VINETTA_",
     "Helical Antenna": 	"1: Single_Loop. 2:Spiral. 3:Double_Loop. 4.Nagoya. 5.Boswell. 6:RH_Half-helical. 7:LH_Half-helical. 8:Birdcage",
     "Antenna_type": 	1,
-    "Currrent_Amp": 	1,
+    "Currrent_Amp": 	10,
     "Boundary_layer":	2,
     
     "Detector_Antenna": 1,
