@@ -1,6 +1,0 @@
-Radius: 100.0
-Lenght: 600.0
-X_position (center): 115.0
-Y_position (center): 115.0
-Z_position (center): 315.0
-Number of Arms: 8.0
